@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Preview(showBackground = true)
-@Preview
 @Composable
 fun OneIconAndOneText(
     modifier: Modifier = Modifier
