@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.home.elements.TopContainer
 import com.example.recipefinder.ui.home.elements.TopRecipeCard
@@ -31,12 +32,16 @@ fun HomeContent(
 
 ) {
     Scaffold(
-
+        bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding() + 170.dp, start = 16.dp, end = 16.dp),
+            contentPadding = PaddingValues(
+                top = paddingValues.calculateTopPadding() + 170.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
