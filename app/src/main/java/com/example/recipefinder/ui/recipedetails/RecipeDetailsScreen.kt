@@ -6,19 +6,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.recipefinder.ui.recipedetails.components.RecipeIngredientsVerticalListItem
+import com.example.recipefinder.ui.recipedetails.components.RecipePreparationBottomSheet
 import com.example.recipefinder.ui.recipedetails.components.TopBar
 
 
@@ -27,10 +38,33 @@ import com.example.recipefinder.ui.recipedetails.components.TopBar
 fun RecipeDetailsScreen(
     title: String
 ) {
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        topBar = { TopBar(title, scrollBehavior) }
+        topBar = { TopBar(title, scrollBehavior) },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { if (!openBottomSheet) openBottomSheet = true },
+                icon = { Icon(Icons.Filled.PlayArrow, "Start Cooking") },
+                text = {
+                    Text(
+                        text = "Start Cooking",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
+                },
+                shape = RoundedCornerShape(32.dp)
+            )
+        }
     ) { paddingValues ->
+        if (openBottomSheet) {
+            RecipePreparationBottomSheet(
+                modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
+                onDismissRequest = {
+                    openBottomSheet = false
+                }
+            )
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
