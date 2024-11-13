@@ -24,10 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.recipefinder.ui.recipedetails.components.PreparationTimeLine
 import com.example.recipefinder.ui.recipedetails.components.RecipeIngredientsVerticalListItem
 import com.example.recipefinder.ui.recipedetails.components.RecipePreparationBottomSheet
 import com.example.recipefinder.ui.recipedetails.components.TopBar
@@ -36,12 +40,13 @@ import com.example.recipefinder.ui.recipedetails.components.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeDetailsScreen(
+    onPopCurrent: () -> Unit,
     title: String
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        topBar = { TopBar(title, scrollBehavior) },
+        topBar = { TopBar(onPopCurrent, title, scrollBehavior) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { if (!openBottomSheet) openBottomSheet = true },
@@ -91,7 +96,29 @@ fun RecipeDetailsScreen(
                 Spacer(modifier = Modifier.size(16.dp))
             }
             item {
-                Text(text = "Ingredients for \n17 Servings", fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Preparation",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.size(16.dp))
+            }
+            item {
+                PreparationTimeLine()
+            }
+            item {
+                Spacer(modifier = Modifier.size(16.dp))
+            }
+            item {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Ingredients for\n")
+                        }
+                        append("17 Servings")
+                    }
+                )
             }
             item {
                 Spacer(modifier = Modifier.size(16.dp))
@@ -114,5 +141,5 @@ fun RecipeDetailsScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipeDetailsScreen() {
-    RecipeDetailsScreen("Nacho Lasagna Pasta Chips")
+    RecipeDetailsScreen({}, "Nacho Lasagna Pasta Chips")
 }

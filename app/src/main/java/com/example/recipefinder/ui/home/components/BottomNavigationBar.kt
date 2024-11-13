@@ -29,7 +29,6 @@ fun BottomNavigationBar(
     var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
     val items = listOf(
         BottomNavigationItem(title = "Home", selectedIcon = Icons.Default.Home),
-        BottomNavigationItem(title = "Pantry", selectedIcon = Icons.Default.ShoppingCart),
         BottomNavigationItem(title = "Profile", selectedIcon = Icons.Default.Person)
     )
     NavigationBar(

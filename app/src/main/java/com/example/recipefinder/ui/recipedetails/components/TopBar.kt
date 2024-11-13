@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
+    onPopCurrent: () -> Unit,
     title: String,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
@@ -32,7 +33,7 @@ fun TopBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = { /* doSomething() */ }) {
+            IconButton(onClick = { onPopCurrent() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back to the Home",
@@ -58,5 +59,5 @@ fun TopBar(
 @Composable
 fun PreviewTopBar() {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    TopBar("Nacho Lasagna Pasta Chips", scrollBehavior)
+    TopBar({}, "Nacho Lasagna Pasta Chips", scrollBehavior)
 }
