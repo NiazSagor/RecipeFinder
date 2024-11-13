@@ -9,6 +9,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -18,9 +19,10 @@ import androidx.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    title: String
+    onPopCurrent: () -> Unit,
+    title: String,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     LargeTopAppBar(
         title = {
             Text(
@@ -31,7 +33,7 @@ fun TopBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = { /* doSomething() */ }) {
+            IconButton(onClick = { onPopCurrent() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back to the Home",
@@ -52,8 +54,10 @@ fun TopBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun PreviewTopBar() {
-    TopBar("Nacho Lasagna Pasta Chips")
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    TopBar({}, "Nacho Lasagna Pasta Chips", scrollBehavior)
 }

@@ -29,7 +29,7 @@ fun Home(
 
 @Composable
 fun HomeContent(
-
+    onRecipeClick: (Int) -> Unit
 ) {
     Scaffold(
         bottomBar = { BottomNavigationBar() }
@@ -40,7 +40,8 @@ fun HomeContent(
             contentPadding = PaddingValues(
                 top = paddingValues.calculateTopPadding() + 170.dp,
                 start = 16.dp,
-                end = 16.dp
+                end = 16.dp,
+                bottom = paddingValues.calculateBottomPadding()
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -49,15 +50,15 @@ fun HomeContent(
             }
 
             item {
-                HorizontalList("Trending")
+                HorizontalList(onRecipeClick, "Trending")
             }
 
             item {
-                HorizontalList("Popular Recipes This Week")
+                HorizontalList(onRecipeClick, "Popular Recipes This Week")
             }
 
             item {
-                HorizontalList("Desserts")
+                HorizontalList(onRecipeClick, "Desserts")
             }
         }
 
@@ -68,6 +69,7 @@ fun HomeContent(
 
 @Composable
 fun HorizontalList(
+    onRecipeClick: (Int) -> Unit,
     title: String,
 ) {
     Column(
@@ -81,7 +83,7 @@ fun HorizontalList(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(15) {
-                RecipeHorizontalListItem()
+                RecipeHorizontalListItem(onRecipeClick)
             }
         }
     }
@@ -92,11 +94,11 @@ fun HorizontalList(
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeContent() {
-    HomeContent()
+    HomeContent {}
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHorizontalTrendingList() {
-    HorizontalList("Trending")
+    HorizontalList({},"Trending")
 }

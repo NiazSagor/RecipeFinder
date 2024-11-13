@@ -6,7 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.recipefinder.ui.home.HomeContent
+import androidx.navigation.compose.rememberNavController
+import com.example.recipefinder.ui.navigation.RecipeFinderNavGraph
 import com.example.recipefinder.ui.theme.RecipeFinderTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +18,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RecipeFinderTheme {
-                HomeContent()
+                val navController = rememberNavController()
+                RecipeFinderNavGraph(navController)
             }
         }
     }

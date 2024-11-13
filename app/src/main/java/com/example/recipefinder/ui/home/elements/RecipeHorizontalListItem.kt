@@ -31,15 +31,13 @@ import androidx.compose.ui.unit.sp
 import com.example.recipefinder.R
 
 @Composable
-fun RecipeHorizontalListItem(
-
-) {
+fun RecipeHorizontalListItem(onRecipeClick: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .size(width = 170.dp, height = 300.dp)
             .clickable(
                 enabled = true,
-                onClick = {},
+                onClick = { onRecipeClick(0) },
                 indication = remember {
                     ripple(bounded = true, color = Color.White)
                 },
@@ -109,5 +107,5 @@ fun RecipeHorizontalListItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipeHorizontalListItem() {
-    RecipeHorizontalListItem()
+    RecipeHorizontalListItem({})
 }
