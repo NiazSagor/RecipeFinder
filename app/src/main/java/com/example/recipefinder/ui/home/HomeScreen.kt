@@ -38,7 +38,7 @@ fun HomeContent(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding() + 170.dp,
+                top = paddingValues.calculateTopPadding() + 50.dp,
                 start = 16.dp,
                 end = 16.dp,
                 bottom = paddingValues.calculateBottomPadding()
@@ -63,7 +63,7 @@ fun HomeContent(
         }
 
 
-        TopContainer(Modifier.padding(paddingValues))
+        TopContainer(modifier = Modifier)
     }
 }
 
