@@ -13,7 +13,7 @@ import com.example.recipefinder.ui.theme.RecipeFinderTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.GREEN, Color.GREEN)
+            statusBarStyle = SystemBarStyle.light(Color.WHITE, Color.WHITE)
         )
         super.onCreate(savedInstanceState)
         setContent {

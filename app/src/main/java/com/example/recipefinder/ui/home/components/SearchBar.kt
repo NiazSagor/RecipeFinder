@@ -54,8 +54,7 @@ fun SearchBar(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.background),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -181,7 +180,7 @@ private fun SearchHint(modifier: Modifier = Modifier) {
     ) {
         Text(
             color = MaterialTheme.colors.onSurface,
-            text = "Search a Tag or Description",
+            text = "Search Recipe or Ingredients",
         )
     }
 }
