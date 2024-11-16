@@ -10,7 +10,7 @@ data class RecipeInformationVo(
     val dairyFree: Boolean,
     val diets: List<Any>,
     val dishTypes: List<String>,
-    val extendedIngredients: List<ExtendedIngredient>,
+    val extendedIngredients: List<ExtendedIngredientVo>,
     val gaps: String,
     val glutenFree: Boolean,
     val healthScore: Int,
@@ -24,6 +24,8 @@ data class RecipeInformationVo(
     val occasions: List<Any>,
     val pricePerServing: Double,
     val readyInMinutes: Int,
+    val cookingMinutes: Int,
+    val preparationMinutes: Int,
     val servings: Int,
     val sourceName: String,
     val sourceUrl: String,
@@ -38,16 +40,16 @@ data class RecipeInformationVo(
     val veryPopular: Boolean,
     val weightWatcherSmartPoints: Int,
     val whole30: Boolean,
-    val winePairing: WinePairing
+    val winePairing: WinePairingVo
 )
 
-data class ExtendedIngredient(
+data class ExtendedIngredientVo(
     val aisle: String,
     val amount: Double,
     val consitency: String,
     val id: Int,
     val image: String,
-    val measures: Measures,
+    val measures: MeasuresVo,
     val meta: List<String>,
     val name: String,
     val original: String,
@@ -55,13 +57,13 @@ data class ExtendedIngredient(
     val unit: String
 )
 
-data class WinePairing(
+data class WinePairingVo(
     val pairedWines: List<String>,
     val pairingText: String,
-    val productMatches: List<ProductMatche>
+    val productMatches: List<ProductMatchesVo>
 )
 
-data class Measures(
+data class MeasuresVo(
     val metric: Metric,
     val us: Us
 )
@@ -78,7 +80,7 @@ data class Us(
     val unitShort: String
 )
 
-data class ProductMatche(
+data class ProductMatchesVo(
     val averageRating: Double,
     val description: String,
     val id: Int,
