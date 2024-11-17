@@ -63,7 +63,9 @@ fun HomeContent(
         }
 
 
-        TopContainer(modifier = Modifier)
+        TopContainer(modifier = Modifier) {
+            onRecipeClick(it)
+        }
     }
 }
 
