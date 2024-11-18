@@ -63,7 +63,7 @@ fun <I, R, S> rememberSearchState(
     suggestions: List<S> = emptyList(),
     searchResults: List<R> = emptyList(),
     timeoutMillis: Long = 0,
-    onQueryResult: (TextFieldValue) -> List<R>,
+    onQueryResult: suspend (TextFieldValue) -> List<R>, // Mark this as suspend
 ): SearchState<I, R, S> {
 
     return remember {
@@ -74,14 +74,13 @@ fun <I, R, S> rememberSearchState(
         )
     }.also { state ->
         LaunchedEffect(key1 = Unit) {
-
             snapshotFlow { state.query }
                 .distinctUntilChanged()
                 .filter { query: TextFieldValue ->
                     query.text.isNotEmpty() && !state.sameAsPreviousQuery()
                 }
                 .map { query: TextFieldValue ->
-                    if (timeoutMillis>0) {
+                    if (timeoutMillis > 0) {
                         state.searching = false
                     }
                     state.searchInProgress = true
@@ -90,9 +89,9 @@ fun <I, R, S> rememberSearchState(
                 .debounce(timeoutMillis)
                 .mapLatest { query: TextFieldValue ->
                     state.searching = true
-                    // This delay is for showing circular progress bar, it's optional
+                    // Optional delay for showing loading spinner
                     delay(300)
-                    onQueryResult(query)
+                    onQueryResult(query) // Await the result of the suspend lambda
                 }
                 .collect { result ->
                     state.searchResults = result

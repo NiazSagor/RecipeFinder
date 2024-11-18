@@ -1,6 +1,7 @@
 package com.example.recipefinder.network.di
 
 import com.example.recipefinder.network.RestApiService
+import com.example.recipefinder.network.converter.JsonOrXmlConverter
 import com.example.recipefinder.network.interceptor.ApiKeyInterceptor
 import dagger.Module
 import dagger.Provides
@@ -40,6 +41,16 @@ object RestApiModule {
             .writeTimeout(WRITE_TIME, TimeUnit.SECONDS)
             .addInterceptor(ApiKeyInterceptor(API_KEY))
             .addInterceptor(httpLoggingInterceptor)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(JsonOrXmlConverter())
+            .client(okHttpClient)
             .build()
     }
 

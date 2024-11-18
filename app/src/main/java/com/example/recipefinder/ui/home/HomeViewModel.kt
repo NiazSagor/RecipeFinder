@@ -2,7 +2,11 @@ package com.example.recipefinder.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipefinder.data.model.MissedIngredient
 import com.example.recipefinder.data.model.Recipe
+import com.example.recipefinder.data.model.SearchRecipeByIngredients
+import com.example.recipefinder.data.model.UnusedIngredient
+import com.example.recipefinder.data.model.UsedIngredient
 import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +20,11 @@ sealed class HomeState {
     object Loading : HomeState()
     data class Success(val randomRecipes: List<Recipe>) : HomeState()
     data class Error(val message: String) : HomeState()
+    data class SearchResults(val recipes: List<SearchRecipeByIngredients>) : HomeState()
 }
+
+
+private const val TAG = "HomeViewModel"
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -40,6 +48,16 @@ class HomeViewModel @Inject constructor(
                 e.printStackTrace()
                 _homeState.value = HomeState.Error(e.message.toString())
             }
+        }
+    }
+
+    suspend fun getSearchResult(query: String): List<SearchRecipeByIngredients> {
+        return try {
+            val results = recipeRepository.searchRecipesByIngredients(query)
+            results
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList<SearchRecipeByIngredients>()
         }
     }
 }
