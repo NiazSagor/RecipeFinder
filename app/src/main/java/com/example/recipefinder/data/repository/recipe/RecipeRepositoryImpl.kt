@@ -28,7 +28,7 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchRecipesByIngredients(ingredients: String): List<SearchRecipeByIngredients> {
-        return restApiService.findByIngredients(ingredients, 2)
+        return restApiService.findByIngredients(ingredients, 10)
             .toInternalSearchRecipesByIngredients()
     }
 }

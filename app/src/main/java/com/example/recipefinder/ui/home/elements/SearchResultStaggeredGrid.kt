@@ -12,12 +12,13 @@ import com.example.recipefinder.data.model.SearchRecipeByIngredients
 
 @Composable
 fun SearchResultStaggeredGrid(
+    modifier: Modifier,
     searchRecipeByIngredients: List<SearchRecipeByIngredients>,
     onRecipeClick: (Int) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
-        verticalItemSpacing = 4.dp,
+        verticalItemSpacing = 16.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
             items(searchRecipeByIngredients.size) { photo ->
@@ -26,6 +27,6 @@ fun SearchResultStaggeredGrid(
                 }
             }
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.then(Modifier.fillMaxSize())
     )
 }

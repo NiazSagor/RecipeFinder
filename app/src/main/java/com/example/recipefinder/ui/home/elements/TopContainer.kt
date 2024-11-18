@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,10 +27,13 @@ import com.example.recipefinder.ui.home.HomeViewModel
 import com.example.recipefinder.ui.home.components.SearchBar
 import com.example.recipefinder.ui.home.components.SearchDisplay
 import com.example.recipefinder.ui.home.components.rememberSearchState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TopContainer(
+    bottomPadding: Dp,
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
     onRecipeClick: (Int) -> Unit
@@ -41,11 +45,9 @@ fun TopContainer(
             suggestions = emptyList<SearchRecipeByIngredients>(),
             timeoutMillis = 10000
         ) { query: TextFieldValue ->
-            // TODO: fix search
-            viewModel.getSearchResult(query.text)
-            if (homeState is HomeState.SearchResults) {
-                return@rememberSearchState (homeState as HomeState.SearchResults).recipes
-            } else emptyList()
+            withContext(Dispatchers.IO) {
+                viewModel.getSearchResult(query.text)
+            }
         }
     Box(
         modifier = modifier
@@ -83,7 +85,10 @@ fun TopContainer(
                 }
 
                 SearchDisplay.Results -> {
-                    SearchResultStaggeredGrid(state.searchResults) {
+                    SearchResultStaggeredGrid(
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = bottomPadding),
+                        state.searchResults
+                    ) {
                         onRecipeClick(it)
                     }
                 }

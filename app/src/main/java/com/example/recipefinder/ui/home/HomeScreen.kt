@@ -63,7 +63,7 @@ fun HomeContent(
         }
 
 
-        TopContainer(modifier = Modifier) {
+        TopContainer(paddingValues.calculateBottomPadding(), modifier = Modifier) {
             onRecipeClick(it)
         }
     }
@@ -102,5 +102,5 @@ fun PreviewHomeContent() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHorizontalTrendingList() {
-    HorizontalList({},"Trending")
+    HorizontalList({}, "Trending")
 }

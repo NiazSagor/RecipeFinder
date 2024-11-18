@@ -37,7 +37,7 @@ fun SearchResultStaggeredListItem(
 ) {
     Box(
         modifier = Modifier
-            .size(width = 170.dp, height = 300.dp)
+            .size(width = 150.dp, height = 250.dp)
             .clickable(
                 enabled = true,
                 onClick = { onRecipeClick(0) },
@@ -85,19 +85,19 @@ fun SearchResultStaggeredListItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "39 mins •",
-                    fontSize = 12.sp
-                )
-                Icon(
-                    Icons.Default.ThumbUp,
-                    contentDescription = "",
-                    modifier = Modifier.size(16.dp)
-                )
-                Text(
-                    text = "98 %",
-                    fontSize = 12.sp
-                )
+//                Text(
+//                    text = "39 mins •",
+//                    fontSize = 12.sp
+//                )
+//                Icon(
+//                    Icons.Default.ThumbUp,
+//                    contentDescription = "",
+//                    modifier = Modifier.size(16.dp)
+//                )
+//                Text(
+//                    text = "98 %",
+//                    fontSize = 12.sp
+//                )
             }
             Text(
                 modifier = Modifier.padding(bottom = 8.dp, end = 8.dp),
