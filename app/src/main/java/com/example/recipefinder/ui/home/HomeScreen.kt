@@ -10,11 +10,15 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.home.elements.TopContainer
@@ -29,11 +33,13 @@ fun Home(
 
 @Composable
 fun HomeContent(
-    onRecipeClick: (Int) -> Unit
+    onRecipeClick: (Int) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     Scaffold(
         bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
+        val homeState by viewModel.homeState.collectAsStateWithLifecycle()
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -45,20 +51,40 @@ fun HomeContent(
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                TopRecipeCard()
-            }
 
-            item {
-                HorizontalList(onRecipeClick, "Trending")
-            }
+            when (homeState) {
+                is HomeState.Error -> {}
+                HomeState.Idle -> {}
+                HomeState.Loading -> {}
+                is HomeState.Success -> {
+                    val chunkedList = (homeState as HomeState.Success).randomRecipes.chunked(10)
+                    val list1 = chunkedList.getOrNull(0) ?: emptyList()
+                    val list2 = chunkedList.getOrNull(1) ?: emptyList()
+                    val list3 = chunkedList.getOrNull(2) ?: emptyList()
+                    item {
+                        if (list1.isNotEmpty()) {
+                            TopRecipeCard(onRecipeClick, list1.first())
+                        }
+                    }
 
-            item {
-                HorizontalList(onRecipeClick, "Popular Recipes This Week")
-            }
+                    item {
+                        if (list1.isNotEmpty()) {
+                            HorizontalList(onRecipeClick, "Trending", list1)
+                        }
+                    }
 
-            item {
-                HorizontalList(onRecipeClick, "Desserts")
+                    item {
+                        if (list2.isNotEmpty()) {
+                            HorizontalList(onRecipeClick, "Popular Recipes This Week", list2)
+                        }
+                    }
+
+                    item {
+                        if (list3.isNotEmpty()) {
+                            HorizontalList(onRecipeClick, "Desserts", list3)
+                        }
+                    }
+                }
             }
         }
 
@@ -73,6 +99,7 @@ fun HomeContent(
 fun HorizontalList(
     onRecipeClick: (Int) -> Unit,
     title: String,
+    recipes: List<Recipe>,
 ) {
     Column(
 
@@ -84,23 +111,22 @@ fun HorizontalList(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(15) {
-                RecipeHorizontalListItem(onRecipeClick)
+            items(recipes.size) {
+                RecipeHorizontalListItem(recipes[it], onRecipeClick)
             }
         }
     }
-
 }
 
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeContent() {
-    HomeContent {}
+    HomeContent({})
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHorizontalTrendingList() {
-    HorizontalList({}, "Trending")
+
 }

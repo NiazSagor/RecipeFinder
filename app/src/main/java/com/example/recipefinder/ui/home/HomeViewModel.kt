@@ -20,7 +20,6 @@ sealed class HomeState {
     object Loading : HomeState()
     data class Success(val randomRecipes: List<Recipe>) : HomeState()
     data class Error(val message: String) : HomeState()
-    data class SearchResults(val recipes: List<SearchRecipeByIngredients>) : HomeState()
 }
 
 

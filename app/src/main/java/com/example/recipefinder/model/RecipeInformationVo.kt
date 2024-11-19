@@ -29,7 +29,7 @@ data class RecipeInformationVo(
     val servings: Int,
     val sourceName: String,
     val sourceUrl: String,
-    val spoonacularScore: Int,
+    val spoonacularScore: Double,
     val spoonacularSourceUrl: String,
     val summary: String,
     val sustainable: Boolean,

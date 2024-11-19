@@ -1,6 +1,5 @@
 package com.example.recipefinder.ui.home.elements
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -23,21 +19,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.recipefinder.R
+import coil3.compose.AsyncImage
+import com.example.recipefinder.data.model.Recipe
 
 @Composable
-fun RecipeHorizontalListItem(onRecipeClick: (Int) -> Unit) {
+fun RecipeHorizontalListItem(
+    recipe: Recipe,
+    onRecipeClick: (Int) -> Unit,
+) {
     Box(
         modifier = Modifier
             .size(width = 170.dp, height = 300.dp)
             .clickable(
                 enabled = true,
-                onClick = { onRecipeClick(0) },
+                onClick = { onRecipeClick(recipe.id) },
                 indication = remember {
                     ripple(bounded = true, color = Color.White)
                 },
@@ -52,10 +52,12 @@ fun RecipeHorizontalListItem(onRecipeClick: (Int) -> Unit) {
                     .size(170.dp)
                     .clip(RoundedCornerShape(4.dp))
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = "Recipe Image",
-                    modifier = Modifier.fillMaxSize()
+                AsyncImage(
+                    model = recipe.image,
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
                 )
                 Box(
                     modifier = Modifier
@@ -80,22 +82,22 @@ fun RecipeHorizontalListItem(onRecipeClick: (Int) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "39 mins •",
+                    text = "${recipe.cookingMinutes + recipe.preparationMinutes} mins",
                     fontSize = 12.sp
                 )
-                Icon(
-                    Icons.Default.ThumbUp,
-                    contentDescription = "",
-                    modifier = Modifier.size(16.dp)
-                )
-                Text(
-                    text = "98 %",
-                    fontSize = 12.sp
-                )
+//                Icon(
+//                    Icons.Default.ThumbUp,
+//                    contentDescription = "",
+//                    modifier = Modifier.size(16.dp)
+//                )
+//                Text(
+//                    text = "98 %",
+//                    fontSize = 12.sp
+//                )
             }
             Text(
                 modifier = Modifier.padding(bottom = 8.dp, end = 8.dp),
-                text = "One Bowl Chocolate Chip Banana Bread",
+                text = recipe.title,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2
@@ -107,5 +109,5 @@ fun RecipeHorizontalListItem(onRecipeClick: (Int) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipeHorizontalListItem() {
-    RecipeHorizontalListItem({})
+
 }
