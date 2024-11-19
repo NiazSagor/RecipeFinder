@@ -29,7 +29,7 @@ class GetRandomRecipesWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return try {
             supervisorScope {
-                val randomRecipesDeferred = async { restApiService.getRandomRecipes(limit = 2) }
+                val randomRecipesDeferred = async { restApiService.getRandomRecipes(limit = 30) }
                 val randomRecipes = randomRecipesDeferred.await()
                 recipeDataStore.saveRandomRecipes(randomRecipes.recipes.toInternalRecipesModel())
                 Result.success()

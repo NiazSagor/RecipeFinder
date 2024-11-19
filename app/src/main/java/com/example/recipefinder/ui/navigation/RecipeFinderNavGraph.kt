@@ -24,9 +24,9 @@ fun RecipeFinderNavGraph(
         composable(
             route = RecipeFinderDestinations.HOME_ROUTE
         ) {
-            HomeContent {
-                navigationActions.navigateToRecipeDetailsScreen()
-            }
+            HomeContent(
+                { navigationActions.navigateToRecipeDetailsScreen() }
+            )
         }
 
         composable(

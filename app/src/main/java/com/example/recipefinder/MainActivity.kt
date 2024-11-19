@@ -7,6 +7,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
+import com.example.recipefinder.data.worker.GetRandomRecipesWorker
 import com.example.recipefinder.ui.navigation.RecipeFinderNavGraph
 import com.example.recipefinder.ui.theme.RecipeFinderTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,5 +25,7 @@ class MainActivity : ComponentActivity() {
                 RecipeFinderNavGraph(navController)
             }
         }
+        // TODO: commented out for now, there are random recipes in the datastore
+        //GetRandomRecipesWorker.enqueueOneTimeWork(this)
     }
 }

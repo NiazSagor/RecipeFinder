@@ -40,7 +40,7 @@ fun SearchResultStaggeredListItem(
             .size(width = 150.dp, height = 250.dp)
             .clickable(
                 enabled = true,
-                onClick = { onRecipeClick(0) },
+                onClick = { onRecipeClick(recipeResult.id) },
                 indication = remember {
                     ripple(bounded = true, color = Color.White)
                 },
