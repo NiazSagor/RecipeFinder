@@ -12,12 +12,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.recipefinder.data.model.Recipe
 
 
 @Composable
-fun PreparationTimeLine(
-
-) {
+fun PreparationTimeLine(recipeDetails: Recipe) {
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -25,9 +24,12 @@ fun PreparationTimeLine(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            repeat(3) {
-                PreparationTitleAndTime()
-            }
+            PreparationTitleAndTime(
+                title = "Total Time",
+                time = recipeDetails.preparationMinutes + recipeDetails.cookingMinutes
+            )
+            PreparationTitleAndTime(title = "Prep Time", time = recipeDetails.preparationMinutes)
+            PreparationTitleAndTime(title = "Cook Time", time = recipeDetails.cookingMinutes)
         }
     }
 }
@@ -35,18 +37,19 @@ fun PreparationTimeLine(
 
 @Composable
 fun PreparationTitleAndTime(
-
+    title: String,
+    time: Int,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Total Time",
+            text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 12.sp
         )
         Text(
-            text = "45 min"
+            text = "$time mins"
         )
     }
 }
@@ -55,5 +58,4 @@ fun PreparationTitleAndTime(
 @Preview(showBackground = true)
 @Composable
 fun PreviewPreparationTimeLine() {
-    PreparationTimeLine()
 }

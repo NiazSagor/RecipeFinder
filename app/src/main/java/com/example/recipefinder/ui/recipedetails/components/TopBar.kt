@@ -27,7 +27,7 @@ fun TopBar(
         title = {
             Text(
                 text = title,
-                maxLines = 2,
+                maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold
             )

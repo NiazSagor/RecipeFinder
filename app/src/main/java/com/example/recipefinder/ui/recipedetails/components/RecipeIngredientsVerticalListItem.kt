@@ -11,10 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.recipefinder.data.model.Ingredient
 
 
 @Composable
-fun RecipeIngredientsVerticalListItem() {
+fun RecipeIngredientsVerticalListItem(ingredient: Ingredient) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -25,12 +26,14 @@ fun RecipeIngredientsVerticalListItem() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "apple cider",
+                text = ingredient.name,
             )
-            Text(
-                text = "6 cups",
-                color = Color.Black
-            )
+            if (ingredient.unit != null) {
+                Text(
+                    text = "${ingredient.amount} ${ingredient.unit}",
+                    color = Color.Black
+                )
+            }
         }
     }
 }
@@ -38,5 +41,5 @@ fun RecipeIngredientsVerticalListItem() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipeIngredientsVerticalListItem() {
-    RecipeIngredientsVerticalListItem()
+
 }

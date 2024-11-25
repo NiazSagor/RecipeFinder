@@ -1,8 +1,12 @@
 package com.example.recipefinder.ui.recipedetails
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -24,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +37,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import com.example.recipefinder.ui.recipedetails.components.ExpandableText
 import com.example.recipefinder.ui.recipedetails.components.PreparationTimeLine
 import com.example.recipefinder.ui.recipedetails.components.RecipeIngredientsVerticalListItem
 import com.example.recipefinder.ui.recipedetails.components.RecipePreparationBottomSheet
@@ -40,97 +50,127 @@ import com.example.recipefinder.ui.recipedetails.components.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeDetailsScreen(
+    recipeDetailViewModel: RecipeDetailsViewModel = hiltViewModel(),
+    recipeId: Int,
     onPopCurrent: () -> Unit,
-    title: String
 ) {
-    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    Scaffold(
-        topBar = { TopBar(onPopCurrent, title, scrollBehavior) },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { if (!openBottomSheet) openBottomSheet = true },
-                icon = { Icon(Icons.Filled.PlayArrow, "Start Cooking") },
-                text = {
-                    Text(
-                        text = "Start Cooking",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
-                    )
-                },
-                shape = RoundedCornerShape(32.dp)
-            )
-        }
-    ) { paddingValues ->
-        if (openBottomSheet) {
-            RecipePreparationBottomSheet(
-                modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
-                onDismissRequest = {
-                    openBottomSheet = false
-                }
-            )
-        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding())
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp
-            )
-        ) {
-            item {
-                Text(
-                    text =
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                            "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
-                            "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
-                            "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                )
-            }
+    val recipeDetails = recipeDetailViewModel.recipeDetail.collectAsStateWithLifecycle()
 
-            item {
-                Spacer(modifier = Modifier.size(16.dp))
-            }
-            item {
-                Text(
-                    text = "Preparation",
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.size(16.dp))
-            }
-            item {
-                PreparationTimeLine()
-            }
-            item {
-                Spacer(modifier = Modifier.size(16.dp))
-            }
-            item {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Ingredients for\n")
-                        }
-                        append("17 Servings")
-                    }
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.size(16.dp))
-            }
-            items(15) { index ->
-                RecipeIngredientsVerticalListItem()
-                if (index < 14) {
-                    Divider(
-                        color = Color.Gray,
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(vertical = 4.dp)
+    LaunchedEffect(Unit) {
+        recipeDetailViewModel.getRecipeDetailsById(recipeId)
+    }
+
+    when (recipeDetails.value) {
+        is RecipeDetailsState.Error -> {}
+        RecipeDetailsState.Loading -> {}
+        is RecipeDetailsState.Success -> {
+            val recipeDetails = (recipeDetails.value as RecipeDetailsState.Success).recipe
+            var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+            val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+            Scaffold(
+                topBar = { TopBar(onPopCurrent, recipeDetails.title, scrollBehavior) },
+                floatingActionButton = {
+                    ExtendedFloatingActionButton(
+                        onClick = { if (!openBottomSheet) openBottomSheet = true },
+                        icon = { Icon(Icons.Filled.PlayArrow, "Start Cooking") },
+                        text = {
+                            Text(
+                                text = "Start Cooking",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        },
+                        shape = RoundedCornerShape(32.dp)
                     )
+                }
+            ) { paddingValues ->
+                if (openBottomSheet) {
+                    RecipePreparationBottomSheet(
+                        recipeDetailViewModel = recipeDetailViewModel,
+                        modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
+                        onDismissRequest = {
+                            openBottomSheet = false
+                        }
+                    )
+                }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = paddingValues.calculateTopPadding())
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+                    item {
+                        ExpandableText(
+                            text = recipeDetails.summary.replace(Regex("<.*?>"), ""),
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(400.dp)
+                                .background(Color.White)
+                        ) {
+                            AsyncImage(
+                                model = recipeDetails.image,
+                                contentScale = ContentScale.Crop,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+                    item {
+                        Text(
+                            text = "Preparation",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+                    item {
+                        PreparationTimeLine(recipeDetails)
+                    }
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+                    item {
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Ingredients for\n")
+                                }
+                                append("${recipeDetails.servings} Servings")
+                            }
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+                    items(recipeDetails.extendedIngredients.size) { index ->
+                        RecipeIngredientsVerticalListItem(recipeDetails.extendedIngredients[index])
+                        if (index < recipeDetails.extendedIngredients.size - 1) {
+                            Divider(
+                                color = Color.Gray,
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -138,8 +178,9 @@ fun RecipeDetailsScreen(
 }
 
 
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipeDetailsScreen() {
-    RecipeDetailsScreen({}, "Nacho Lasagna Pasta Chips")
+
 }

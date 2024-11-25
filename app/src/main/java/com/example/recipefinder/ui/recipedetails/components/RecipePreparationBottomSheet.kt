@@ -17,10 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.recipefinder.ui.recipedetails.RecipeDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipePreparationBottomSheet(
+    recipeDetailViewModel: RecipeDetailsViewModel,
     modifier: Modifier,
     onDismissRequest: () -> Unit
 ) {
@@ -94,5 +96,5 @@ fun PreviewBottomSheetContentLayout() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipePreparationBottomSheet() {
-    RecipePreparationBottomSheet(modifier = Modifier, {})
+    RecipePreparationBottomSheet(recipeDetailViewModel, modifier = Modifier) {}
 }

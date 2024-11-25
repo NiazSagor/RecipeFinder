@@ -1,10 +1,13 @@
 package com.example.recipefinder.network
 
 import com.example.recipefinder.model.RandomRecipesVo
+import com.example.recipefinder.model.RecipeAnalyzedInstructionsItemVo
+import com.example.recipefinder.model.RecipeInformationVo
 import com.example.recipefinder.model.SearchRecipeByIngredientsResponseVo
 import com.example.recipefinder.network.annotation.Format
 import com.example.recipefinder.network.annotation.ResponseFormat
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RestApiService {
@@ -14,6 +17,16 @@ interface RestApiService {
     suspend fun getRandomRecipes(
         @Query("number") limit: Int
     ): RandomRecipesVo
+
+    @GET("recipes/{id}/information")
+    suspend fun getRecipeInformation(
+        @Path("id") id: Int,
+    ): RecipeInformationVo
+
+    @GET("recipes/{id}/analyzedInstructions")
+    suspend fun getAnalyzedInstructions(
+        @Path("id") id: Int,
+    ): List<RecipeAnalyzedInstructionsItemVo>
 
     @ResponseFormat(Format.JSON)
     @GET("/recipes/findByIngredients")

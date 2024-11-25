@@ -82,7 +82,7 @@ fun RecipeHorizontalListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${recipe.cookingMinutes + recipe.preparationMinutes} mins",
+                    text = "${recipe.readyInMinutes} mins",
                     fontSize = 12.sp
                 )
 //                Icon(
