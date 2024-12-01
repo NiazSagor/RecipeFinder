@@ -1,7 +1,9 @@
 package com.example.recipefinder.data.repository.recipe
 
 import com.example.recipefinder.data.model.Recipe
+import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
+import com.example.recipefinder.data.model.toRecipeAnalyzedInstructionsItemInternalModel
 import com.example.recipefinder.datastore.RecipeDataStore
 import com.example.recipefinder.model.toInternalRecipeModel
 import com.example.recipefinder.model.toInternalSearchRecipesByIngredients
@@ -30,5 +32,9 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun searchRecipesByIngredients(ingredients: String): List<SearchRecipeByIngredients> {
         return restApiService.findByIngredients(ingredients, 10)
             .toInternalSearchRecipesByIngredients()
+    }
+
+    override suspend fun getAnalyzedInstructions(id: Int): RecipeAnalyzedInstructions {
+        return restApiService.getAnalyzedInstructions(id).first().toRecipeAnalyzedInstructionsItemInternalModel()
     }
 }

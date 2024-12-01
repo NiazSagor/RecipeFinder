@@ -96,5 +96,5 @@ fun PreviewBottomSheetContentLayout() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipePreparationBottomSheet() {
-    RecipePreparationBottomSheet(recipeDetailViewModel, modifier = Modifier) {}
+    
 }
