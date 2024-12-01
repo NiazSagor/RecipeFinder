@@ -13,10 +13,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recipefinder.data.model.Recipe
+import com.example.recipefinder.util.toHourMinuteFormat
 
 
 @Composable
 fun PreparationTimeLine(recipeDetails: Recipe) {
+    var totalTime = recipeDetails.preparationMinutes + recipeDetails.cookingMinutes
+    if (totalTime == 0) {
+        totalTime = recipeDetails.readyInMinutes
+    }
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -26,10 +31,14 @@ fun PreparationTimeLine(recipeDetails: Recipe) {
         ) {
             PreparationTitleAndTime(
                 title = "Total Time",
-                time = recipeDetails.preparationMinutes + recipeDetails.cookingMinutes
+                time = totalTime
             )
-            PreparationTitleAndTime(title = "Prep Time", time = recipeDetails.preparationMinutes)
-            PreparationTitleAndTime(title = "Cook Time", time = recipeDetails.cookingMinutes)
+            if (recipeDetails.preparationMinutes > 0) {
+                PreparationTitleAndTime(title = "Prep Time", time = recipeDetails.preparationMinutes)
+            }
+            if (recipeDetails.cookingMinutes > 0) {
+                PreparationTitleAndTime(title = "Cook Time", time = recipeDetails.cookingMinutes)
+            }
         }
     }
 }
@@ -49,7 +58,7 @@ fun PreparationTitleAndTime(
             fontSize = 12.sp
         )
         Text(
-            text = "$time mins"
+            text = time.toHourMinuteFormat()
         )
     }
 }

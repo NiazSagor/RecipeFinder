@@ -85,6 +85,7 @@ fun RecipeDetailsScreen(
                 }
             ) { paddingValues ->
                 if (openBottomSheet) {
+                    recipeDetailViewModel.getAnalyzedRecipeInstructions(id = recipeId)
                     RecipePreparationBottomSheet(
                         recipeDetailViewModel = recipeDetailViewModel,
                         modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),

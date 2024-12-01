@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.recipefinder.data.model.Recipe
+import com.example.recipefinder.util.toHourMinuteFormat
 
 @Composable
 fun RecipeHorizontalListItem(
@@ -82,7 +83,7 @@ fun RecipeHorizontalListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${recipe.readyInMinutes} mins",
+                    text = recipe.readyInMinutes.toHourMinuteFormat(),
                     fontSize = 12.sp
                 )
 //                Icon(
