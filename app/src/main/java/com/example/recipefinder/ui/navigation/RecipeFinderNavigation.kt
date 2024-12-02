@@ -12,8 +12,8 @@ class RecipeFinderNavigation(
     navController: NavController
 ) {
 
-    val navigateToRecipeDetailsScreen: () -> Unit = {
-        navController.navigate(RecipeFinderDestinations.RECIPE_DETAILS_ROUTE) {
+    val navigateToRecipeDetailsScreen: (recipeId: Int) -> Unit = {
+        navController.navigate("${RecipeFinderDestinations.RECIPE_DETAILS_ROUTE}/$it") {
             launchSingleTop = true
         }
     }

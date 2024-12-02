@@ -1,14 +1,15 @@
 package com.example.recipefinder.data.repository.recipe
 
 import com.example.recipefinder.data.model.Recipe
+import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
+import com.example.recipefinder.data.model.toRecipeAnalyzedInstructionsItemInternalModel
 import com.example.recipefinder.datastore.RecipeDataStore
+import com.example.recipefinder.model.toInternalRecipeModel
 import com.example.recipefinder.model.toInternalSearchRecipesByIngredients
 import com.example.recipefinder.network.RestApiService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 
@@ -17,18 +18,36 @@ class RecipeRepositoryImpl @Inject constructor(
     private val restApiService: RestApiService,
 ) : RecipeRepository {
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     override suspend fun getRandomRecipes(): Flow<List<Recipe>?> {
         return recipeDataStore.getRandomRecipes()
     }
 
     override suspend fun getRecipeById(id: Int): Recipe? {
-        return recipeDataStore.getRecipeById(id)
+        var recipe = recipeDataStore.getRecipeById(id)
+        if (recipe == null) {
+            recipe = restApiService.getRecipeInformation(id).toInternalRecipeModel()
+        }
+        return recipe
     }
 
     override suspend fun searchRecipesByIngredients(ingredients: String): List<SearchRecipeByIngredients> {
         return restApiService.findByIngredients(ingredients, 10)
             .toInternalSearchRecipesByIngredients()
+    }
+
+    override suspend fun getAnalyzedInstructions(id: Int): RecipeAnalyzedInstructions {
+        return restApiService.getAnalyzedInstructions(id).first().toRecipeAnalyzedInstructionsItemInternalModel()
+    }
+
+    override suspend fun saveRecipeInformation(recipe: Recipe) {
+        try {
+            val allRecipes = getRandomRecipes().first()?.toMutableList() ?: mutableListOf<Recipe>()
+            if (!allRecipes.contains(recipe)) {
+                allRecipes.add(recipe)
+                recipeDataStore.saveRandomRecipes(allRecipes.toList())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

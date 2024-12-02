@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,7 +24,7 @@ fun OneIconAndOneText(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Default.Warning, contentDescription = "",
+            Icons.Default.Alarm, contentDescription = "",
             modifier = modifier.size(12.dp)
         )
         Text(text = "Easy", fontSize = 11.sp, modifier = Modifier.padding(end = 8.dp))

@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -28,11 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.recipefinder.data.model.SearchRecipeByIngredients
+import com.example.recipefinder.data.model.Recipe
+import com.example.recipefinder.util.toHourMinuteFormat
 
 @Composable
 fun SearchResultStaggeredListItem(
-    recipeResult: SearchRecipeByIngredients,
+    recipeResult: Recipe,
     onRecipeClick: (Int) -> Unit
 ) {
     Box(
@@ -85,10 +83,10 @@ fun SearchResultStaggeredListItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//                Text(
-//                    text = "39 mins •",
-//                    fontSize = 12.sp
-//                )
+                Text(
+                    text = recipeResult.readyInMinutes.toHourMinuteFormat(),
+                    fontSize = 12.sp
+                )
 //                Icon(
 //                    Icons.Default.ThumbUp,
 //                    contentDescription = "",
