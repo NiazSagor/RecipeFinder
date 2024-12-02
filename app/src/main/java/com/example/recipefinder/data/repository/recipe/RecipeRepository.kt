@@ -10,4 +10,5 @@ interface RecipeRepository {
     suspend fun getRecipeById(id: Int): Recipe?
     suspend fun searchRecipesByIngredients(ingredients: String): List<SearchRecipeByIngredients>
     suspend fun getAnalyzedInstructions(id: Int): RecipeAnalyzedInstructions
+    suspend fun saveRecipeInformation(recipe: Recipe)
 }

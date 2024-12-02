@@ -9,6 +9,7 @@ import com.example.recipefinder.model.toInternalRecipeModel
 import com.example.recipefinder.model.toInternalSearchRecipesByIngredients
 import com.example.recipefinder.network.RestApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 
@@ -36,5 +37,17 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getAnalyzedInstructions(id: Int): RecipeAnalyzedInstructions {
         return restApiService.getAnalyzedInstructions(id).first().toRecipeAnalyzedInstructionsItemInternalModel()
+    }
+
+    override suspend fun saveRecipeInformation(recipe: Recipe) {
+        try {
+            val allRecipes = getRandomRecipes().first()?.toMutableList() ?: mutableListOf<Recipe>()
+            if (!allRecipes.contains(recipe)) {
+                allRecipes.add(recipe)
+                recipeDataStore.saveRandomRecipes(allRecipes.toList())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

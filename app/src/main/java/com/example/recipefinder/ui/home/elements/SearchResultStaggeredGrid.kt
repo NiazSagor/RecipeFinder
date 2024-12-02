@@ -7,22 +7,21 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.recipefinder.data.model.SearchRecipeByIngredients
+import com.example.recipefinder.data.model.Recipe
 
 
 @Composable
 fun SearchResultStaggeredGrid(
     modifier: Modifier,
-    searchRecipeByIngredients: List<SearchRecipeByIngredients>,
+    searchRecipeByIngredients: List<Recipe>,
     onRecipeClick: (Int) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
-        verticalItemSpacing = 16.dp,
+        columns = StaggeredGridCells.Adaptive(150.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
             items(searchRecipeByIngredients.size) { photo ->
-                SearchResultStaggeredListItem(searchRecipeByIngredients[photo]) {
+                RecipeHorizontalListItem(searchRecipeByIngredients[photo]) {
                     onRecipeClick(it)
                 }
             }

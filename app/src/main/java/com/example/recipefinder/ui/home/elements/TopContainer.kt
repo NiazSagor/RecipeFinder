@@ -46,7 +46,7 @@ fun TopContainer(
             timeoutMillis = 10000
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
-                viewModel.getSearchResult(query.text)
+                viewModel.getSearchResult(query.text, 60)
             }
         }
     Box(
@@ -75,7 +75,14 @@ fun TopContainer(
 
             when (state.searchDisplay) {
                 SearchDisplay.InitialResults -> {}
-                SearchDisplay.Suggestions -> {}
+                SearchDisplay.Suggestions -> {
+                    SearchRecipeTimeSuggestionsGrid(
+                        listOf(5, 20, 45, 60)
+                    ) {
+
+                    }
+                }
+
                 SearchDisplay.SearchInProgress -> {
                     Box(
                         modifier = Modifier
@@ -86,7 +93,12 @@ fun TopContainer(
 
                 SearchDisplay.Results -> {
                     SearchResultStaggeredGrid(
-                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = bottomPadding),
+                        modifier = Modifier.padding(
+                            top = 16.dp,
+                            start = 16.dp,
+                            end = 8.dp,
+                            bottom = bottomPadding
+                        ),
                         state.searchResults
                     ) {
                         onRecipeClick(it)
