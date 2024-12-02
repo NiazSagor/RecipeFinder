@@ -24,16 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +42,7 @@ import com.example.recipefinder.ui.recipedetails.components.ExpandableText
 import com.example.recipefinder.ui.recipedetails.components.PreparationTimeLine
 import com.example.recipefinder.ui.recipedetails.components.RecipeIngredientsVerticalListItem
 import com.example.recipefinder.ui.recipedetails.components.RecipePreparationBottomSheet
+import com.example.recipefinder.ui.recipedetails.components.RecipeServings
 import com.example.recipefinder.ui.recipedetails.components.TopBar
 
 
@@ -67,6 +66,7 @@ fun RecipeDetailsScreen(
             val recipeDetails = (recipeDetails.value as RecipeDetailsState.Success).recipe
             var openBottomSheet by rememberSaveable { mutableStateOf(false) }
             val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+            var servings by remember { mutableStateOf(recipeDetails.servings) }
             Scaffold(
                 topBar = { TopBar(onPopCurrent, recipeDetails.title, scrollBehavior) },
                 floatingActionButton = {
@@ -150,20 +150,20 @@ fun RecipeDetailsScreen(
                         Spacer(modifier = Modifier.size(16.dp))
                     }
                     item {
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append("Ingredients for\n")
-                                }
-                                append("${recipeDetails.servings} Servings")
-                            }
-                        )
+                        RecipeServings(servings) {
+                            servings = it
+                        }
                     }
                     item {
                         Spacer(modifier = Modifier.size(16.dp))
                     }
+
                     items(recipeDetails.extendedIngredients.size) { index ->
-                        RecipeIngredientsVerticalListItem(recipeDetails.extendedIngredients[index])
+                        RecipeIngredientsVerticalListItem(
+                            ingredient = recipeDetails.extendedIngredients[index],
+                            currentServings = servings,
+                            defaultServing = recipeDetails.servings
+                        )
                         if (index < recipeDetails.extendedIngredients.size - 1) {
                             Divider(
                                 color = Color.Gray,
@@ -177,7 +177,6 @@ fun RecipeDetailsScreen(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)
