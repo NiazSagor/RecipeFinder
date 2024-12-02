@@ -60,25 +60,26 @@ fun RecipeHorizontalListItem(
                     modifier = Modifier
                         .fillMaxSize()
                 )
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .clip(
-                            RoundedCornerShape(
-                                bottomEnd = 12.dp
-                            )
-                        )
-                        .background(Color.Cyan)
-                ) {
-                    OneIconAndOneText(
+                if (recipe.extendedIngredients.size < 5) {
+                    Box(
                         modifier = Modifier
-                            .size(width = 30.dp, height = 20.dp)
-                            .align(Alignment.Center)
-                    )
+                            .align(Alignment.TopStart)
+                            .clip(
+                                RoundedCornerShape(
+                                    bottomEnd = 12.dp
+                                )
+                            )
+                            .background(Color.Cyan)
+                    ) {
+                        OneIconAndOneText(
+                            modifier = Modifier
+                                .size(width = 30.dp, height = 20.dp)
+                                .align(Alignment.Center)
+                        )
+                    }
                 }
             }
             Row(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 0.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

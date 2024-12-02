@@ -5,5 +5,4 @@
         <item name="postSplashScreenTheme">@style/Theme.RecipeFinder</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/recipe_finder_logo</item>
     </style>
-
 </resources>

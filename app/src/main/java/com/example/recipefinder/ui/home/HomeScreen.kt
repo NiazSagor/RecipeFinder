@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -49,7 +50,7 @@ fun HomeContent(
                 end = 16.dp,
                 bottom = paddingValues.calculateBottomPadding()
             ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            //verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             when (homeState) {
@@ -62,27 +63,32 @@ fun HomeContent(
                     val list2 = chunkedList.getOrNull(1) ?: emptyList()
                     val list3 = chunkedList.getOrNull(2) ?: emptyList()
                     item {
-                        if (list1.isNotEmpty()) {
-                            TopRecipeCard(onRecipeClick, list1.first())
+                        Column {
+                            if (list1.isNotEmpty()) {
+                                TopRecipeCard(onRecipeClick, list1.first())
+                            }
+                            if (list1.isNotEmpty()) {
+                                HorizontalList(onRecipeClick, "Trending", list1)
+                            }
+                            if (list2.isNotEmpty()) {
+                                HorizontalList(onRecipeClick, "Popular Recipes This Week", list2)
+                            }
+                            if (list3.isNotEmpty()) {
+                                HorizontalList(onRecipeClick, "Desserts", list3)
+                            }
                         }
                     }
 
                     item {
-                        if (list1.isNotEmpty()) {
-                            HorizontalList(onRecipeClick, "Trending", list1)
-                        }
+
                     }
 
                     item {
-                        if (list2.isNotEmpty()) {
-                            HorizontalList(onRecipeClick, "Popular Recipes This Week", list2)
-                        }
+
                     }
 
                     item {
-                        if (list3.isNotEmpty()) {
-                            HorizontalList(onRecipeClick, "Desserts", list3)
-                        }
+
                     }
                 }
             }
@@ -102,7 +108,9 @@ fun HorizontalList(
     recipes: List<Recipe>,
 ) {
     Column(
-
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 0.dp)
     ) {
         Text(
             text = title, fontWeight = FontWeight.Bold, fontSize = 14.sp,
