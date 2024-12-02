@@ -1,5 +1,6 @@
 package com.example.recipefinder.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.Recipe
@@ -19,6 +20,8 @@ sealed class HomeState {
     data class Success(val randomRecipes: List<Recipe>) : HomeState()
     data class Error(val message: String) : HomeState()
 }
+
+private const val TAG = "HomeViewModel"
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -54,17 +57,22 @@ class HomeViewModel @Inject constructor(
     * */
     suspend fun getSearchResult(query: String, time: Int): List<Recipe> {
         return try {
-            val initialSearchResult = getMatchedRecipeInformationFromLocal(query, time)
-            if (initialSearchResult.isEmpty()) {
-                // get search result
-                val results = recipeRepository.searchRecipesByIngredients(query).map { it.id }
-                // loop one by one by id
-                results.forEach { getRecipeDetailsById(it) }
-                val filteredResult = getMatchedRecipeInformationFromLocal(query, time)
-                filteredResult
+            val sanitizedQuery = if (query.contains(",")) {
+                query.trim().replace(" ", "")
             } else {
-                initialSearchResult
+                query.trim()
             }
+            Log.e(TAG, "getSearchResult: sanitizedQuery $sanitizedQuery", )
+            val results = recipeRepository.searchRecipesByIngredients(sanitizedQuery).map {
+                Log.e(TAG, "getSearchResult: ${it.title} time $time")
+                it.id
+            }
+            // loop one by one by id
+            results.forEach { getRecipeDetailsById(it) }
+            val ingredients: List<String> = query.replace(" ", "").split(",")
+            Log.e(TAG, "getSearchResult: query ${ingredients.joinToString()}")
+            val filteredResult = getMatchedRecipeInformationFromLocal(ingredients, time)
+            filteredResult
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList<Recipe>()
@@ -76,6 +84,7 @@ class HomeViewModel @Inject constructor(
             // save the information datastore
             val recipe = recipeRepository.getRecipeById(id)
             if (recipe != null) {
+                Log.e(TAG, "getRecipeDetailsById: $id ------- saveRecipeInformation $recipe")
                 recipeRepository.saveRecipeInformation(recipe)
             }
         } catch (e: Exception) {
@@ -83,15 +92,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getMatchedRecipeInformationFromLocal(query: String, time: Int): List<Recipe> {
+    suspend fun getMatchedRecipeInformationFromLocal(
+        ingredients: List<String>,
+        time: Int
+    ): List<Recipe> {
         val allRecipes = recipeRepository.getRandomRecipes().first()
-        return allRecipes?.filter {
-            it.extendedIngredients.any {
-                it.name.contains(
-                    query,
-                    ignoreCase = true
-                )
-            } && it.readyInMinutes <= time
-        } ?: emptyList()
+        val result = mutableListOf<Recipe>()
+        ingredients.forEach { ingredient ->
+            val filtered = allRecipes?.filter {
+                (it.title.contains(ingredient) ||
+                        it.summary.contains(ingredient) ||
+                        it.extendedIngredients.any {
+                            if (it.aisle != null) {
+                                it.aisle.contains(ingredient)
+                            } else false || it.name.contains(ingredient)
+                        }) && it.readyInMinutes <= time
+            } ?: emptyList()
+            if (filtered.isNotEmpty()) result.addAll(filtered)
+        }
+        Log.e(
+            TAG,
+            "getMatchedRecipeInformationFromLocal: allRecipes ${allRecipes?.size} result ${result.size} time $time"
+        )
+        return result
     }
 }

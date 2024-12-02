@@ -52,7 +52,7 @@ fun SearchRecipeTimeSuggestionsGrid(
                         shape = RoundedCornerShape(16.dp),
                         onClick = {
                             selected = !selected
-                            onSelected(time)
+                            onSelected(timeSuggestions[time])
                         },
                         label = {
                             Text(text = "${timeSuggestions[time]} min", fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())

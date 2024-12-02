@@ -33,9 +33,13 @@ class RecipeDataStore @Inject constructor(
     suspend fun saveRandomRecipes(
         randomRecipes: List<Recipe>
     ) {
+        val savedRecipes: List<Recipe> = getRandomRecipes().first() ?: emptyList()
+        val newRecipes = randomRecipes.filter {
+            savedRecipes.contains(it) == false
+        }
         context.recipeDataStore
             .edit { preferences ->
-                val jsonString = gson.toJson(randomRecipes)
+                val jsonString = gson.toJson(savedRecipes.plus(newRecipes))
                 preferences[stringPreferencesKey("random_recipes")] = jsonString
             }
     }

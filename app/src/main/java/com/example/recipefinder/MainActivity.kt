@@ -15,9 +15,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.WHITE, Color.WHITE)
-        )
+//        enableEdgeToEdge(
+//            statusBarStyle = SystemBarStyle.light(Color.WHITE, Color.WHITE)
+//        )
         super.onCreate(savedInstanceState)
         setContent {
             RecipeFinderTheme {

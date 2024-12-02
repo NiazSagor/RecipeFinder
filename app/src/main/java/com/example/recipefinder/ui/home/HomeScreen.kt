@@ -47,7 +47,7 @@ fun HomeContent(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding() + 50.dp,
+                top = paddingValues.calculateTopPadding(),
                 start = 16.dp,
                 end = 16.dp,
                 bottom = paddingValues.calculateBottomPadding()
@@ -64,9 +64,12 @@ fun HomeContent(
                     val list2 = chunkedList.getOrNull(1) ?: emptyList()
                     val list3 = chunkedList.getOrNull(2) ?: emptyList()
                     item {
+                        Spacer(modifier = Modifier.size(30.dp))
+                    }
+                    item {
                         Column {
-                            if (list1.isNotEmpty()) {
-                                TopRecipeCard(onRecipeClick, list1.first())
+                            if (list3.isNotEmpty()) {
+                                TopRecipeCard(onRecipeClick, list3.first { it.readyInMinutes > 0 })
                             }
                             Spacer(modifier = Modifier.size(8.dp))
                             if (list1.isNotEmpty()) {

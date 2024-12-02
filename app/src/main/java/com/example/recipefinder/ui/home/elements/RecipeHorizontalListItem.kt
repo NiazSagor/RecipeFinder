@@ -60,23 +60,22 @@ fun RecipeHorizontalListItem(
                     modifier = Modifier
                         .fillMaxSize()
                 )
-                if (recipe.extendedIngredients.size < 5) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .clip(
-                                RoundedCornerShape(
-                                    bottomEnd = 12.dp
-                                )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .clip(
+                            RoundedCornerShape(
+                                bottomEnd = 12.dp
                             )
-                            .background(Color.Cyan)
-                    ) {
-                        OneIconAndOneText(
-                            modifier = Modifier
-                                .size(width = 30.dp, height = 20.dp)
-                                .align(Alignment.Center)
                         )
-                    }
+                        .background(Color.Cyan)
+                ) {
+                    OneIconAndOneText(
+                        modifier = Modifier
+                            .size(width = 30.dp, height = 20.dp)
+                            .align(Alignment.Center),
+                        recipe.extendedIngredients.size,
+                    )
                 }
             }
             Row(

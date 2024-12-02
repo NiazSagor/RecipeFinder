@@ -1,5 +1,6 @@
 package com.example.recipefinder.data.repository.recipe
 
+import android.util.Log
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-
+private const val TAG = "HomeViewModel"
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDataStore: RecipeDataStore,
     private val restApiService: RestApiService,
@@ -31,7 +32,7 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchRecipesByIngredients(ingredients: String): List<SearchRecipeByIngredients> {
-        return restApiService.findByIngredients(ingredients, 10)
+        return restApiService.findByIngredients(ingredients, 1)
             .toInternalSearchRecipesByIngredients()
     }
 
@@ -42,7 +43,9 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun saveRecipeInformation(recipe: Recipe) {
         try {
             val allRecipes = getRandomRecipes().first()?.toMutableList() ?: mutableListOf<Recipe>()
+            Log.e(TAG, "saveRecipeInformation: recipe $recipe -------- allRecipes ${allRecipes.size}", )
             if (!allRecipes.contains(recipe)) {
+                Log.e(TAG, "saveRecipeInformation: allRecipes not contain $recipe", )
                 allRecipes.add(recipe)
                 recipeDataStore.saveRandomRecipes(allRecipes.toList())
             }

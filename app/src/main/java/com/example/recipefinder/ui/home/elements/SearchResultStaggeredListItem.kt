@@ -71,11 +71,7 @@ fun SearchResultStaggeredListItem(
                         )
                         .background(Color.Cyan)
                 ) {
-                    OneIconAndOneText(
-                        modifier = Modifier
-                            .size(width = 30.dp, height = 20.dp)
-                            .align(Alignment.Center)
-                    )
+
                 }
             }
             Row(

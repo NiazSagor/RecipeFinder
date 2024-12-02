@@ -67,12 +67,12 @@ fun TopRecipeCard(
 //                        modifier = Modifier.size(16.dp)
 //                    )
                     Text(
-                        text = "${recipe.cookingMinutes + recipe.preparationMinutes} mins",
+                        text = "${recipe.readyInMinutes} mins",
                         fontSize = 12.sp
                     )
                 }
                 Text(
-                    color = Color.White,
+                    color = Color.Black,
                     text = recipe.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp

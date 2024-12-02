@@ -1,5 +1,6 @@
 package com.example.recipefinder.ui.home.elements
 
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,7 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,9 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
-import com.example.recipefinder.ui.home.HomeState
 import com.example.recipefinder.ui.home.HomeViewModel
 import com.example.recipefinder.ui.home.components.SearchBar
 import com.example.recipefinder.ui.home.components.SearchDisplay
@@ -38,15 +38,16 @@ fun TopContainer(
     modifier: Modifier,
     onRecipeClick: (Int) -> Unit
 ) {
-    val homeState: HomeState by viewModel.homeState.collectAsStateWithLifecycle()
+    val selectedTimeFilter = remember { mutableStateOf(60) }
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
             suggestions = emptyList<SearchRecipeByIngredients>(),
-            timeoutMillis = 10000
+            timeoutMillis = 5000
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
-                viewModel.getSearchResult(query.text, 60)
+                Log.e("HomeScreenViewModel", "TopContainer: ${query.text}", )
+                viewModel.getSearchResult(query.text, selectedTimeFilter.value)
             }
         }
     Box(
@@ -79,7 +80,7 @@ fun TopContainer(
                     SearchRecipeTimeSuggestionsGrid(
                         listOf(5, 20, 45, 60)
                     ) {
-
+                        selectedTimeFilter.value = it
                     }
                 }
 
