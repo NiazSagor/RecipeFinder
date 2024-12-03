@@ -8,9 +8,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -75,6 +80,25 @@ fun RecipeHorizontalListItem(
                             .size(width = 30.dp, height = 20.dp)
                             .align(Alignment.Center),
                         recipe.extendedIngredients.size,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .size(35.dp)
+                        .background(color = Color.White, shape = RoundedCornerShape(32.dp))
+                        .align(Alignment.BottomEnd)
+                        .wrapContentSize()
+                        .clickable(
+                            enabled = true,
+                            onClick = { },
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BookmarkBorder,
+                        contentDescription = "",
+                        tint = Color.Cyan
                     )
                 }
             }
