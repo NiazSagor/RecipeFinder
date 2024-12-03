@@ -1,5 +1,7 @@
 package com.example.recipefinder.ui.recipedetails.components
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +29,9 @@ fun ExpandableText(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = tween(durationMillis = 500)
+            )
     ) {
         Text(
             text = displayText,

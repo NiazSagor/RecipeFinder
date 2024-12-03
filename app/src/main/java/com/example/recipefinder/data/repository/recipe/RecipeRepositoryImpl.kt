@@ -3,9 +3,12 @@ package com.example.recipefinder.data.repository.recipe
 import android.util.Log
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
+import com.example.recipefinder.data.model.RecipeNutrient
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
 import com.example.recipefinder.data.model.toRecipeAnalyzedInstructionsItemInternalModel
+import com.example.recipefinder.data.model.toRecipeNutrientInternalModel
 import com.example.recipefinder.datastore.RecipeDataStore
+import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.model.toInternalRecipeModel
 import com.example.recipefinder.model.toInternalSearchRecipesByIngredients
 import com.example.recipefinder.network.RestApiService
@@ -14,6 +17,7 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 private const val TAG = "HomeViewModel"
+
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDataStore: RecipeDataStore,
     private val restApiService: RestApiService,
@@ -21,6 +25,10 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getRandomRecipes(): Flow<List<Recipe>?> {
         return recipeDataStore.getRandomRecipes()
+    }
+
+    override suspend fun getSimilarRecipes(id: Int): List<SimilarRecipeItemVo> {
+        return restApiService.getSimilarRecipes(id)
     }
 
     override suspend fun getRecipeById(id: Int): Recipe? {
@@ -37,20 +45,28 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAnalyzedInstructions(id: Int): RecipeAnalyzedInstructions {
-        return restApiService.getAnalyzedInstructions(id).first().toRecipeAnalyzedInstructionsItemInternalModel()
+        return restApiService.getAnalyzedInstructions(id).first()
+            .toRecipeAnalyzedInstructionsItemInternalModel()
     }
 
     override suspend fun saveRecipeInformation(recipe: Recipe) {
         try {
             val allRecipes = getRandomRecipes().first()?.toMutableList() ?: mutableListOf<Recipe>()
-            Log.e(TAG, "saveRecipeInformation: recipe $recipe -------- allRecipes ${allRecipes.size}", )
+            Log.e(
+                TAG,
+                "saveRecipeInformation: recipe $recipe -------- allRecipes ${allRecipes.size}",
+            )
             if (!allRecipes.contains(recipe)) {
-                Log.e(TAG, "saveRecipeInformation: allRecipes not contain $recipe", )
+                Log.e(TAG, "saveRecipeInformation: allRecipes not contain $recipe")
                 allRecipes.add(recipe)
                 recipeDataStore.saveRandomRecipes(allRecipes.toList())
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override suspend fun getNutrients(id: Int): RecipeNutrient {
+        return restApiService.getNutrients(id).toRecipeNutrientInternalModel()
     }
 }

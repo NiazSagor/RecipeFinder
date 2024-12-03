@@ -38,7 +38,7 @@ fun TopContainer(
     modifier: Modifier,
     onRecipeClick: (Int) -> Unit
 ) {
-    val selectedTimeFilter = remember { mutableStateOf(60) }
+    val selectedTimeFilter = remember { mutableStateOf(Int.MAX_VALUE) }
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
