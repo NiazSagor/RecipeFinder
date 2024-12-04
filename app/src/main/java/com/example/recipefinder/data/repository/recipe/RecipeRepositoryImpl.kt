@@ -10,6 +10,7 @@ import com.example.recipefinder.data.model.toRecipeNutrientInternalModel
 import com.example.recipefinder.datastore.RecipeDataStore
 import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.model.toInternalRecipeModel
+import com.example.recipefinder.model.toInternalRecipesModel
 import com.example.recipefinder.model.toInternalSearchRecipesByIngredients
 import com.example.recipefinder.network.RestApiService
 import kotlinx.coroutines.flow.Flow
@@ -68,5 +69,9 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getNutrients(id: Int): RecipeNutrient {
         return restApiService.getNutrients(id).toRecipeNutrientInternalModel()
+    }
+
+    override suspend fun searchDishType(type: String): List<Recipe> {
+        return restApiService.searchRecipe(type, true, 10).results.toInternalRecipesModel()
     }
 }

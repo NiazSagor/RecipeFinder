@@ -5,6 +5,7 @@ import com.example.recipefinder.model.RecipeAnalyzedInstructionsItemVo
 import com.example.recipefinder.model.RecipeInformationVo
 import com.example.recipefinder.model.RecipeNutrientsVo
 import com.example.recipefinder.model.SearchRecipeByIngredientsResponseVo
+import com.example.recipefinder.model.SearchRecipesVo
 import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.network.annotation.Format
 import com.example.recipefinder.network.annotation.ResponseFormat
@@ -50,4 +51,12 @@ interface RestApiService {
     suspend fun getNutrients(
         @Path("id") id: Int,
     ): RecipeNutrientsVo
+
+    @ResponseFormat(Format.JSON)
+    @GET("recipes/complexSearch")
+    suspend fun searchRecipe(
+        @Query("type") type: String,
+        @Query("addRecipeInformation") addRecipeInformationL: Boolean,
+        @Query("number") number: Int,
+    ): SearchRecipesVo
 }

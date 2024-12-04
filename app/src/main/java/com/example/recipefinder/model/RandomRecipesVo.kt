@@ -8,6 +8,12 @@ data class RandomRecipesVo(
     val recipes: List<RecipeInformationVo>
 )
 
+data class SearchRecipesVo(
+    val results: List<RecipeInformationVo>,
+    val offset: Int,
+    val number: Int,
+    val totalResults: Int
+)
 
 fun List<RecipeInformationVo>.toInternalRecipesModel(): List<Recipe> {
     return this.map {

@@ -46,7 +46,7 @@ fun TopContainer(
             timeoutMillis = 5000
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
-                Log.e("HomeScreenViewModel", "TopContainer: ${query.text}", )
+                Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
                 viewModel.getSearchResult(query.text, selectedTimeFilter.value)
             }
         }
@@ -77,9 +77,7 @@ fun TopContainer(
             when (state.searchDisplay) {
                 SearchDisplay.InitialResults -> {}
                 SearchDisplay.Suggestions -> {
-                    SearchRecipeTimeSuggestionsGrid(
-                        listOf(5, 20, 45, 60)
-                    ) {
+                    SearchRecipeTimeSuggestionsGrid {
                         selectedTimeFilter.value = it
                     }
                 }
