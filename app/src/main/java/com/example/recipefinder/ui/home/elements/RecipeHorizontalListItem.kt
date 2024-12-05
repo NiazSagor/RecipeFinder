@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -73,7 +74,7 @@ fun RecipeHorizontalListItem(
                                 bottomEnd = 12.dp
                             )
                         )
-                        .background(Color.Cyan)
+                        .background(MaterialTheme.colorScheme.secondary)
                 ) {
                     OneIconAndOneText(
                         modifier = Modifier
@@ -98,7 +99,7 @@ fun RecipeHorizontalListItem(
                     Icon(
                         imageVector = Icons.Default.BookmarkBorder,
                         contentDescription = "",
-                        tint = Color.Cyan
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -107,6 +108,7 @@ fun RecipeHorizontalListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    color = Color.Black,
                     text = recipe.readyInMinutes.toHourMinuteFormat(),
                     fontSize = 12.sp
                 )

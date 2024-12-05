@@ -11,12 +11,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchRecipeTimeSuggestionsGrid(
-    onSelected: (Int) -> Unit,
+    onTimeFilterSelected: (Int) -> Unit,
+    onDishTypeSelected: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        SearchSuggestionChildScreen(onSelected)
+        SearchSuggestionChildScreen(onTimeFilterSelected, onDishTypeSelected)
     }
 }

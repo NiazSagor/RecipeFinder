@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.navigation.compose)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.androidx.work)

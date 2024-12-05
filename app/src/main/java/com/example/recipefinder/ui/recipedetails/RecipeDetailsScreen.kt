@@ -33,9 +33,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -67,11 +67,11 @@ fun RecipeDetailsScreen(
     recipeId: Int,
     onPopCurrent: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
+    var currentRecipeId by remember { mutableIntStateOf(recipeId) }
     val recipeDetails = recipeDetailViewModel.recipeDetail.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        recipeDetailViewModel.getRecipeDetailsById(recipeId)
+    LaunchedEffect(currentRecipeId) {
+        recipeDetailViewModel.getRecipeDetailsById(currentRecipeId)
     }
 
     when (recipeDetails.value) {
@@ -86,20 +86,22 @@ fun RecipeDetailsScreen(
             var nutrients by remember { mutableStateOf<RecipeNutrient?>(null) }
             if (isNutritionInfoExpanded) {
                 LaunchedEffect(Unit) {
-                    nutrients = recipeDetailViewModel.getNutrients(id = recipeId)
+                    nutrients = recipeDetailViewModel.getNutrients(id = currentRecipeId)
                 }
             }
             Scaffold(
                 topBar = { TopBar(onPopCurrent, recipeDetails.title, scrollBehavior) },
                 floatingActionButton = {
                     ExtendedFloatingActionButton(
+                        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
                         onClick = { if (!openBottomSheet) openBottomSheet = true },
                         icon = { Icon(Icons.Filled.PlayArrow, "Start Cooking") },
                         text = {
                             Text(
                                 text = "Start Cooking",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.White
                             )
                         },
                         shape = RoundedCornerShape(32.dp)
@@ -107,7 +109,7 @@ fun RecipeDetailsScreen(
                 }
             ) { paddingValues ->
                 if (openBottomSheet) {
-                    recipeDetailViewModel.getAnalyzedRecipeInstructions(id = recipeId)
+                    recipeDetailViewModel.getAnalyzedRecipeInstructions(id = currentRecipeId)
                     RecipePreparationBottomSheet(
                         recipeDetailViewModel = recipeDetailViewModel,
                         modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
@@ -216,9 +218,10 @@ fun RecipeDetailsScreen(
                                     fontSize = 14.sp
                                 )
                                 Text(
+                                    fontWeight = FontWeight.Bold,
                                     text = if (isNutritionInfoExpanded) "Hide Info -" else "View Info +",
                                     fontSize = 12.sp,
-                                    color = Color.Cyan,
+                                    color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.clickable {
                                         isNutritionInfoExpanded = !isNutritionInfoExpanded
                                     }
@@ -287,7 +290,7 @@ fun RecipeDetailsScreen(
                             Text(
                                 text = "Estimated values based on one serving size.",
                                 fontSize = 10.sp,
-                                color = Color.LightGray
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -299,11 +302,12 @@ fun RecipeDetailsScreen(
                     item {
                         var similarRecipes by remember { mutableStateOf<List<Recipe>>(emptyList()) }
                         LaunchedEffect(Unit) {
-                            similarRecipes = recipeDetailViewModel.getSimilarRecipes(recipeId)
+                            similarRecipes =
+                                recipeDetailViewModel.getSimilarRecipes(currentRecipeId)
                         }
                         HorizontalList(
                             onRecipeClick = {
-
+                                currentRecipeId = it
                             },
                             title = "Similar Recipes",
                             recipes = similarRecipes

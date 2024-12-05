@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +38,7 @@ fun TopContainer(
     modifier: Modifier,
     onRecipeClick: (Int) -> Unit
 ) {
-    val selectedTimeFilter = remember { mutableStateOf(Int.MAX_VALUE) }
+    val selectedTimeFilter = remember { mutableIntStateOf(Int.MAX_VALUE) }
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
@@ -47,7 +47,7 @@ fun TopContainer(
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
                 Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
-                viewModel.getSearchResult(query.text, selectedTimeFilter.value)
+                viewModel.getSearchResult(query.text, selectedTimeFilter.intValue)
             }
         }
     Box(
@@ -77,9 +77,14 @@ fun TopContainer(
             when (state.searchDisplay) {
                 SearchDisplay.InitialResults -> {}
                 SearchDisplay.Suggestions -> {
-                    SearchRecipeTimeSuggestionsGrid {
-                        selectedTimeFilter.value = it
-                    }
+                    SearchRecipeTimeSuggestionsGrid(
+                        onTimeFilterSelected = {
+                            selectedTimeFilter.intValue = it
+                        },
+                        onDishTypeSelected = {
+
+                        }
+                    )
                 }
 
                 SearchDisplay.SearchInProgress -> {
