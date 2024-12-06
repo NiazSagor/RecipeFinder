@@ -18,3 +18,4 @@ class RecipeFinderApplication : Application(), Configuration.Provider {
             .build()
     }
 }
+
