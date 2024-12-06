@@ -70,10 +70,10 @@ class RecipeDetailsViewModel @Inject constructor(
 
     suspend fun getSimilarRecipes(id: Int): List<Recipe> {
         // TODO:
-//        val similarRecipes = recipeRepository.getSimilarRecipes(id).map { it.id }
-//        similarRecipes.forEach { getRecipeInformationById(it) }
-//        val similarRecipeDetails = recipeRepository.getRandomRecipes().first()?.filter { it.id in similarRecipes }
-        val similarRecipeDetails = recipeRepository.getRandomRecipes().first()?.take(10) // just take from local
+        val similarRecipes = recipeRepository.getSimilarRecipes(id).map { it.id }
+        similarRecipes.forEach { getRecipeInformationById(it) }
+        val similarRecipeDetails = recipeRepository.getRandomRecipes().first()?.filter { it.id in similarRecipes }
+//        val similarRecipeDetails = recipeRepository.getRandomRecipes().first()?.take(10) // just take from local
         return similarRecipeDetails ?: emptyList()
     }
 

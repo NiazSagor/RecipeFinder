@@ -21,10 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.util.toHourMinuteFormat
 
@@ -54,7 +57,10 @@ fun SearchResultStaggeredListItem(
                     .clip(RoundedCornerShape(4.dp))
             ) {
                 AsyncImage(
-                    model = recipeResult.image,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(recipeResult.image)
+                        .crossfade(true)
+                        .build(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier

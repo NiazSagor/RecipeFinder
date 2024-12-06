@@ -43,7 +43,7 @@ fun TopContainer(
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
             suggestions = emptyList<SearchRecipeByIngredients>(),
-            timeoutMillis = 5000
+            timeoutMillis = 3000
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
                 Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
