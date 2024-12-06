@@ -17,11 +17,11 @@ fun SearchResultStaggeredGrid(
     onRecipeClick: (Int) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Adaptive(150.dp),
+        columns = StaggeredGridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
             items(searchRecipeByIngredients.size) { photo ->
-                RecipeHorizontalListItem(searchRecipeByIngredients[photo]) {
+                RecipeHorizontalListItem(searchRecipeByIngredients[photo], true) {
                     onRecipeClick(it)
                 }
             }

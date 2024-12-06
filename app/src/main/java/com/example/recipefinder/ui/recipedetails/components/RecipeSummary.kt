@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun ExpandableText(
+fun RecipeSummary(
     text: String,
     collapsedMaxLines: Int = 3
 ) {

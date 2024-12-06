@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -28,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,11 +40,17 @@ import com.example.recipefinder.util.toHourMinuteFormat
 @Composable
 fun RecipeHorizontalListItem(
     recipe: Recipe,
+    searchItem: Boolean = false,
     onRecipeClick: (Int) -> Unit,
 ) {
+    val itemModifier = if (searchItem) {
+        Modifier.wrapContentSize()
+    } else {
+        Modifier.size(width = 170.dp, height = 260.dp)
+    }
     Box(
         modifier = Modifier
-            .size(width = 170.dp, height = 300.dp)
+            .then(itemModifier)
             .clickable(
                 enabled = true,
                 onClick = { onRecipeClick(recipe.id) },
@@ -65,7 +71,7 @@ fun RecipeHorizontalListItem(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(recipe.image)
-                        .crossfade(true) // Smooth loading animation
+                        .crossfade(true)
                         .build(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
@@ -133,7 +139,8 @@ fun RecipeHorizontalListItem(
                 text = recipe.title,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                maxLines = 2
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

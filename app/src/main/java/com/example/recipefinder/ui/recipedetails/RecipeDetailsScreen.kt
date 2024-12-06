@@ -52,7 +52,7 @@ import coil3.compose.AsyncImage
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeNutrient
 import com.example.recipefinder.ui.home.HorizontalList
-import com.example.recipefinder.ui.recipedetails.components.ExpandableText
+import com.example.recipefinder.ui.recipedetails.components.RecipeSummary
 import com.example.recipefinder.ui.recipedetails.components.PreparationTimeLine
 import com.example.recipefinder.ui.recipedetails.components.RecipeIngredientsVerticalListItem
 import com.example.recipefinder.ui.recipedetails.components.RecipePreparationBottomSheet
@@ -130,7 +130,7 @@ fun RecipeDetailsScreen(
                     )
                 ) {
                     item {
-                        ExpandableText(
+                        RecipeSummary(
                             text = recipeDetails.summary.replace(Regex("<.*?>"), ""),
                         )
                     }

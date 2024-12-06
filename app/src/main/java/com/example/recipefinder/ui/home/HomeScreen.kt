@@ -142,7 +142,7 @@ fun HorizontalList(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(recipes) { index, recipe ->
-                RecipeHorizontalListItem(recipe, onRecipeClick)
+                RecipeHorizontalListItem(recipe, false, onRecipeClick)
             }
         }
     }
