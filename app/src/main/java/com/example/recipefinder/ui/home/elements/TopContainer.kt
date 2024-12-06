@@ -101,7 +101,6 @@ fun TopContainer(
                             top = 16.dp,
                             start = 16.dp,
                             end = 8.dp,
-                            bottom = bottomPadding
                         ),
                         state.searchResults
                     ) {

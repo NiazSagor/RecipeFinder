@@ -26,11 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.util.toHourMinuteFormat
 
@@ -60,7 +63,10 @@ fun RecipeHorizontalListItem(
                     .clip(RoundedCornerShape(4.dp))
             ) {
                 AsyncImage(
-                    model = recipe.image,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(recipe.image)
+                        .crossfade(true) // Smooth loading animation
+                        .build(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
