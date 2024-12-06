@@ -26,6 +26,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         // TODO: commented out for now, there are random recipes in the datastore
-        //GetRandomRecipesWorker.enqueueOneTimeWork(this)
+        GetRandomRecipesWorker.enqueuePeriodicWork(this)
     }
 }

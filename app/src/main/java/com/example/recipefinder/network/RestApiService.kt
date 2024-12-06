@@ -3,7 +3,10 @@ package com.example.recipefinder.network
 import com.example.recipefinder.model.RandomRecipesVo
 import com.example.recipefinder.model.RecipeAnalyzedInstructionsItemVo
 import com.example.recipefinder.model.RecipeInformationVo
+import com.example.recipefinder.model.RecipeNutrientsVo
 import com.example.recipefinder.model.SearchRecipeByIngredientsResponseVo
+import com.example.recipefinder.model.SearchRecipesVo
+import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.network.annotation.Format
 import com.example.recipefinder.network.annotation.ResponseFormat
 import retrofit2.http.GET
@@ -37,4 +40,23 @@ interface RestApiService {
         @Query("ranking") ranking: Int = 1,
         @Query("ignorePantry") ignorePantry: Boolean = false
     ): List<SearchRecipeByIngredientsResponseVo>
+
+    @GET("recipes/{id}/similar")
+    suspend fun getSimilarRecipes(
+        @Path("id") id: Int,
+    ): List<SimilarRecipeItemVo>
+
+    @ResponseFormat(Format.JSON)
+    @GET("recipes/{id}/nutritionWidget.json")
+    suspend fun getNutrients(
+        @Path("id") id: Int,
+    ): RecipeNutrientsVo
+
+    @ResponseFormat(Format.JSON)
+    @GET("recipes/complexSearch")
+    suspend fun searchRecipe(
+        @Query("type") type: String,
+        @Query("addRecipeInformation") addRecipeInformationL: Boolean,
+        @Query("number") number: Int,
+    ): SearchRecipesVo
 }

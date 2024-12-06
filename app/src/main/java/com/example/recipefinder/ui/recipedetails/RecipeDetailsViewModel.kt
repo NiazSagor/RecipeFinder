@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
+import com.example.recipefinder.data.model.RecipeNutrient
 import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -64,5 +66,29 @@ class RecipeDetailsViewModel @Inject constructor(
                 _recipeInstructions.value = RecipeInstructionsState.Error(e.message.toString())
             }
         }
+    }
+
+    suspend fun getSimilarRecipes(id: Int): List<Recipe> {
+        // TODO:
+        val similarRecipes = recipeRepository.getSimilarRecipes(id).map { it.id }
+        similarRecipes.forEach { getRecipeInformationById(it) }
+        val similarRecipeDetails = recipeRepository.getRandomRecipes().first()?.filter { it.id in similarRecipes }
+//        val similarRecipeDetails = recipeRepository.getRandomRecipes().first()?.take(10) // just take from local
+        return similarRecipeDetails ?: emptyList()
+    }
+
+    suspend fun getRecipeInformationById(id: Int) {
+        try {
+            val recipe = recipeRepository.getRecipeById(id)
+            if (recipe != null) {
+                recipeRepository.saveRecipeInformation(recipe)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun getNutrients(id: Int) : RecipeNutrient {
+        return recipeRepository.getNutrients(id)
     }
 }

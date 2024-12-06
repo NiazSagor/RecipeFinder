@@ -13,6 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -67,7 +69,7 @@ fun SearchBar(
                     keyboardController?.hide()
                     onBack()
                 }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Icon(imageVector = Icons.Default.Close, contentDescription = null, tint = androidx.compose.material3.MaterialTheme.colorScheme.primary)
             }
         }
 
@@ -151,15 +153,16 @@ fun SearchTextField(
                     when {
                         searching && query.text.isNotEmpty() -> {
                             CircularProgressIndicator(
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .padding(horizontal = 6.dp)
-                                    .size(36.dp)
+                                    .size(30.dp)
                             )
                         }
 
                         query.text.isNotEmpty() -> {
                             IconButton(onClick = onClearQuery) {
-                                Icon(imageVector = Icons.Filled.Cancel, contentDescription = null)
+                                Icon(imageVector = Icons.Filled.Cancel, contentDescription = null, tint = androidx.compose.material3.MaterialTheme.colorScheme.primary)
                             }
                         }
                     }

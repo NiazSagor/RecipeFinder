@@ -10,7 +10,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -20,22 +27,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.util.toHourMinuteFormat
 
 @Composable
 fun RecipeHorizontalListItem(
     recipe: Recipe,
+    searchItem: Boolean = false,
     onRecipeClick: (Int) -> Unit,
 ) {
+    val itemModifier = if (searchItem) {
+        Modifier.wrapContentHeight().width(170.dp)
+    } else {
+        Modifier.size(width = 170.dp, height = 260.dp)
+    }
     Box(
         modifier = Modifier
-            .size(width = 170.dp, height = 300.dp)
+            .then(itemModifier)
             .clickable(
                 enabled = true,
                 onClick = { onRecipeClick(recipe.id) },
@@ -54,7 +71,10 @@ fun RecipeHorizontalListItem(
                     .clip(RoundedCornerShape(4.dp))
             ) {
                 AsyncImage(
-                    model = recipe.image,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(recipe.image)
+                        .crossfade(true)
+                        .build(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
@@ -68,7 +88,7 @@ fun RecipeHorizontalListItem(
                                 bottomEnd = 12.dp
                             )
                         )
-                        .background(Color.Cyan)
+                        .background(MaterialTheme.colorScheme.secondary)
                 ) {
                     OneIconAndOneText(
                         modifier = Modifier
@@ -77,12 +97,32 @@ fun RecipeHorizontalListItem(
                         recipe.extendedIngredients.size,
                     )
                 }
+
+                Box(
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .size(35.dp)
+                        .background(color = Color.White, shape = RoundedCornerShape(32.dp))
+                        .align(Alignment.BottomEnd)
+                        .wrapContentSize()
+                        .clickable(
+                            enabled = true,
+                            onClick = { },
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BookmarkBorder,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    color = Color.Black,
                     text = recipe.readyInMinutes.toHourMinuteFormat(),
                     fontSize = 12.sp
                 )
@@ -101,7 +141,8 @@ fun RecipeHorizontalListItem(
                 text = recipe.title,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                maxLines = 2
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,16 +38,16 @@ fun TopContainer(
     modifier: Modifier,
     onRecipeClick: (Int) -> Unit
 ) {
-    val selectedTimeFilter = remember { mutableStateOf(60) }
+    val selectedTimeFilter = remember { mutableIntStateOf(Int.MAX_VALUE) }
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
             suggestions = emptyList<SearchRecipeByIngredients>(),
-            timeoutMillis = 5000
+            timeoutMillis = 3000
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
-                Log.e("HomeScreenViewModel", "TopContainer: ${query.text}", )
-                viewModel.getSearchResult(query.text, selectedTimeFilter.value)
+                Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
+                viewModel.getSearchResult(query.text, selectedTimeFilter.intValue)
             }
         }
     Box(
@@ -78,10 +78,13 @@ fun TopContainer(
                 SearchDisplay.InitialResults -> {}
                 SearchDisplay.Suggestions -> {
                     SearchRecipeTimeSuggestionsGrid(
-                        listOf(5, 20, 45, 60)
-                    ) {
-                        selectedTimeFilter.value = it
-                    }
+                        onTimeFilterSelected = {
+                            selectedTimeFilter.intValue = it
+                        },
+                        onDishTypeSelected = {
+
+                        }
+                    )
                 }
 
                 SearchDisplay.SearchInProgress -> {
@@ -97,8 +100,7 @@ fun TopContainer(
                         modifier = Modifier.padding(
                             top = 16.dp,
                             start = 16.dp,
-                            end = 8.dp,
-                            bottom = bottomPadding
+                            end = 16.dp,
                         ),
                         state.searchResults
                     ) {

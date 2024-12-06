@@ -43,7 +43,7 @@ class GetRandomRecipesWorker @AssistedInject constructor(
     companion object {
         fun enqueuePeriodicWork(context: Context) {
             val workRequest = PeriodicWorkRequestBuilder<GetRandomRecipesWorker>(
-                repeatInterval = Duration.ofMinutes(20)
+                repeatInterval = Duration.ofDays(1)
             ).build()
             WorkManager.getInstance(context)
                 .enqueueUniquePeriodicWork(
