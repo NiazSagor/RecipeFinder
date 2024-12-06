@@ -97,21 +97,21 @@ fun HomeContent(
 
                         item {
                             if (list1.isNotEmpty()) {
-                                HorizontalList(onRecipeClick, "Trending", list1)
+                                HorizontalList(onRecipeClick, "Try something new", list1)
                             }
                         }
                         item {
                             if (list2.isNotEmpty()) {
                                 HorizontalList(
                                     onRecipeClick,
-                                    "Popular Recipes This Week",
+                                    "Fancy snacks!",
                                     list2
                                 )
                             }
                         }
                         item {
                             if (list3.isNotEmpty()) {
-                                HorizontalList(onRecipeClick, "Desserts", list3)
+                                HorizontalList(onRecipeClick, "Holiday!", list3)
                             }
                         }
                     }
