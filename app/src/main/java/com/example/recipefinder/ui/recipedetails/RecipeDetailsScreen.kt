@@ -1,10 +1,13 @@
 package com.example.recipefinder.ui.recipedetails
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,8 +30,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +49,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,6 +90,7 @@ fun RecipeDetailsScreen(
         is RecipeDetailsState.Error -> {}
         RecipeDetailsState.Loading -> {}
         is RecipeDetailsState.Success -> {
+            var showMakeTipLayout by remember { mutableStateOf(false) }
             val recipeDetails = (recipeDetails.value as RecipeDetailsState.Success).recipe
             var openBottomSheet by rememberSaveable { mutableStateOf(false) }
             val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -299,7 +306,7 @@ fun RecipeDetailsScreen(
                             Text(
                                 text = "Estimated values based on one serving size.",
                                 fontSize = 10.sp,
-                                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -322,7 +329,7 @@ fun RecipeDetailsScreen(
 
                     item {
                         Tip({
-                            onTipClick(recipeId)
+                            showMakeTipLayout = true
                         }, {
                             onTipDetailsClick(recipeId)
                         })
@@ -347,6 +354,98 @@ fun RecipeDetailsScreen(
                         )
                     }
                 }
+
+
+            }
+            if (showMakeTipLayout) {
+                MakeTip(
+                    recipeTitle = recipeDetails.title,
+                    isVisible = showMakeTipLayout,
+                    onSubmit = { tip ->
+                        recipeDetailViewModel.sendTip(recipeId = recipeId, tip = tip)
+                        showMakeTipLayout = false
+                    },
+                    onCancel = { showMakeTipLayout = false },
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun MakeTip(
+    recipeTitle: String,
+    isVisible: Boolean,
+    onCancel: () -> Unit,
+    onSubmit: (String) -> Unit
+) {
+    var tipText by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        AnimatedVisibility(
+            visible = isVisible,
+            enter = slideInVertically(
+                initialOffsetY = { it }, // Start at the bottom
+                animationSpec = tween(durationMillis = 500)
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { it }, // Exit towards the bottom
+                animationSpec = tween(durationMillis = 500)
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Top Bar
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Cancel",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 16.sp,
+                        modifier = Modifier.clickable { onCancel() }
+                    )
+
+                    Text(
+                        text = "Submit",
+                        color = if (tipText.isNotEmpty()) MaterialTheme.colorScheme.primary else Color.LightGray,
+                        fontSize = 16.sp,
+                        modifier = Modifier.clickable {
+                            if (tipText.isNotEmpty()) onSubmit(tipText)
+                        }
+                    )
+                }
+
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    text = "Share your tip for $recipeTitle",
+                    fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                // TextField covering the rest of the screen
+                TextField(
+                    value = tipText,
+                    onValueChange = { tipText = it },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    placeholder = { Text("Write your tip here...") },
+                )
             }
         }
     }

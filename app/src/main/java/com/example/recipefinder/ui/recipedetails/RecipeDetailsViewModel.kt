@@ -88,7 +88,13 @@ class RecipeDetailsViewModel @Inject constructor(
         }
     }
 
-    suspend fun getNutrients(id: Int) : RecipeNutrient {
+    suspend fun getNutrients(id: Int): RecipeNutrient {
         return recipeRepository.getNutrients(id)
+    }
+
+    fun sendTip(recipeId: Int, tip: String) {
+        viewModelScope.launch {
+            recipeRepository.sendTip(recipeId, tip)
+        }
     }
 }
