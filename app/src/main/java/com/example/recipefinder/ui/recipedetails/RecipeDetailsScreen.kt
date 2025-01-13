@@ -55,11 +55,12 @@ import coil3.request.crossfade
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeNutrient
 import com.example.recipefinder.ui.home.HorizontalList
-import com.example.recipefinder.ui.recipedetails.components.RecipeSummary
 import com.example.recipefinder.ui.recipedetails.components.PreparationTimeLine
 import com.example.recipefinder.ui.recipedetails.components.RecipeIngredientsVerticalListItem
 import com.example.recipefinder.ui.recipedetails.components.RecipePreparationBottomSheet
 import com.example.recipefinder.ui.recipedetails.components.RecipeServings
+import com.example.recipefinder.ui.recipedetails.components.RecipeSummary
+import com.example.recipefinder.ui.recipedetails.components.Tip
 import com.example.recipefinder.ui.recipedetails.components.TopBar
 
 
@@ -69,6 +70,8 @@ fun RecipeDetailsScreen(
     recipeDetailViewModel: RecipeDetailsViewModel = hiltViewModel(),
     recipeId: Int,
     onPopCurrent: () -> Unit,
+    onTipClick: (Int) -> Unit,
+    onTipDetailsClick: (Int) -> Unit,
 ) {
     var currentRecipeId by remember { mutableIntStateOf(recipeId) }
     val recipeDetails = recipeDetailViewModel.recipeDetail.collectAsStateWithLifecycle()
@@ -299,6 +302,30 @@ fun RecipeDetailsScreen(
                                 color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                             )
                         }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+
+                    item {
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
+
+                    item {
+                        Tip({
+                            onTipClick(recipeId)
+                        }, {
+                            onTipDetailsClick(recipeId)
+                        })
                     }
 
                     item {

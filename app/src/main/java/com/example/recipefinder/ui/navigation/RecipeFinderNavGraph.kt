@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.recipefinder.ui.home.HomeContent
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
+import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
 
 
 @Composable
@@ -40,7 +41,25 @@ fun RecipeFinderNavGraph(
                 RecipeDetailsScreen(
                     recipeId = recipeId,
                     onPopCurrent = { navigationActions.popCurrentDestination() },
+                    onTipClick = { navigationActions.navigateToMakeTipScreen(recipeId) },
+                    onTipDetailsClick = {
+                        navigationActions.navigateToRecipeTipDetailsScreen(
+                            recipeId
+                        )
+                    }
                 )
+            }
+        }
+
+        composable(
+            route = "${RecipeFinderDestinations.RECIPE_TIP_DETAILS_ROUTE}/{recipeId}",
+            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val recipeId = backStackEntry.arguments?.getInt("recipeId")
+            if (recipeId != null) {
+                RecipeTipDetailsScreen({
+                    navigationActions.popCurrentDestination()
+                })
             }
         }
     }

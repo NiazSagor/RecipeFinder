@@ -6,6 +6,8 @@ import androidx.navigation.NavController
 object RecipeFinderDestinations {
     const val HOME_ROUTE = "home_route"
     const val RECIPE_DETAILS_ROUTE = "recipe_details_route"
+    const val RECIPE_TIP_DETAILS_ROUTE = "recipe_tip_details_route"
+    const val MAKE_RECIPE_TIP_ROUTE = "make_recipe_tip_route"
 }
 
 class RecipeFinderNavigation(
@@ -14,6 +16,18 @@ class RecipeFinderNavigation(
 
     val navigateToRecipeDetailsScreen: (recipeId: Int) -> Unit = {
         navController.navigate("${RecipeFinderDestinations.RECIPE_DETAILS_ROUTE}/$it") {
+            launchSingleTop = false
+        }
+    }
+
+    val navigateToRecipeTipDetailsScreen: (recipeId: Int) -> Unit = {
+        navController.navigate("${RecipeFinderDestinations.RECIPE_TIP_DETAILS_ROUTE}/$it") {
+            launchSingleTop = false
+        }
+    }
+
+    val navigateToMakeTipScreen: (recipeId: Int) -> Unit = {
+        navController.navigate("${RecipeFinderDestinations.MAKE_RECIPE_TIP_ROUTE}/$it") {
             launchSingleTop = false
         }
     }
