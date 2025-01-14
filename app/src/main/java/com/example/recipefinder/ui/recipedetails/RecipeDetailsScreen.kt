@@ -103,10 +103,18 @@ fun RecipeDetailsScreen(
                 }
             }
             Scaffold(
-                topBar = { TopBar(onPopCurrent, recipeDetails.title, scrollBehavior) },
+                topBar = {
+                    TopBar(
+                        title = recipeDetails.title,
+                        onLike = { recipeDetailViewModel.like(recipeId = currentRecipeId) },
+                        onSave = { recipeDetailViewModel.save(recipeDetails) },
+                        onPopCurrent = onPopCurrent,
+                        scrollBehavior = scrollBehavior,
+                    )
+                },
                 floatingActionButton = {
                     ExtendedFloatingActionButton(
-                        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         onClick = { if (!openBottomSheet) openBottomSheet = true },
                         icon = { Icon(Icons.Filled.PlayArrow, "Start Cooking") },
                         text = {
@@ -237,7 +245,7 @@ fun RecipeDetailsScreen(
                                     fontWeight = FontWeight.Bold,
                                     text = if (isNutritionInfoExpanded) "Hide Info -" else "View Info +",
                                     fontSize = 12.sp,
-                                    color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                                    color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.clickable {
                                         isNutritionInfoExpanded = !isNutritionInfoExpanded
                                     }

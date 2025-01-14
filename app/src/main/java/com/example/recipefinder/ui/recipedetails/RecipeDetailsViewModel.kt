@@ -97,4 +97,16 @@ class RecipeDetailsViewModel @Inject constructor(
             recipeRepository.sendTip(recipeId, tip)
         }
     }
+
+    fun like(recipeId: Int) {
+        viewModelScope.launch {
+            recipeRepository.like(recipeId)
+        }
+    }
+
+    fun save(recipe: Recipe) {
+        viewModelScope.launch {
+            recipeRepository.save(recipe)
+        }
+    }
 }

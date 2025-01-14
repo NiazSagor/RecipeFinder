@@ -78,4 +78,12 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun sendTip(id: Int, tip: String) {
 
     }
+
+    override suspend fun like(id: Int) {
+
+    }
+
+    override suspend fun save(recipe: Recipe) {
+
+    }
 }
