@@ -47,52 +47,52 @@ fun Tip(
         Column(
             horizontalAlignment = Alignment.Start,
         ) {
-            Text(
-                text = "Tips (15)",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                fontSize = 14.sp
-            )
+//            Text(
+//                text = "Tips (15)",
+//                fontWeight = FontWeight.Bold,
+//                color = Color.Black,
+//                fontSize = 14.sp
+//            )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 10.dp),
+//                horizontalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//
+//                AsyncImage(
+//                    model = ImageRequest.Builder(LocalContext.current)
+//                        .data(R.drawable.ic_launcher_background)
+//                        .build(),
+//                    contentDescription = "",
+//                    modifier = Modifier
+//                        .size(40.dp)
+//                        .clip(CircleShape),
+//                    contentScale = ContentScale.Crop
+//                )
+//
+//                Column(
+//
+//                ) {
+//                    Text(
+//                        text = "Top Tip",
+//                        fontSize = 12.sp
+//                    )
+//                    Text(
+//                        text = "Jonathon O",
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.Black,
+//                        fontSize = 14.sp
+//                    )
+//                }
+//            }
 
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(R.drawable.ic_launcher_background)
-                        .build(),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-
-                Column(
-
-                ) {
-                    Text(
-                        text = "Top Tip",
-                        fontSize = 12.sp
-                    )
-                    Text(
-                        text = "Jonathon O",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        fontSize = 14.sp
-                    )
-                }
-            }
-
-            Text(
-                text = "this is a comment",
-                color = Color.Black,
-                maxLines = 4,
-            )
+//            Text(
+//                text = "this is a comment",
+//                color = Color.Black,
+//                maxLines = 4,
+//            )
 
             Row(
                 modifier = Modifier.padding(top = 8.dp)

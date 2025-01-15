@@ -37,7 +37,7 @@ fun RecipeFinderNavGraph(
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
-            if (recipeId!= null) {
+            if (recipeId != null) {
                 RecipeDetailsScreen(
                     recipeId = recipeId,
                     onPopCurrent = { navigationActions.popCurrentDestination() },
@@ -57,9 +57,12 @@ fun RecipeFinderNavGraph(
         ) { backStackEntry ->
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
             if (recipeId != null) {
-                RecipeTipDetailsScreen({
-                    navigationActions.popCurrentDestination()
-                })
+                RecipeTipDetailsScreen(
+                    recipeId = recipeId,
+                    onPopCurrent = {
+                        navigationActions.popCurrentDestination()
+                    }
+                )
             }
         }
     }

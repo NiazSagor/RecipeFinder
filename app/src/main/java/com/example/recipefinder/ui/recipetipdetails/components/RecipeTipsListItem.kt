@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.recipefinder.R
+import com.example.recipefinder.data.model.Tip
+import com.example.recipefinder.util.getRelativeTimeSpanString
 
 @Composable
-fun RecipeTipsListItem(
-
-) {
+fun RecipeTipsListItem(tip: Tip) {
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -40,7 +40,7 @@ fun RecipeTipsListItem(
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
+                // TODO: user profile pic url 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(R.drawable.ic_launcher_background)
@@ -55,22 +55,23 @@ fun RecipeTipsListItem(
                 Column(
 
                 ) {
+                    // TODO: username 
                     Text(
-                        text = "Jonathon O",
+                        text = tip.userName,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
                         fontSize = 14.sp
                     )
                     Text(
-                        text = "12 Dec 2024",
+                        text = tip.timestamp.getRelativeTimeSpanString(),
                         fontSize = 12.sp,
                         color = Color.LightGray
                     )
                     Text(
                         modifier = Modifier.padding(top = 8.dp),
-                        text = "this is a comment",
+                        text = tip.tip,
                         color = Color.Black,
-                        maxLines = 4,
+                        maxLines = 10,
                     )
                 }
             }
@@ -82,6 +83,13 @@ fun RecipeTipsListItem(
 @Preview
 @Composable
 fun PreviewRecipeTipsListItem() {
-    RecipeTipsListItem()
+    RecipeTipsListItem(
+        Tip(
+            timestamp = 1736955113230,
+            tip = "",
+            userName = "",
+            userProfileImageUrl = ""
+        )
+    )
 }
 
