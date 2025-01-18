@@ -97,13 +97,23 @@ fun HomeContent(
 
                         item {
                             if (list1.isNotEmpty()) {
-                                HorizontalList(onRecipeClick, "Try something new", list1)
+                                HorizontalList(
+                                    getLikesForRecipe = {
+                                        viewModel.getRecipeLike(it)
+                                    },
+                                    onRecipeClick = onRecipeClick,
+                                    title = "Try something new",
+                                    recipes = list1,
+                                )
                             }
                         }
                         item {
                             if (list2.isNotEmpty()) {
                                 HorizontalList(
-                                    onRecipeClick,
+                                    getLikesForRecipe = {
+                                        viewModel.getRecipeLike(it)
+                                    },
+                                    onRecipeClick = onRecipeClick,
                                     "Fancy snacks!",
                                     list2
                                 )
@@ -111,7 +121,9 @@ fun HomeContent(
                         }
                         item {
                             if (list3.isNotEmpty()) {
-                                HorizontalList(onRecipeClick, "Holiday!", list3)
+                                HorizontalList(getLikesForRecipe = {
+                                    viewModel.getRecipeLike(it)
+                                }, onRecipeClick, "Holiday!", list3)
                             }
                         }
                     }
@@ -123,6 +135,7 @@ fun HomeContent(
 
 @Composable
 fun HorizontalList(
+    getLikesForRecipe: suspend (Int) -> Int,
     onRecipeClick: (Int) -> Unit,
     title: String,
     recipes: List<Recipe>,
@@ -142,7 +155,7 @@ fun HorizontalList(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(recipes) { index, recipe ->
-                RecipeHorizontalListItem(recipe, false, onRecipeClick)
+                RecipeHorizontalListItem(getLikesForRecipe, recipe, false, onRecipeClick)
             }
         }
     }

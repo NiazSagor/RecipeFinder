@@ -354,6 +354,9 @@ fun RecipeDetailsScreen(
                                 recipeDetailViewModel.getSimilarRecipes(currentRecipeId)
                         }
                         HorizontalList(
+                            getLikesForRecipe = {
+                                recipeDetailViewModel.getRecipeLike(it)
+                            },
                             onRecipeClick = {
                                 currentRecipeId = it
                             },

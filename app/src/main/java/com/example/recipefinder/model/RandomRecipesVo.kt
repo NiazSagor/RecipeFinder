@@ -31,6 +31,7 @@ fun RecipeInformationVo.toInternalRecipeModel() =
         readyInMinutes = this.readyInMinutes,
         cookingMinutes = this.cookingMinutes,
         preparationMinutes = this.preparationMinutes,
+        like = 0,
         dishTypes = this.dishTypes,
         extendedIngredients = this.extendedIngredients.toInternalIngredientsModel()
     )

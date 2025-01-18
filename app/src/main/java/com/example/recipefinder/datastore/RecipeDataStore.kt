@@ -65,4 +65,30 @@ class RecipeDataStore @Inject constructor(
             it.firstOrNull { it.id == id }
         }
     }
+
+    suspend fun getBookmarkedRecipes(): List<Recipe> {
+        return context.recipeDataStore
+            .data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences ->
+                val jsonString = preferences[stringPreferencesKey("bookmarked_recipes")] ?: ""
+                if (jsonString.isNotEmpty()) {
+                    val type = object : TypeToken<List<Recipe>>() {}.type
+                    Gson().fromJson<List<Recipe>>(jsonString, type) ?: emptyList()
+                } else {
+                    emptyList()
+                }
+            }.first()
+    }
+
+    suspend fun bookmarkRecipe(recipe: Recipe) {
+        val bookmarkedRecipes: List<Recipe> = getBookmarkedRecipes()
+        if (bookmarkedRecipes.contains(recipe) == false) {
+            context.recipeDataStore
+                .edit { preferences ->
+                    val jsonString = gson.toJson(bookmarkedRecipes.plus(recipe))
+                    preferences[stringPreferencesKey("bookmarked_recipes")] = jsonString
+                }
+        }
+    }
 }

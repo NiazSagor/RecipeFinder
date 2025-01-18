@@ -90,7 +90,11 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun like(id: Int) {
+        recipeTipsRepository.like(id)
+    }
 
+    override suspend fun getLikesForRecipes(id: Int): Int {
+        return recipeTipsRepository.getLikesForRecipe(id)
     }
 
     override suspend fun save(recipe: Recipe) {

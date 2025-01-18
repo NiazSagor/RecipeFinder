@@ -97,6 +97,9 @@ fun TopContainer(
 
                 SearchDisplay.Results -> {
                     SearchResultStaggeredGrid(
+                        getLikesForRecipe = {
+                            viewModel.getRecipeLike(it)
+                        },
                         modifier = Modifier.padding(
                             top = 16.dp,
                             start = 16.dp,

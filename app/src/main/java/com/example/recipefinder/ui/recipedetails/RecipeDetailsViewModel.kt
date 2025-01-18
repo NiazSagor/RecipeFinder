@@ -109,4 +109,13 @@ class RecipeDetailsViewModel @Inject constructor(
             recipeRepository.save(recipe)
         }
     }
+
+    suspend fun getRecipeLike(id: Int): Int {
+        return try {
+            recipeRepository.getLikesForRecipes(id)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
+    }
 }

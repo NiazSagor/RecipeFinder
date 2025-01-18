@@ -12,6 +12,7 @@ import com.example.recipefinder.data.model.Recipe
 
 @Composable
 fun SearchResultStaggeredGrid(
+    getLikesForRecipe: suspend (Int) -> Int,
     modifier: Modifier,
     searchRecipeByIngredients: List<Recipe>,
     onRecipeClick: (Int) -> Unit
@@ -21,7 +22,11 @@ fun SearchResultStaggeredGrid(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
             items(searchRecipeByIngredients.size) { photo ->
-                RecipeHorizontalListItem(searchRecipeByIngredients[photo], true) {
+                RecipeHorizontalListItem(
+                    getLikesForRecipe,
+                    searchRecipeByIngredients[photo],
+                    true
+                ) {
                     onRecipeClick(it)
                 }
             }

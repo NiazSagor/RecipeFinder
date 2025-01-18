@@ -3,6 +3,7 @@ package com.example.recipefinder.ui.recipedetails.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,6 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +31,8 @@ fun TopBar(
     title: String,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
+    var isLiked by remember { mutableStateOf(false) }
+
     LargeTopAppBar(
         title = {
             Text(
@@ -52,9 +59,12 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = { onLike() }) {
+            IconButton(onClick = {
+                isLiked = !isLiked
+                onLike()
+            }) {
                 Icon(
-                    imageVector = Icons.Outlined.ThumbUp,
+                    imageVector = if (isLiked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
                     contentDescription = "Like",
                     tint = MaterialTheme.colorScheme.primary
                 )

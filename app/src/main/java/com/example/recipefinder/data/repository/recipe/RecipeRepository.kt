@@ -19,6 +19,7 @@ interface RecipeRepository {
     suspend fun searchDishType(type: String): List<Recipe>
     suspend fun sendTip(id: Int, tip: String)
     suspend fun like(id: Int)
+    suspend fun getLikesForRecipes(id: Int): Int
     suspend fun save(recipe: Recipe)
     suspend fun getAllTipsForRecipe(recipeId: Int): List<Tip>
 }
