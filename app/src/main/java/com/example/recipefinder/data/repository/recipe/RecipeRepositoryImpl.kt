@@ -5,8 +5,10 @@ import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
 import com.example.recipefinder.data.model.RecipeNutrient
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
+import com.example.recipefinder.data.model.Tip
 import com.example.recipefinder.data.model.toRecipeAnalyzedInstructionsItemInternalModel
 import com.example.recipefinder.data.model.toRecipeNutrientInternalModel
+import com.example.recipefinder.data.repository.tip.RecipeTipsRepository
 import com.example.recipefinder.datastore.RecipeDataStore
 import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.model.toInternalRecipeModel
@@ -22,6 +24,7 @@ private const val TAG = "HomeViewModel"
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDataStore: RecipeDataStore,
     private val restApiService: RestApiService,
+    private val recipeTipsRepository: RecipeTipsRepository
 ) : RecipeRepository {
 
     override suspend fun getRandomRecipes(): Flow<List<Recipe>?> {
@@ -73,5 +76,32 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun searchDishType(type: String): List<Recipe> {
         return restApiService.searchRecipe(type, true, 10).results.toInternalRecipesModel()
+    }
+
+    override suspend fun sendTip(id: Int, tip: String) {
+        recipeTipsRepository.sendTip(
+            recipeId = id, tip = Tip(
+                timestamp = System.currentTimeMillis(),
+                tip = tip,
+                userName = "Niaz Sagor",
+                userProfileImageUrl = ""
+            )
+        )
+    }
+
+    override suspend fun like(id: Int) {
+        recipeTipsRepository.like(id)
+    }
+
+    override suspend fun getLikesForRecipes(id: Int): Int {
+        return recipeTipsRepository.getLikesForRecipe(id)
+    }
+
+    override suspend fun save(recipe: Recipe) {
+
+    }
+
+    override suspend fun getAllTipsForRecipe(recipeId: Int): List<Tip> {
+        return recipeTipsRepository.getAllTipsForRecipe(recipeId)
     }
 }

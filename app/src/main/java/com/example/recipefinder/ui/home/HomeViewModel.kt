@@ -116,4 +116,13 @@ class HomeViewModel @Inject constructor(
         )
         return result
     }
+
+    suspend fun getRecipeLike(recipeId: Int): Int {
+        return try {
+            recipeRepository.getLikesForRecipes(recipeId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
+    }
 }

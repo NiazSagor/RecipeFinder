@@ -16,12 +16,17 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,12 +46,21 @@ import com.example.recipefinder.util.toHourMinuteFormat
 
 @Composable
 fun RecipeHorizontalListItem(
+    getLikesForRecipe: suspend (Int) -> Int,
     recipe: Recipe,
     searchItem: Boolean = false,
     onRecipeClick: (Int) -> Unit,
 ) {
+    var likes by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(recipe) {
+        likes = getLikesForRecipe(recipe.id)
+    }
+
     val itemModifier = if (searchItem) {
-        Modifier.wrapContentHeight().width(170.dp)
+        Modifier
+            .wrapContentHeight()
+            .width(170.dp)
     } else {
         Modifier.size(width = 170.dp, height = 260.dp)
     }
@@ -126,15 +140,15 @@ fun RecipeHorizontalListItem(
                     text = recipe.readyInMinutes.toHourMinuteFormat(),
                     fontSize = 12.sp
                 )
-//                Icon(
-//                    Icons.Default.ThumbUp,
-//                    contentDescription = "",
-//                    modifier = Modifier.size(16.dp)
-//                )
-//                Text(
-//                    text = "98 %",
-//                    fontSize = 12.sp
-//                )
+                Icon(
+                    Icons.Default.ThumbUp,
+                    contentDescription = "",
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(
+                    text = "$likes",
+                    fontSize = 12.sp
+                )
             }
             Text(
                 modifier = Modifier.padding(bottom = 8.dp, end = 8.dp),

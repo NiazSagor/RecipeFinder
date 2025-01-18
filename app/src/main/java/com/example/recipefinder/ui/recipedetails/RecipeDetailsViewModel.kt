@@ -88,7 +88,34 @@ class RecipeDetailsViewModel @Inject constructor(
         }
     }
 
-    suspend fun getNutrients(id: Int) : RecipeNutrient {
+    suspend fun getNutrients(id: Int): RecipeNutrient {
         return recipeRepository.getNutrients(id)
+    }
+
+    fun sendTip(recipeId: Int, tip: String) {
+        viewModelScope.launch {
+            recipeRepository.sendTip(recipeId, tip)
+        }
+    }
+
+    fun like(recipeId: Int) {
+        viewModelScope.launch {
+            recipeRepository.like(recipeId)
+        }
+    }
+
+    fun save(recipe: Recipe) {
+        viewModelScope.launch {
+            recipeRepository.save(recipe)
+        }
+    }
+
+    suspend fun getRecipeLike(id: Int): Int {
+        return try {
+            recipeRepository.getLikesForRecipes(id)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
     }
 }

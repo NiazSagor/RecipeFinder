@@ -9,6 +9,7 @@ data class Recipe(
     val readyInMinutes: Int,
     val cookingMinutes: Int,
     val preparationMinutes: Int,
+    val like: Int,
     val dishTypes: List<String>,
     val extendedIngredients: List<Ingredient>,
 )
