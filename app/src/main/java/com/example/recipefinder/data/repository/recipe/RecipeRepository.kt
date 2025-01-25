@@ -1,5 +1,6 @@
 package com.example.recipefinder.data.repository.recipe
 
+import android.net.Uri
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
 import com.example.recipefinder.data.model.RecipeNutrient
@@ -17,7 +18,7 @@ interface RecipeRepository {
     suspend fun saveRecipeInformation(recipe: Recipe)
     suspend fun getNutrients(id: Int): RecipeNutrient
     suspend fun searchDishType(type: String): List<Recipe>
-    suspend fun sendTip(id: Int, tip: String)
+    suspend fun sendTip(id: Int, tip: String, photoUri: Uri?)
     suspend fun like(id: Int)
     suspend fun getLikesForRecipes(id: Int): Int
     suspend fun save(recipe: Recipe)

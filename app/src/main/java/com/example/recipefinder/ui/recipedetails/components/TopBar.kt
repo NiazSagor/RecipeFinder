@@ -2,6 +2,7 @@ package com.example.recipefinder.ui.recipedetails.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
+    isRecipeBookMarked: Boolean,
     onLike: () -> Unit,
     onSave: () -> Unit,
     onPopCurrent: () -> Unit,
@@ -32,6 +34,7 @@ fun TopBar(
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     var isLiked by remember { mutableStateOf(false) }
+    var isSaved by remember { mutableStateOf(isRecipeBookMarked) }
 
     LargeTopAppBar(
         title = {
@@ -52,10 +55,13 @@ fun TopBar(
             }
         },
         actions = {
-            IconButton(onClick = { onSave() }) {
+            IconButton(onClick = {
+                onSave()
+                isSaved = !isSaved
+            }) {
                 Icon(
-                    imageVector = Icons.Default.BookmarkBorder,
-                    contentDescription = "Add to favorites",
+                    imageVector = if (isSaved) Icons.Filled.Bookmark else Icons.Default.BookmarkBorder,
+                    contentDescription = "",
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -80,6 +86,7 @@ fun TopBar(
 fun PreviewTopBar() {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     TopBar(
+        isRecipeBookMarked = false,
         onLike = {},
         onSave = {},
         title = "Nacho Lasagna Pasta Chips",

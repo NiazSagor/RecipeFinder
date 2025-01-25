@@ -1,5 +1,6 @@
 package com.example.recipefinder.ui.recipedetails
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.Recipe
@@ -92,9 +93,9 @@ class RecipeDetailsViewModel @Inject constructor(
         return recipeRepository.getNutrients(id)
     }
 
-    fun sendTip(recipeId: Int, tip: String) {
+    fun sendTip(recipeId: Int, tip: String, photoUri: Uri?) {
         viewModelScope.launch {
-            recipeRepository.sendTip(recipeId, tip)
+            recipeRepository.sendTip(recipeId, tip, photoUri)
         }
     }
 

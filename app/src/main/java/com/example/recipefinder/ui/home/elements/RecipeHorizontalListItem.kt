@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,9 +52,10 @@ fun RecipeHorizontalListItem(
     recipe: Recipe,
     searchItem: Boolean = false,
     onRecipeClick: (Int) -> Unit,
+    onSave: (Recipe) -> Unit,
 ) {
     var likes by remember { mutableIntStateOf(0) }
-
+    var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
     LaunchedEffect(recipe) {
         likes = getLikesForRecipe(recipe.id)
     }
@@ -121,11 +124,14 @@ fun RecipeHorizontalListItem(
                         .wrapContentSize()
                         .clickable(
                             enabled = true,
-                            onClick = { },
+                            onClick = {
+                                onSave(recipe)
+                                isSaved = !isSaved
+                            },
                         )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.BookmarkBorder,
+                        imageVector = if (isSaved) Icons.Filled.Bookmark else Icons.Default.BookmarkBorder,
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.primary
                     )

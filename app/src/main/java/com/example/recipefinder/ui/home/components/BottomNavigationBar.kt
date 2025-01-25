@@ -3,7 +3,6 @@ package com.example.recipefinder.ui.home.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,9 +22,7 @@ data class BottomNavigationItem(
 )
 
 @Composable
-fun BottomNavigationBar(
-
-) {
+fun BottomNavigationBar(onBottomBarClick: (String) -> Unit) {
     var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
     val items = listOf(
         BottomNavigationItem(title = "Home", selectedIcon = Icons.Default.Home),
@@ -39,6 +36,7 @@ fun BottomNavigationBar(
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
+                    onBottomBarClick(items[index].title)
                 },
                 label = { Text(text = item.title) },
                 alwaysShowLabel = true,
@@ -51,5 +49,5 @@ fun BottomNavigationBar(
 @Preview(showBackground = true)
 @Composable
 fun PreviewBottomNavigationBar() {
-    BottomNavigationBar()
+    BottomNavigationBar({})
 }

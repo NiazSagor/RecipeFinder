@@ -1,5 +1,6 @@
 package com.example.recipefinder.data.repository.recipe
 
+import android.net.Uri
 import android.util.Log
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
@@ -78,14 +79,15 @@ class RecipeRepositoryImpl @Inject constructor(
         return restApiService.searchRecipe(type, true, 10).results.toInternalRecipesModel()
     }
 
-    override suspend fun sendTip(id: Int, tip: String) {
+    override suspend fun sendTip(id: Int, tip: String, photoUri: Uri?) {
         recipeTipsRepository.sendTip(
             recipeId = id, tip = Tip(
                 timestamp = System.currentTimeMillis(),
                 tip = tip,
                 userName = "Niaz Sagor",
                 userProfileImageUrl = ""
-            )
+            ),
+            photoUri = photoUri
         )
     }
 
@@ -98,7 +100,7 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun save(recipe: Recipe) {
-
+        recipeDataStore.bookmarkRecipe(recipe)
     }
 
     override suspend fun getAllTipsForRecipe(recipeId: Int): List<Tip> {

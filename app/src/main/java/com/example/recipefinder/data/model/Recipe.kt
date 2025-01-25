@@ -12,4 +12,5 @@ data class Recipe(
     val like: Int,
     val dishTypes: List<String>,
     val extendedIngredients: List<Ingredient>,
+    var isBookmarked: Boolean = false
 )

@@ -8,10 +8,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.recipefinder.ui.home.HomeContent
+import com.example.recipefinder.ui.profile.components.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
 import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
 
-
+// TODO: fix bottom nav
 @Composable
 fun RecipeFinderNavGraph(
     navController: NavHostController = rememberNavController(),
@@ -28,7 +29,29 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.HOME_ROUTE
         ) {
             HomeContent(
-                { navigationActions.navigateToRecipeDetailsScreen(it) }
+                onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
+                onBottomBarClick = {
+                    if (it == "Profile") {
+                        navController.navigate(RecipeFinderDestinations.PROFILE_ROUTE)
+                    } else {
+                        navController.navigate(RecipeFinderDestinations.HOME_ROUTE)
+                    }
+                },
+            )
+        }
+
+        composable(
+            route = RecipeFinderDestinations.PROFILE_ROUTE
+        ) {
+            ProfileScreen(
+                onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
+                onBottomBarClick = {
+                    if (it == "Profile") {
+                        navController.navigate(RecipeFinderDestinations.PROFILE_ROUTE)
+                    } else {
+                        navController.navigate(RecipeFinderDestinations.HOME_ROUTE)
+                    }
+                }
             )
         }
 
