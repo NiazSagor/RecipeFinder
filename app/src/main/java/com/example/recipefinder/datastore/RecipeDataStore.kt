@@ -1,6 +1,7 @@
 package com.example.recipefinder.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -17,6 +18,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val TAG = "RecipeDataStore"
 
 @Singleton
 class RecipeDataStore @Inject constructor(
@@ -67,28 +70,37 @@ class RecipeDataStore @Inject constructor(
     }
 
     suspend fun getBookmarkedRecipes(): List<Recipe> {
-        return context.recipeDataStore
-            .data
-            .catch { emit(emptyPreferences()) }
-            .map { preferences ->
-                val jsonString = preferences[stringPreferencesKey("bookmarked_recipes")] ?: ""
-                if (jsonString.isNotEmpty()) {
-                    val type = object : TypeToken<List<Recipe>>() {}.type
-                    Gson().fromJson<List<Recipe>>(jsonString, type) ?: emptyList()
-                } else {
-                    emptyList()
-                }
-            }.first()
+        return getRandomRecipes().first()?.filter { it.isBookmarked } ?: emptyList()
     }
 
     suspend fun bookmarkRecipe(recipe: Recipe) {
-        val bookmarkedRecipes: List<Recipe> = getBookmarkedRecipes()
-        if (bookmarkedRecipes.contains(recipe) == false) {
-            context.recipeDataStore
-                .edit { preferences ->
-                    val jsonString = gson.toJson(bookmarkedRecipes.plus(recipe))
-                    preferences[stringPreferencesKey("bookmarked_recipes")] = jsonString
+        val allRecipes = getRandomRecipes().first()
+
+        if (allRecipes == null || allRecipes.none { it.id == recipe.id }) {
+            Log.e(TAG, "bookmarkRecipe: Recipe not found in the list")
+        } else {
+            val updatedRecipes = allRecipes.map { currentRecipe ->
+                if (currentRecipe.id == recipe.id) {
+                    // Update the `isBookmarked` field for the specific recipe
+                    if (currentRecipe.isBookmarked == true) {
+                        // if already true
+                        currentRecipe.copy(isBookmarked = false)
+                    } else {
+                        currentRecipe.copy(isBookmarked = true)
+                    }
+                } else {
+                    currentRecipe
                 }
+            }
+
+            updateAllRecipes(updatedRecipes)
+        }
+    }
+
+    private suspend fun updateAllRecipes(allRecipes: List<Recipe>) {
+        context.recipeDataStore.edit { preferences ->
+            val jsonString = gson.toJson(allRecipes)
+            preferences[stringPreferencesKey("random_recipes")] = jsonString
         }
     }
 }

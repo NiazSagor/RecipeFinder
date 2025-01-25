@@ -1,5 +1,8 @@
 package com.example.recipefinder.ui.recipedetails
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -8,7 +11,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -43,7 +49,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -56,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.recipefinder.data.model.Recipe
@@ -105,6 +114,7 @@ fun RecipeDetailsScreen(
             Scaffold(
                 topBar = {
                     TopBar(
+                        isRecipeBookMarked = recipeDetails.isBookmarked,
                         title = recipeDetails.title,
                         onLike = { recipeDetailViewModel.like(recipeId = currentRecipeId) },
                         onSave = { recipeDetailViewModel.save(recipeDetails) },
@@ -360,20 +370,19 @@ fun RecipeDetailsScreen(
                             onRecipeClick = {
                                 currentRecipeId = it
                             },
+                            onSave = { recipeDetailViewModel.save(it) },
                             title = "Similar Recipes",
                             recipes = similarRecipes
                         )
                     }
                 }
-
-
             }
             if (showMakeTipLayout) {
                 MakeTip(
                     recipeTitle = recipeDetails.title,
                     isVisible = showMakeTipLayout,
-                    onSubmit = { tip ->
-                        recipeDetailViewModel.sendTip(recipeId = recipeId, tip = tip)
+                    onSubmit = { tip, uri ->
+                        recipeDetailViewModel.sendTip(recipeId = recipeId, tip = tip, uri)
                         showMakeTipLayout = false
                     },
                     onCancel = { showMakeTipLayout = false },
@@ -389,9 +398,17 @@ fun MakeTip(
     recipeTitle: String,
     isVisible: Boolean,
     onCancel: () -> Unit,
-    onSubmit: (String) -> Unit
+    onSubmit: (String, Uri?) -> Unit
 ) {
     var tipText by remember { mutableStateOf("") }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        selectedImageUri = uri // Save the selected image URI
+    }
+
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -427,12 +444,18 @@ fun MakeTip(
                         modifier = Modifier.clickable { onCancel() }
                     )
 
+                    TextButton(
+                        onClick = { photoPickerLauncher.launch("image/*") }
+                    ) {
+                        Text(text = "Add Photo")
+                    }
+
                     Text(
                         text = "Submit",
                         color = if (tipText.isNotEmpty()) MaterialTheme.colorScheme.primary else Color.LightGray,
                         fontSize = 16.sp,
                         modifier = Modifier.clickable {
-                            if (tipText.isNotEmpty()) onSubmit(tipText)
+                            if (tipText.isNotEmpty()) onSubmit(tipText, selectedImageUri)
                         }
                     )
                 }
@@ -458,6 +481,20 @@ fun MakeTip(
                     placeholder = { Text("Write your tip here...") },
                 )
             }
+        }
+
+        if (selectedImageUri != null) {
+            Image(
+                painter = rememberAsyncImagePainter(selectedImageUri),
+                contentDescription = "Selected Photo",
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.LightGray)
+                    .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                    .align(Alignment.BottomStart)
+            )
         }
     }
 }

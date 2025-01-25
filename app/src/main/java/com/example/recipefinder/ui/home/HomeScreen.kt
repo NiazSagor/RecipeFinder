@@ -43,9 +43,10 @@ fun Home(
 fun HomeContent(
     onRecipeClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    onBottomBarClick: (String) -> Unit,
 ) {
     Scaffold(
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(onBottomBarClick) }
     ) { paddingValues ->
         val homeState by viewModel.homeState.collectAsStateWithLifecycle()
         Column(
@@ -102,6 +103,7 @@ fun HomeContent(
                                         viewModel.getRecipeLike(it)
                                     },
                                     onRecipeClick = onRecipeClick,
+                                    onSave = { viewModel.save(it) },
                                     title = "Try something new",
                                     recipes = list1,
                                 )
@@ -114,6 +116,7 @@ fun HomeContent(
                                         viewModel.getRecipeLike(it)
                                     },
                                     onRecipeClick = onRecipeClick,
+                                    onSave = { viewModel.save(it) },
                                     "Fancy snacks!",
                                     list2
                                 )
@@ -123,7 +126,9 @@ fun HomeContent(
                             if (list3.isNotEmpty()) {
                                 HorizontalList(getLikesForRecipe = {
                                     viewModel.getRecipeLike(it)
-                                }, onRecipeClick, "Holiday!", list3)
+                                }, onRecipeClick,
+                                    onSave = { viewModel.save(it) }, "Holiday!", list3
+                                )
                             }
                         }
                     }
@@ -137,6 +142,7 @@ fun HomeContent(
 fun HorizontalList(
     getLikesForRecipe: suspend (Int) -> Int,
     onRecipeClick: (Int) -> Unit,
+    onSave: (Recipe) -> Unit,
     title: String,
     recipes: List<Recipe>,
 ) {
@@ -155,7 +161,7 @@ fun HorizontalList(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(recipes) { index, recipe ->
-                RecipeHorizontalListItem(getLikesForRecipe, recipe, false, onRecipeClick)
+                RecipeHorizontalListItem(getLikesForRecipe, recipe, false, onRecipeClick, onSave)
             }
         }
     }
@@ -165,7 +171,6 @@ fun HorizontalList(
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeContent() {
-    HomeContent({})
 }
 
 @Preview(showBackground = true)

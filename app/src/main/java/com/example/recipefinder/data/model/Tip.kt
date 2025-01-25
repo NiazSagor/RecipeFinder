@@ -6,7 +6,8 @@ data class Tip(
     val timestamp: Long,
     val tip: String,
     val userName: String,
-    val userProfileImageUrl: String
+    val userProfileImageUrl: String,
+    val photoUrl: String? = null
 )
 
 fun DocumentSnapshot.toTip(): Tip? {
@@ -15,10 +16,10 @@ fun DocumentSnapshot.toTip(): Tip? {
             timestamp = getLong("timestamp") ?: 0L,
             tip = getString("tip") ?: "",
             userName = getString("userName") ?: "",
-            userProfileImageUrl = getString("userProfileImageUrl") ?: ""
+            userProfileImageUrl = getString("userProfileImageUrl") ?: "",
         )
     } catch (e: Exception) {
         e.printStackTrace()
-        null // Return null if mapping fails
+        null
     }
 }

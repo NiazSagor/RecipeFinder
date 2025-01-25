@@ -15,7 +15,8 @@ fun SearchResultStaggeredGrid(
     getLikesForRecipe: suspend (Int) -> Int,
     modifier: Modifier,
     searchRecipeByIngredients: List<Recipe>,
-    onRecipeClick: (Int) -> Unit
+    onRecipeClick: (Int) -> Unit,
+    onSave: (Recipe) -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -23,12 +24,12 @@ fun SearchResultStaggeredGrid(
         content = {
             items(searchRecipeByIngredients.size) { photo ->
                 RecipeHorizontalListItem(
-                    getLikesForRecipe,
-                    searchRecipeByIngredients[photo],
-                    true
-                ) {
-                    onRecipeClick(it)
-                }
+                    getLikesForRecipe = getLikesForRecipe,
+                    recipe = searchRecipeByIngredients[photo],
+                    searchItem = true,
+                    onRecipeClick = { onRecipeClick(it) },
+                    onSave = { onSave(it) }
+                )
             }
         },
         modifier = modifier.then(Modifier.fillMaxSize())

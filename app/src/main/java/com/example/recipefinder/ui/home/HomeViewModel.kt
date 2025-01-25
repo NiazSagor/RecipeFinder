@@ -125,4 +125,10 @@ class HomeViewModel @Inject constructor(
             0
         }
     }
+
+    fun save(recipe: Recipe) {
+        viewModelScope.launch {
+            recipeRepository.save(recipe)
+        }
+    }
 }
