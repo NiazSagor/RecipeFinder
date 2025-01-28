@@ -1,11 +1,13 @@
 package com.example.recipefinder.ui.profile.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,8 +32,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.recipefinder.R
+import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
+import com.example.recipefinder.ui.myiconpack.Wave
 
 // TODO: fix the bottom nav
 @Composable
@@ -50,12 +55,21 @@ fun ProfileScreen(
                 .padding(
                     top = paddingValues.calculateTopPadding(),
                     bottom = paddingValues.calculateBottomPadding(),
-                    start = 16.dp,
-                    end = 16.dp
                 )
         ) {
+
+            Image(
+                imageVector = MyIconPack.Wave,
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .graphicsLayer(scaleY = -1f),
+                contentScale = ContentScale.FillBounds
+            )
+
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
@@ -67,7 +81,7 @@ fun ProfileScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     AsyncImage(
-                        placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
                         model = "",
                         contentDescription = "",
                         modifier = Modifier
