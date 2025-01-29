@@ -3,8 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.dagger.hilt)
+    id("kotlin-kapt")
     id("org.jetbrains.kotlin.kapt")
     id("com.google.gms.google-services")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -40,6 +42,12 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
     }
 }
 
@@ -81,6 +89,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.0-beta-2"))
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.ktor:ktor-client-android:3.0.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
     kapt(libs.hilt.compiler)
     kapt(libs.androidx.hilt.compiler)
     kapt(libs.room.compiler)

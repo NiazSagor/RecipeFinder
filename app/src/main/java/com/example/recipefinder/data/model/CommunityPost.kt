@@ -3,7 +3,7 @@ package com.example.recipefinder.data.model
 import java.util.UUID
 
 data class CommunityPost(
-    val timestamp: Long,
+    val timestamp: Long = System.currentTimeMillis(),
     val post: String,
     val userName: String,
     val userProfileImageUrl: String,
