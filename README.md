@@ -19,23 +19,20 @@ The Recipe Community App is a modern Android application built with Jetpack Comp
 📱*Frontend (Android App)*
 
 
-- Kotlin - Primary language for Android development
-- Jetpack Compose - Modern UI toolkit for building UI declaratively
-- StateFlow - Manage UI state reactively
-- Coil - Image loading and caching
-- DataStore - Efficient data persistence for storing user
-  preferences and bookmarked recipes
+- ![Kotlin](https://img.shields.io/badge/Kotlin-%230095D5.svg?logo=kotlin&logoColor=white) **Kotlin** - Primary language for Android development  
+- ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-%23009B86.svg?logo=jetpackcompose&logoColor=white) **Jetpack Compose** - Modern UI toolkit for building UI declaratively  
+- ![StateFlow](https://img.shields.io/badge/StateFlow-%23FF5722.svg?logo=kotlin&logoColor=white) **StateFlow** - Manage UI state reactively  
+- ![Coil](https://img.shields.io/badge/Coil-%23FFDD00.svg?logo=coil&logoColor=black) **Coil** - Image loading and caching  
+- ![DataStore](https://img.shields.io/badge/DataStore-%2361DAFB.svg?logo=googlecloud&logoColor=white) **DataStore** - Efficient data persistence for storing user preferences and bookmarked recipes  
 
 
 💻 *Backend & Cloud Services*
 
 
-- Firebase Firestore - NoSQL database to store user posts and
-  interactions
-- Firebase Authentication - Secure user authentication
-- Firebase Firestore - Store the recipe's likes and comments for each
-  of the recipes
-- Supabase Storage - Store the recipe images uploaded by the community as the Firebase Storage is now available only in the paid plan.
+- ![Firebase Firestore](https://img.shields.io/badge/Firebase%20Firestore-%23039BE5.svg?logo=firebase&logoColor=white) **Firebase Firestore** - NoSQL database to store user posts and interactions  
+- ![Firebase Authentication](https://img.shields.io/badge/Firebase%20Auth-%23FFCA28.svg?logo=firebase&logoColor=black) **Firebase Authentication** - Secure user authentication  
+- ![Firebase Firestore](https://img.shields.io/badge/Firebase%20Firestore-%23039BE5.svg?logo=firebase&logoColor=white) **Firebase Firestore** - Store the recipe's likes and comments for each of the recipes  
+- ![Supabase Storage](https://img.shields.io/badge/Supabase%20Storage-%2300C389.svg?logo=supabase&logoColor=white) **Supabase Storage** - Store the recipe images uploaded by the community as Firebase Storage is now available only in the paid plan  
 
 *📸 Image Upload Flow*
 
