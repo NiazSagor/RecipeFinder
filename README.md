@@ -29,12 +29,10 @@ The Recipe Community App is a modern Android application built with Jetpack Comp
 💻 *Backend & Cloud Services*
 
 
-- Firebase Firestore - NoSQL database to store user posts and
-  interactions
-- Firebase Authentication - Secure user authentication
-- Firebase Firestore - Store the recipe's likes and comments for each
-  of the recipes
-- Supabase Storage - Store the recipe images uploaded by the community as the Firebase Storage is now available only in the paid plan.
+- ![Firebase Firestore](https://img.shields.io/badge/Firebase%20Firestore-%23039BE5.svg?logo=firebase&logoColor=white) **Firebase Firestore** - NoSQL database to store user posts and interactions  
+- ![Firebase Authentication](https://img.shields.io/badge/Firebase%20Auth-%23FFCA28.svg?logo=firebase&logoColor=black) **Firebase Authentication** - Secure user authentication  
+- ![Firebase Firestore](https://img.shields.io/badge/Firebase%20Firestore-%23039BE5.svg?logo=firebase&logoColor=white) **Firebase Firestore** - Store the recipe's likes and comments for each of the recipes  
+- ![Supabase Storage](https://img.shields.io/badge/Supabase%20Storage-%2300C389.svg?logo=supabase&logoColor=white) **Supabase Storage** - Store the recipe images uploaded by the community as Firebase Storage is now available only in the paid plan  
 
 *📸 Image Upload Flow*
 
