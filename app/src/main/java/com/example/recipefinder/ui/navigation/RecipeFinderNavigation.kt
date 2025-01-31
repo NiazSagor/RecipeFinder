@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 object RecipeFinderDestinations {
     const val HOME_ROUTE = "home_route"
     const val PROFILE_ROUTE = "profile_route"
+    const val COMMUNITY_ROUTE = "community_route"
     const val RECIPE_DETAILS_ROUTE = "recipe_details_route"
     const val RECIPE_TIP_DETAILS_ROUTE = "recipe_tip_details_route"
     const val MAKE_RECIPE_TIP_ROUTE = "make_recipe_tip_route"

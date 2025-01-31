@@ -46,7 +46,6 @@ import coil3.compose.AsyncImage
 import com.example.recipefinder.R
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.ui.home.HorizontalList
-import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
@@ -56,15 +55,12 @@ import com.example.recipefinder.ui.myiconpack.Wave
 fun ProfileScreen(
     viewmodel: ProfileScreenViewModel = hiltViewModel(),
     onRecipeClick: (Int) -> Unit,
-    onBottomBarClick: (String) -> Unit,
 ) {
     val bookmarkedRecipes = viewmodel.profileState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Saved Recipe", "Activity")
 
-    Scaffold(
-        bottomBar = { BottomNavigationBar(onBottomBarClick) }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -212,7 +208,9 @@ fun ActivityScreen(
                 )
                 if (myRatings.isEmpty()) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().size(100.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .size(100.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -240,7 +238,9 @@ fun ActivityScreen(
             )
             if (myTips.isEmpty()) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().size(100.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(100.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {

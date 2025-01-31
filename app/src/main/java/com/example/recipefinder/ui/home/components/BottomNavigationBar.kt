@@ -2,6 +2,7 @@ package com.example.recipefinder.ui.home.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -26,6 +27,7 @@ fun BottomNavigationBar(onBottomBarClick: (String) -> Unit) {
     var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
     val items = listOf(
         BottomNavigationItem(title = "Home", selectedIcon = Icons.Default.Home),
+        BottomNavigationItem(title = "Community", selectedIcon = Icons.Default.ModeComment),
         BottomNavigationItem(title = "Profile", selectedIcon = Icons.Default.Person)
     )
     NavigationBar(
