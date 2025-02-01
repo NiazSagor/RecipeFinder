@@ -1,12 +1,20 @@
 package com.example.recipefinder.ui.community
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.CommunityPost
@@ -24,23 +33,34 @@ import com.example.recipefinder.ui.community.elements.CommunityPostItem
 
 @Composable
 fun CommunityScreen(
-    viewmodel: CommunityScreenViewModel = hiltViewModel()
+    paddingValues: PaddingValues,
+    viewmodel: CommunityScreenViewModel = hiltViewModel(),
+    onPostClick: () -> Unit
 ) {
     val state by viewmodel.communityPosts.collectAsStateWithLifecycle()
-
+    CommunityScreenContent(paddingValues, emptyList()) {
+        onPostClick()
+    }
     when (state) {
         is CommunityScreenState.Error -> {}
         CommunityScreenState.Loading -> {}
         is CommunityScreenState.Success -> {
             val posts = (state as CommunityScreenState.Success).posts
-            CommunityScreenContent(posts)
+            CommunityScreenContent(paddingValues, posts) {
+                onPostClick()
+            }
         }
     }
 }
 
 @Composable
-private fun CommunityScreenContent(posts: List<CommunityPost>) {
+private fun CommunityScreenContent(
+    paddingValues: PaddingValues,
+    posts: List<CommunityPost>,
+    onPostClick: () -> Unit
+) {
     Scaffold(
+        modifier = Modifier.padding(paddingValues),
         topBar = {
             Text(
                 textAlign = TextAlign.Center,
@@ -51,6 +71,25 @@ private fun CommunityScreenContent(posts: List<CommunityPost>) {
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 text = "Our Community"
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.primary,
+                onClick = { onPostClick() },
+                icon = { Icon(Icons.Filled.Add, "Post") },
+                text = {
+                    Text(
+                        text = "Post",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        color = Color.White
+                    )
+                },
+                shape = RoundedCornerShape(32.dp),
+                modifier = Modifier
+                    .height(50.dp)
+                    .navigationBarsPadding()
             )
         }
     ) { paddingValues ->
@@ -120,6 +159,9 @@ fun PreviewCommunityScreen() {
         )
     )
     CommunityScreenContent(
+        paddingValues = PaddingValues(20.dp),
         posts = dummyPosts
-    )
+    ) {
+
+    }
 }

@@ -55,6 +55,9 @@ fun MainScreen(
             }
         }
     ) { padding ->
-        RecipeFinderNavGraph(navController)
+        RecipeFinderNavGraph(
+            paddingValues = padding,
+            navController = navController
+        )
     }
 }
