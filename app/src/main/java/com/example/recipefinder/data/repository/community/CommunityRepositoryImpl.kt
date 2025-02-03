@@ -45,6 +45,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 .add(communityPost)
         } catch (e: Exception) {
             e.printStackTrace()
+            throw Exception("Failed to post recipe")
         }
     }
 
@@ -54,7 +55,8 @@ class CommunityRepositoryImpl @Inject constructor(
     ): String? {
         return withContext(Dispatchers.IO) {
             val inputStream =
-                context.contentResolver.openInputStream(imageUri) ?: throw Exception("Recipe image URI is invalid")
+                context.contentResolver.openInputStream(imageUri)
+                    ?: throw Exception("Recipe image URI is invalid")
             val byteArray = inputStream.readBytes()
             val fileName = "community_recipes/posts_images/$title.jpg"
             supabase.storage.from("RecipeFinder").upload(fileName, byteArray)
