@@ -32,6 +32,7 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.HOME_ROUTE
         ) {
             HomeContent(
+                paddingValues = paddingValues,
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
             )
         }
