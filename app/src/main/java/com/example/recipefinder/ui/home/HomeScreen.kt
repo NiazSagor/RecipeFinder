@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.Recipe
-import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.home.components.LottieLoadingIndicator
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.home.elements.TopContainer
@@ -43,11 +42,8 @@ fun Home(
 fun HomeContent(
     onRecipeClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    onBottomBarClick: (String) -> Unit,
 ) {
-    Scaffold(
-        bottomBar = { BottomNavigationBar(onBottomBarClick) }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         val homeState by viewModel.homeState.collectAsStateWithLifecycle()
         Column(
             modifier = Modifier
@@ -124,9 +120,10 @@ fun HomeContent(
                         }
                         item {
                             if (list3.isNotEmpty()) {
-                                HorizontalList(getLikesForRecipe = {
-                                    viewModel.getRecipeLike(it)
-                                }, onRecipeClick,
+                                HorizontalList(
+                                    getLikesForRecipe = {
+                                        viewModel.getRecipeLike(it)
+                                    }, onRecipeClick,
                                     onSave = { viewModel.save(it) }, "Holiday!", list3
                                 )
                             }

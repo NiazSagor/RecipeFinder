@@ -1,13 +1,15 @@
 package com.example.recipefinder.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.recipefinder.ui.community.CommunityScreen
 import com.example.recipefinder.ui.home.HomeContent
+import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.components.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
 import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
@@ -15,7 +17,8 @@ import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
 // TODO: fix bottom nav
 @Composable
 fun RecipeFinderNavGraph(
-    navController: NavHostController = rememberNavController(),
+    paddingValues: PaddingValues,
+    navController: NavHostController,
     startDestination: String = RecipeFinderDestinations.HOME_ROUTE,
 ) {
 
@@ -30,14 +33,27 @@ fun RecipeFinderNavGraph(
         ) {
             HomeContent(
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
-                onBottomBarClick = {
-                    if (it == "Profile") {
-                        navController.navigate(RecipeFinderDestinations.PROFILE_ROUTE)
-                    } else {
-                        navController.navigate(RecipeFinderDestinations.HOME_ROUTE)
-                    }
-                },
             )
+        }
+
+        composable(
+            route = RecipeFinderDestinations.COMMUNITY_ROUTE
+        ) {
+            CommunityScreen(
+                paddingValues
+            ) {
+                navigationActions.navigateToPostRecipeScreen()
+            }
+        }
+
+        composable(
+            route = RecipeFinderDestinations.POST_RECIPE_ROUTE
+        ) {
+            PostRecipeScreen(
+                paddingValues
+            ) {
+                navigationActions.popCurrentDestination()
+            }
         }
 
         composable(
@@ -45,13 +61,6 @@ fun RecipeFinderNavGraph(
         ) {
             ProfileScreen(
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
-                onBottomBarClick = {
-                    if (it == "Profile") {
-                        navController.navigate(RecipeFinderDestinations.PROFILE_ROUTE)
-                    } else {
-                        navController.navigate(RecipeFinderDestinations.HOME_ROUTE)
-                    }
-                }
             )
         }
 

@@ -52,7 +52,7 @@ fun CommunityPostItem(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(R.drawable.ic_launcher_background)
+                    .data(if (post.recipeImageUrl.isEmpty()) R.drawable.ic_launcher_background else post.recipeImageUrl)
                     .build(),
                 contentDescription = "",
                 modifier = Modifier
@@ -62,7 +62,9 @@ fun CommunityPostItem(
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // TODO: user profile pic url
@@ -97,7 +99,9 @@ fun CommunityPostItem(
                 text = post.post
             )
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
