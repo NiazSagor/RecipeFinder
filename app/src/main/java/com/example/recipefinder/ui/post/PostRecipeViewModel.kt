@@ -33,8 +33,7 @@ class PostRecipeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _postState.value = PostRecipeScreenState.Posting
-                //communityRepository.postRecipe(post, recipeTitle, recipeImageUri)
-                delay(2000)
+                communityRepository.postRecipe(post, recipeTitle, recipeImageUri)
                 _postState.value = PostRecipeScreenState.PostSuccess
                 delay(2000)
                 _postState.value = PostRecipeScreenState.Idle

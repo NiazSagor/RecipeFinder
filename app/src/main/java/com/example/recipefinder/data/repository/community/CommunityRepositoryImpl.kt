@@ -3,13 +3,16 @@ package com.example.recipefinder.data.repository.community
 import android.content.Context
 import android.net.Uri
 import com.example.recipefinder.data.model.CommunityPost
+import com.example.recipefinder.data.model.toCommunityPost
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.resumable.MemoryResumableCache
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,12 +20,17 @@ class CommunityRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : CommunityRepository {
 
+    // TODO: move the url and key to secrets
     private val supabase by lazy {
         createSupabaseClient(
             supabaseUrl = "https://kxspxycwnuemptjvvgbk.supabase.co",
             supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c3B4eWN3bnVlbXB0anZ2Z2JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxNjE3MjYsImV4cCI6MjA1MzczNzcyNn0.f12nkXNmnRtur4vay2MjZhIuffK31KeNc85jg79RRCY"
         ) {
-            install(Storage)
+            install(Storage) {
+                resumable {
+                    cache = MemoryResumableCache()
+                }
+            }
         }
     }
 
@@ -49,6 +57,21 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCommunityPosts(): List<CommunityPost> {
+        return try {
+            val results = communityPostsDb
+                .collection("community")
+                .get()
+                .await()
+            results.documents.mapNotNull {
+                it.toCommunityPost()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     private suspend fun uploadRecipePhoto(
         title: String,
         imageUri: Uri
@@ -58,8 +81,9 @@ class CommunityRepositoryImpl @Inject constructor(
                 context.contentResolver.openInputStream(imageUri)
                     ?: throw Exception("Recipe image URI is invalid")
             val byteArray = inputStream.readBytes()
-            val fileName = "community_recipes/posts_images/$title.jpg"
-            supabase.storage.from("RecipeFinder").upload(fileName, byteArray)
+            val safeTitle = title.replace(" ", "_").replace(Regex("[^A-Za-z0-9_]"), "")
+            val fileName = "public/$safeTitle.jpg"
+            supabase.storage.from("RecipeFinder").upload(path = fileName, data = byteArray)
             supabase.storage.from("RecipeFinder").publicUrl(fileName)
         }
     }

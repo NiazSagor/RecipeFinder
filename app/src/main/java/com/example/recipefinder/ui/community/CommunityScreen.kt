@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,9 +39,6 @@ fun CommunityScreen(
     onPostClick: () -> Unit
 ) {
     val state by viewmodel.communityPosts.collectAsStateWithLifecycle()
-    CommunityScreenContent(paddingValues, emptyList()) {
-        onPostClick()
-    }
     when (state) {
         is CommunityScreenState.Error -> {}
         CommunityScreenState.Loading -> {}
@@ -66,8 +64,8 @@ private fun CommunityScreenContent(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 16.dp)
+                    .wrapContentHeight(),
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 text = "Our Community"
