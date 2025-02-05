@@ -13,11 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.ModeComment
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,7 +89,7 @@ fun CommunityPostItem(
                     )
                     Text(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.primary,
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
                         text = post.recipeTitle,
                     )
                 }
@@ -106,7 +106,7 @@ fun CommunityPostItem(
             ) {
                 Text(
                     text = "${post.like}",
-                    color = MaterialTheme.colors.primary
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
@@ -115,7 +115,7 @@ fun CommunityPostItem(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Outlined.Favorite,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -123,7 +123,7 @@ fun CommunityPostItem(
                 Text(
                     fontSize = 12.sp,
                     text = "Comments",
-                    color = MaterialTheme.colors.primary
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
@@ -132,7 +132,7 @@ fun CommunityPostItem(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Outlined.ModeComment,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }

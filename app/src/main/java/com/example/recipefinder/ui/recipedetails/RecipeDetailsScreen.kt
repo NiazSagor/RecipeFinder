@@ -82,6 +82,7 @@ import com.example.recipefinder.ui.recipedetails.components.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeDetailsScreen(
+    paddingValues: PaddingValues,
     recipeDetailViewModel: RecipeDetailsViewModel = hiltViewModel(),
     recipeId: Int,
     onPopCurrent: () -> Unit,
@@ -112,6 +113,7 @@ fun RecipeDetailsScreen(
                 }
             }
             Scaffold(
+                modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
                 topBar = {
                     TopBar(
                         isRecipeBookMarked = recipeDetails.isBookmarked,
@@ -379,6 +381,7 @@ fun RecipeDetailsScreen(
             }
             if (showMakeTipLayout) {
                 MakeTip(
+                    paddingValues = paddingValues,
                     recipeTitle = recipeDetails.title,
                     isVisible = showMakeTipLayout,
                     onSubmit = { tip, uri ->
@@ -395,6 +398,7 @@ fun RecipeDetailsScreen(
 
 @Composable
 fun MakeTip(
+    paddingValues: PaddingValues,
     recipeTitle: String,
     isVisible: Boolean,
     onCancel: () -> Unit,
@@ -411,7 +415,9 @@ fun MakeTip(
 
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
     ) {
         AnimatedVisibility(
             visible = isVisible,

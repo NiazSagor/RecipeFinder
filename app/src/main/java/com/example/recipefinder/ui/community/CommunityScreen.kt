@@ -87,7 +87,6 @@ private fun CommunityScreenContent(
                 shape = RoundedCornerShape(32.dp),
                 modifier = Modifier
                     .height(50.dp)
-                    .navigationBarsPadding()
             )
         }
     ) { paddingValues ->
