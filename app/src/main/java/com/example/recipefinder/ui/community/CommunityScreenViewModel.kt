@@ -37,4 +37,10 @@ class CommunityScreenViewModel @Inject constructor(
             }
         }
     }
+
+    fun likePost(postId: String) {
+        viewModelScope.launch {
+            communityRepository.likePost(postId)
+        }
+    }
 }

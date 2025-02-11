@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,9 +43,16 @@ fun CommunityScreen(
         CommunityScreenState.Loading -> {}
         is CommunityScreenState.Success -> {
             val posts = (state as CommunityScreenState.Success).posts
-            CommunityScreenContent(paddingValues, posts) {
-                onPostClick()
-            }
+            CommunityScreenContent(
+                paddingValues = paddingValues, posts = posts,
+                onPostClick = { onPostClick() },
+                onLike = {
+                    viewmodel.likePost(it)
+                },
+                onComment = {
+
+                },
+            )
         }
     }
 }
@@ -55,7 +61,9 @@ fun CommunityScreen(
 private fun CommunityScreenContent(
     paddingValues: PaddingValues,
     posts: List<CommunityPost>,
-    onPostClick: () -> Unit
+    onPostClick: () -> Unit,
+    onLike: (String) -> Unit = {},
+    onComment: (String) -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier.padding(paddingValues),
@@ -97,9 +105,12 @@ private fun CommunityScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             itemsIndexed(posts) { index, post ->
-                CommunityPostItem(post, {
-
-                })
+                CommunityPostItem(
+                    post = post,
+                    onLike = { onLike(it) },
+                    onComment = { onComment(it) },
+                    onClick = {  },
+                )
             }
         }
     }
@@ -157,8 +168,9 @@ fun PreviewCommunityScreen() {
     )
     CommunityScreenContent(
         paddingValues = PaddingValues(20.dp),
-        posts = dummyPosts
-    ) {
-
-    }
+        posts = dummyPosts,
+        onPostClick = {},
+        onLike = {},
+        onComment = {}
+    )
 }

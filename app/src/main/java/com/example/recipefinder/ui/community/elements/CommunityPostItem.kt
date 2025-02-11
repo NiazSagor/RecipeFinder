@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
@@ -39,6 +40,8 @@ import java.util.UUID
 @Composable
 fun CommunityPostItem(
     post: CommunityPost,
+    onLike: (String) -> Unit,
+    onComment: (String) -> Unit,
     onClick: (String) -> Unit
 ) {
     Box(
@@ -89,7 +92,7 @@ fun CommunityPostItem(
                     )
                     Text(
                         fontWeight = FontWeight.Bold,
-                        color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         text = post.recipeTitle,
                     )
                 }
@@ -111,12 +114,18 @@ fun CommunityPostItem(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Outlined.Favorite,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                IconButton(
+                    onClick = {
+                        onLike(post.postId)
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = Icons.Outlined.Favorite,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(12.dp))
 
@@ -128,12 +137,18 @@ fun CommunityPostItem(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Outlined.ModeComment,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                IconButton(
+                    onClick = {
+                        onComment(post.postId)
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = Icons.Outlined.ModeComment,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }
@@ -154,6 +169,8 @@ fun PreviewCommunityPostItem() {
             like = 0,
             postId = UUID.randomUUID().toString()
         ),
-        onClick = {}
+        onClick = {},
+        onLike = {},
+        onComment = {},
     )
 }
