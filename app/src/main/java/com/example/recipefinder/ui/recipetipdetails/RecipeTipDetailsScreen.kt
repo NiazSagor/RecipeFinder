@@ -35,6 +35,7 @@ import com.example.recipefinder.ui.recipetipdetails.components.RecipeTipsListIte
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeTipDetailsScreen(
+    paddingValues: PaddingValues,
     viewModel: RecipeTipDetailsViewModel = hiltViewModel(),
     recipeId: Int,
     onPopCurrent: () -> Unit
@@ -57,6 +58,7 @@ fun RecipeTipDetailsScreen(
         is RecipeTipsState.Success -> {
             val tips = (recipeTipsState as RecipeTipsState.Success).tips
             Scaffold(
+                modifier = Modifier.padding(paddingValues),
                 topBar = {
                     TopAppBar(
                         title = {

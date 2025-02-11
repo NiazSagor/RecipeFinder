@@ -40,18 +40,19 @@ fun Home(
 
 @Composable
 fun HomeContent(
+    paddingValues: PaddingValues,
     onRecipeClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    Scaffold { paddingValues ->
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) { paddingValues ->
         val homeState by viewModel.homeState.collectAsStateWithLifecycle()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = paddingValues.calculateBottomPadding()
-                )
         ) {
             TopContainer(
                 bottomPadding = paddingValues.calculateBottomPadding(),
