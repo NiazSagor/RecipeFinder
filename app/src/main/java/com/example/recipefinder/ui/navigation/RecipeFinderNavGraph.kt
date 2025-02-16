@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.recipefinder.ui.community.CommunityScreen
+import com.example.recipefinder.ui.community.posts.CommunityScreen
 import com.example.recipefinder.ui.home.HomeContent
 import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.components.ProfileScreen

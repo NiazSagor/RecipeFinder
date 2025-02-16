@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.community.elements
+package com.example.recipefinder.ui.community.posts.elements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

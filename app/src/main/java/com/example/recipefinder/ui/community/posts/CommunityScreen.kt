@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.community
+package com.example.recipefinder.ui.community.posts
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.CommunityPost
-import com.example.recipefinder.ui.community.elements.CommunityPostItem
+import com.example.recipefinder.ui.community.posts.elements.CommunityPostItem
 
 @Composable
 fun CommunityScreen(
@@ -50,7 +50,7 @@ fun CommunityScreen(
                     viewmodel.likePost(it)
                 },
                 onComment = {
-
+                    onPostClick()
                 },
             )
         }

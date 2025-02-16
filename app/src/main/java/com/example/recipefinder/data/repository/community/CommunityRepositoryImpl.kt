@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.toCommunityPost
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -48,6 +49,24 @@ class CommunityRepositoryImpl @Inject constructor(
                 .update("like", FieldValue.increment(1))
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    /*
+    * get a particular recipe post by id
+    * this is required when a user want to comment on a recipe post
+    * */
+    override suspend fun getPost(postId: String): CommunityPost? {
+        return try {
+            val result = communityPostsDb
+                .collection("community")
+                .document(postId)
+                .get()
+                .await()
+            result?.toCommunityPost()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 

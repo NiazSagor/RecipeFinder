@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.community
+package com.example.recipefinder.ui.community.posts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
