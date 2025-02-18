@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
 import com.example.recipefinder.ui.community.posts.CommunityScreen
 import com.example.recipefinder.ui.home.HomeContent
 import com.example.recipefinder.ui.post.PostRecipeScreen
@@ -41,10 +42,10 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.COMMUNITY_ROUTE
         ) {
             CommunityScreen(
-                paddingValues
-            ) {
-                navigationActions.navigateToPostRecipeScreen()
-            }
+                paddingValues,
+                onPostClick = { navigationActions.navigateToPostRecipeScreen() },
+                onComment = { navigationActions.navigateToPostCommentScreen(it) },
+            )
         }
 
         composable(
@@ -97,6 +98,19 @@ fun RecipeFinderNavGraph(
                     onPopCurrent = {
                         navigationActions.popCurrentDestination()
                     }
+                )
+            }
+        }
+
+        composable(
+            route = "${RecipeFinderDestinations.COMMUNITY_POST_COMMENT_ROUTE}/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) {
+            val postId = it.arguments?.getString("postId")
+            if (postId != null) {
+                PostCommentsScreen(
+                    paddingValues = paddingValues,
+                    postId = postId
                 )
             }
         }

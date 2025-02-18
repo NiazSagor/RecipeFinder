@@ -35,7 +35,8 @@ import com.example.recipefinder.ui.community.posts.elements.CommunityPostItem
 fun CommunityScreen(
     paddingValues: PaddingValues,
     viewmodel: CommunityScreenViewModel = hiltViewModel(),
-    onPostClick: () -> Unit
+    onPostClick: () -> Unit,
+    onComment: (String) -> Unit,
 ) {
     val state by viewmodel.communityPosts.collectAsStateWithLifecycle()
     when (state) {
@@ -50,7 +51,7 @@ fun CommunityScreen(
                     viewmodel.likePost(it)
                 },
                 onComment = {
-                    onPostClick()
+                    onComment(it)
                 },
             )
         }
@@ -109,7 +110,7 @@ private fun CommunityScreenContent(
                     post = post,
                     onLike = { onLike(it) },
                     onComment = { onComment(it) },
-                    onClick = {  },
+                    onClick = { },
                 )
             }
         }

@@ -47,9 +47,9 @@ import com.example.recipefinder.ui.recipetipdetails.components.RecipeTipsListIte
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PostCommentsScreen(
+    viewmodel: PostCommentsViewModel = hiltViewModel(),
     paddingValues: PaddingValues,
-    postId: String,
-    viewmodel: PostCommentsViewModel = hiltViewModel()
+    postId: String
 ) {
     val state by viewmodel.postComments.collectAsStateWithLifecycle()
     LaunchedEffect(postId) {
@@ -62,7 +62,6 @@ fun PostCommentsScreen(
             val data = (state as PostCommentState.Success).data
             Scaffold(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(paddingValues),
                 topBar = {
                     Text(
@@ -77,7 +76,13 @@ fun PostCommentsScreen(
                     )
                 }
             ) { paddingValues ->
-                PostCommentsScreenContent(data = data)
+                PostCommentsScreenContent(
+                    paddingValues = paddingValues,
+                    data = data,
+                    onPostClick = {
+                        viewmodel.postComment(postId = postId, comment = it)
+                    }
+                )
             }
         }
     }
@@ -85,15 +90,19 @@ fun PostCommentsScreen(
 
 @Composable
 fun PostCommentsScreenContent(
+    paddingValues: PaddingValues,
     data: PostCommentData,
+    onPostClick: (String) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(paddingValues),
             contentPadding = PaddingValues(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -123,7 +132,9 @@ fun PostCommentsScreenContent(
             }
         }
         CommentInputField(
-            onPostClick = {}
+            onPostClick = {
+                onPostClick(it)
+            }
         )
     }
 }
@@ -234,6 +245,8 @@ fun PreviewRecipeCommentsScreen() {
                     postId = ""
                 )
             )
-        )
+        ),
+        onPostClick = {},
+        paddingValues = PaddingValues()
     )
 }

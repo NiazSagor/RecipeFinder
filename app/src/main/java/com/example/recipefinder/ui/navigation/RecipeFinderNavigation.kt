@@ -7,6 +7,7 @@ object RecipeFinderDestinations {
     const val HOME_ROUTE = "home_route"
     const val PROFILE_ROUTE = "profile_route"
     const val COMMUNITY_ROUTE = "community_route"
+    const val COMMUNITY_POST_COMMENT_ROUTE = "community_post_comment_route"
     const val POST_RECIPE_ROUTE = "post_recipe_route"
     const val RECIPE_DETAILS_ROUTE = "recipe_details_route"
     const val RECIPE_TIP_DETAILS_ROUTE = "recipe_tip_details_route"
@@ -45,4 +46,9 @@ class RecipeFinderNavigation(
         }
     }
 
+    val navigateToPostCommentScreen: (postId: String) -> Unit = {
+        navController.navigate("${RecipeFinderDestinations.COMMUNITY_POST_COMMENT_ROUTE}/$it") {
+            launchSingleTop = false
+        }
+    }
 }
