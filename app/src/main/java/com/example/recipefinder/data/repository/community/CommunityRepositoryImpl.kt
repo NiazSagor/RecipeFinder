@@ -5,6 +5,8 @@ import android.net.Uri
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.toCommunityPost
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.createSupabaseClient
@@ -36,6 +38,41 @@ class CommunityRepositoryImpl @Inject constructor(
 
     private val communityPostsDb by lazy { Firebase.firestore }
 
+    /*
+    * like a post in the community screen
+    * */
+    override suspend fun likePost(postId: String) {
+        try {
+            communityPostsDb
+                .collection("community")
+                .document(postId)
+                .update("like", FieldValue.increment(1))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /*
+    * get a particular recipe post by id
+    * this is required when a user want to comment on a recipe post
+    * */
+    override suspend fun getPost(postId: String): CommunityPost? {
+        return try {
+            val result = communityPostsDb
+                .collection("community")
+                .document(postId)
+                .get()
+                .await()
+            result?.toCommunityPost()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /*
+    * post recipes that will appear on the community screen
+    * */
     override suspend fun postRecipe(post: String, recipeTitle: String, recipeImageUri: Uri) {
         try {
             // TODO: get user name and profile image url
@@ -50,7 +87,8 @@ class CommunityRepositoryImpl @Inject constructor(
             )
             communityPostsDb
                 .collection("community")
-                .add(communityPost)
+                .document(communityPost.postId)
+                .set(communityPost)
         } catch (e: Exception) {
             e.printStackTrace()
             throw Exception("Failed to post recipe")

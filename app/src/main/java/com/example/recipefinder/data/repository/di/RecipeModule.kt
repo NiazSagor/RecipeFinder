@@ -2,6 +2,8 @@ package com.example.recipefinder.data.repository.di
 
 import com.example.recipefinder.data.repository.community.CommunityRepository
 import com.example.recipefinder.data.repository.community.CommunityRepositoryImpl
+import com.example.recipefinder.data.repository.community.PostCommentsRepository
+import com.example.recipefinder.data.repository.community.PostCommentsRepositoryImpl
 import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import com.example.recipefinder.data.repository.recipe.RecipeRepositoryImpl
 import com.example.recipefinder.data.repository.tip.RecipeTipsRepository
@@ -34,4 +36,10 @@ abstract class RecipeModule {
     abstract fun bindsCommunityRepository(
         communityRepository: CommunityRepositoryImpl
     ): CommunityRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsPostCommentsRepository(
+        postCommentsRepository: PostCommentsRepositoryImpl
+    ): PostCommentsRepository
 }

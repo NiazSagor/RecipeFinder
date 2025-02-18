@@ -82,11 +82,11 @@ fun PostRecipeScreen(
                 }
             )
         },
-        modifier = Modifier.padding(paddingValues)
+        modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
                 .padding(16.dp)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),

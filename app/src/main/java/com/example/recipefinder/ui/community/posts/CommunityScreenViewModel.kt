@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.community
+package com.example.recipefinder.ui.community.posts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +35,12 @@ class CommunityScreenViewModel @Inject constructor(
                 _communityPosts.value = CommunityScreenState.Error(e.message ?: "Unknown error")
                 e.printStackTrace()
             }
+        }
+    }
+
+    fun likePost(postId: String) {
+        viewModelScope.launch {
+            communityRepository.likePost(postId)
         }
     }
 }

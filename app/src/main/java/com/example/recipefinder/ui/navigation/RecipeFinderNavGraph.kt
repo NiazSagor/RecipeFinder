@@ -7,7 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.recipefinder.ui.community.CommunityScreen
+import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
+import com.example.recipefinder.ui.community.posts.CommunityScreen
 import com.example.recipefinder.ui.home.HomeContent
 import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.components.ProfileScreen
@@ -32,6 +33,7 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.HOME_ROUTE
         ) {
             HomeContent(
+                paddingValues = paddingValues,
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
             )
         }
@@ -40,10 +42,10 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.COMMUNITY_ROUTE
         ) {
             CommunityScreen(
-                paddingValues
-            ) {
-                navigationActions.navigateToPostRecipeScreen()
-            }
+                paddingValues,
+                onPostClick = { navigationActions.navigateToPostRecipeScreen() },
+                onComment = { navigationActions.navigateToPostCommentScreen(it) },
+            )
         }
 
         composable(
@@ -71,6 +73,7 @@ fun RecipeFinderNavGraph(
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
             if (recipeId != null) {
                 RecipeDetailsScreen(
+                    paddingValues = paddingValues,
                     recipeId = recipeId,
                     onPopCurrent = { navigationActions.popCurrentDestination() },
                     onTipClick = { navigationActions.navigateToMakeTipScreen(recipeId) },
@@ -90,10 +93,24 @@ fun RecipeFinderNavGraph(
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
             if (recipeId != null) {
                 RecipeTipDetailsScreen(
+                    paddingValues = paddingValues,
                     recipeId = recipeId,
                     onPopCurrent = {
                         navigationActions.popCurrentDestination()
                     }
+                )
+            }
+        }
+
+        composable(
+            route = "${RecipeFinderDestinations.COMMUNITY_POST_COMMENT_ROUTE}/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) {
+            val postId = it.arguments?.getString("postId")
+            if (postId != null) {
+                PostCommentsScreen(
+                    paddingValues = paddingValues,
+                    postId = postId
                 )
             }
         }
