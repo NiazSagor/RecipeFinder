@@ -4,30 +4,51 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.COMMUNITY_ROUTE
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.HOME_ROUTE
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.PROFILE_ROUTE
+import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.SIGN_IN_ROUTE
 import com.example.recipefinder.ui.navigation.RecipeFinderNavGraph
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
     navController: NavHostController
 ) {
+    var user by remember { mutableStateOf(Firebase.auth.currentUser) }
     Scaffold(
         bottomBar = {
             BottomAppBar {
                 BottomNavigationBar {
+                    // TODO: fix the scenario when the sign in is successful
                     if (it == "Profile") {
-                        navController.navigate(PROFILE_ROUTE) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
+                        if (user == null) {
+                            navController.navigate(SIGN_IN_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            }
+                        } else {
+                            navController.navigate(PROFILE_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     } else if (it == "Home") {
