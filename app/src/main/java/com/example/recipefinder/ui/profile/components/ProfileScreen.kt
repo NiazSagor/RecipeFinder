@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,25 +51,31 @@ import com.example.recipefinder.ui.home.HorizontalList
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 // TODO: fix the bottom nav
 @Composable
 fun ProfileScreen(
+    parentPaddingValues: PaddingValues,
     viewmodel: ProfileScreenViewModel = hiltViewModel(),
     onRecipeClick: (Int) -> Unit,
 ) {
+    var user by remember { mutableStateOf(Firebase.auth.currentUser) }
     val bookmarkedRecipes = viewmodel.profileState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Saved Recipe", "Activity")
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        modifier = Modifier
+    ) { paddingValues ->
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(
                     top = paddingValues.calculateTopPadding(),
                     bottom = paddingValues.calculateBottomPadding(),
                 )
+                .fillMaxSize()
         ) {
 
             Image(
@@ -89,14 +97,14 @@ fun ProfileScreen(
 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = paddingValues.calculateTopPadding() + parentPaddingValues.calculateTopPadding())
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     AsyncImage(
                         placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        model = "",
+                        model = user?.photoUrl,
                         contentDescription = "",
                         modifier = Modifier
                             .size(100.dp)
@@ -106,7 +114,7 @@ fun ProfileScreen(
                     )
 
                     Text(
-                        text = "Niaz",
+                        text = user?.displayName ?: "",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
