@@ -1,13 +1,10 @@
 package com.example.recipefinder.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.COMMUNITY_ROUTE
@@ -23,11 +20,12 @@ import com.google.firebase.auth.auth
 fun MainScreen(
     navController: NavHostController
 ) {
-    var user by remember { mutableStateOf(Firebase.auth.currentUser) }
+    var user = Firebase.auth.currentUser
     Scaffold(
         bottomBar = {
             BottomAppBar {
                 BottomNavigationBar {
+                    user = Firebase.auth.currentUser
                     // TODO: fix the scenario when the sign in is successful
                     if (it == "Profile") {
                         if (user == null) {
@@ -62,13 +60,25 @@ fun MainScreen(
                             }
                         }
                     } else if (it == "Community") {
-                        navController.navigate(COMMUNITY_ROUTE) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
+                        if (user == null) {
+                            navController.navigate(SIGN_IN_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            }
+                        } else {
+                            navController.navigate(COMMUNITY_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     }
