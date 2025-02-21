@@ -55,8 +55,10 @@ interface RestApiService {
     @ResponseFormat(Format.JSON)
     @GET("recipes/complexSearch")
     suspend fun searchRecipe(
+        @Query("query") query: String,
         @Query("type") type: String,
-        @Query("addRecipeInformation") addRecipeInformationL: Boolean,
+        @Query("maxReadyTime") maxReadyTime: Int,
+        @Query("addRecipeInformation") addRecipeInformation: Boolean,
         @Query("number") number: Int,
     ): SearchRecipesVo
 }

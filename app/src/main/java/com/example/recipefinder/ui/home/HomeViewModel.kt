@@ -62,7 +62,7 @@ class HomeViewModel @Inject constructor(
             } else {
                 query.trim()
             }
-            Log.e(TAG, "getSearchResult: sanitizedQuery $sanitizedQuery", )
+            Log.e(TAG, "getSearchResult: sanitizedQuery $sanitizedQuery")
             val results = recipeRepository.searchRecipesByIngredients(sanitizedQuery).map {
                 Log.e(TAG, "getSearchResult: ${it.title} time $time")
                 it.id
@@ -73,6 +73,32 @@ class HomeViewModel @Inject constructor(
             Log.e(TAG, "getSearchResult: query ${ingredients.joinToString()}")
             val filteredResult = getMatchedRecipeInformationFromLocal(ingredients, time)
             filteredResult
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList<Recipe>()
+        }
+    }
+
+    /*
+    * todo searches the meal type and time
+    * */
+    suspend fun getComplexSearchResult(
+        query: String,
+        time: Int,
+        dishType: String
+    ): List<Recipe> {
+        return try {
+            val sanitizedQuery = if (query.contains(",")) {
+                query.trim().replace(" ", "")
+            } else {
+                query.trim()
+            }
+            val result = recipeRepository.searchDishType(
+                query = sanitizedQuery,
+                type = dishType,
+                maxReadyTime = time
+            )
+            result
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList<Recipe>()

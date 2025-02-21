@@ -12,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ fun TopContainer(
     onRecipeClick: (Int) -> Unit
 ) {
     val selectedTimeFilter = remember { mutableIntStateOf(Int.MAX_VALUE) }
+    val selectedDishType = remember { mutableStateOf("main course") }
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
@@ -82,7 +84,7 @@ fun TopContainer(
                             selectedTimeFilter.intValue = it
                         },
                         onDishTypeSelected = {
-
+                            selectedDishType.value = it
                         }
                     )
                 }

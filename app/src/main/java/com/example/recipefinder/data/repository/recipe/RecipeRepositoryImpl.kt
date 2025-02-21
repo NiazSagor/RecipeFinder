@@ -75,8 +75,18 @@ class RecipeRepositoryImpl @Inject constructor(
         return restApiService.getNutrients(id).toRecipeNutrientInternalModel()
     }
 
-    override suspend fun searchDishType(type: String): List<Recipe> {
-        return restApiService.searchRecipe(type, true, 10).results.toInternalRecipesModel()
+    override suspend fun searchDishType(
+        query: String,
+        type: String,
+        maxReadyTime: Int
+    ): List<Recipe> {
+        return restApiService.searchRecipe(
+            query = query,
+            type = type,
+            maxReadyTime = maxReadyTime,
+            addRecipeInformation = false,
+            number = 10
+        ).results.toInternalRecipesModel()
     }
 
     override suspend fun sendTip(id: Int, tip: String, photoUri: Uri?) {

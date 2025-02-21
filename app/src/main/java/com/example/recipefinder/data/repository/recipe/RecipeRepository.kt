@@ -17,7 +17,7 @@ interface RecipeRepository {
     suspend fun getAnalyzedInstructions(id: Int): RecipeAnalyzedInstructions
     suspend fun saveRecipeInformation(recipe: Recipe)
     suspend fun getNutrients(id: Int): RecipeNutrient
-    suspend fun searchDishType(type: String): List<Recipe>
+    suspend fun searchDishType(query: String, type: String, maxReadyTime: Int): List<Recipe>
     suspend fun sendTip(id: Int, tip: String, photoUri: Uri?)
     suspend fun like(id: Int)
     suspend fun getLikesForRecipes(id: Int): Int
