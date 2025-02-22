@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-
+// TODO: implement onSearchTypeChanged
 @Composable
 fun SearchRecipeTimeSuggestionsGrid(
     onTimeFilterSelected: (Int) -> Unit,
@@ -20,6 +20,10 @@ fun SearchRecipeTimeSuggestionsGrid(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        SearchSuggestionChildScreen(onTimeFilterSelected, onDishTypeSelected)
+        SearchSuggestionChildScreen(
+            onTimeFilterSelected = onTimeFilterSelected,
+            onSearchTypeChanged = {},
+            onDishTypeSelected = onDishTypeSelected
+        )
     }
 }

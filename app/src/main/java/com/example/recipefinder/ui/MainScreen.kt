@@ -1,7 +1,6 @@
 package com.example.recipefinder.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,7 +25,6 @@ fun MainScreen(
             BottomAppBar {
                 BottomNavigationBar {
                     user = Firebase.auth.currentUser
-                    // TODO: fix the scenario when the sign in is successful
                     if (it == "Profile") {
                         if (user == null) {
                             navController.navigate(SIGN_IN_ROUTE) {
