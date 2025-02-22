@@ -78,17 +78,20 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun searchDishType(
         query: String,
         type: String,
-        maxReadyTime: Int
+        maxReadyTime: Int,
+        ingredients: String
     ): List<Recipe> {
         return restApiService.searchRecipe(
             query = query,
             type = type,
             maxReadyTime = maxReadyTime,
-            addRecipeInformation = false,
-            number = 10
+            addRecipeInformation = true,
+            number = 10,
+            includeIngredients = ingredients
         ).results.toInternalRecipesModel()
     }
 
+    // TODO: get user name and profile image
     override suspend fun sendTip(id: Int, tip: String, photoUri: Uri?) {
         recipeTipsRepository.sendTip(
             recipeId = id, tip = Tip(
