@@ -48,6 +48,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    suspend fun search(
+        searchType: String,
+        query: String,
+        time: Int,
+        mealType: String
+    ): List<Recipe> {
+        return if (searchType == "Ingredient") {
+            getSearchResult(query = query, time = time)
+        } else {
+            getComplexSearchResult(query = query, time = time, dishType = mealType)
+        }
+    }
+
     /*
     * get search result
     * loop one by one by id
@@ -55,14 +68,14 @@ class HomeViewModel @Inject constructor(
     * save the information datastore
     * observe the datastore to all the recipes and filter
     * */
-    suspend fun getSearchResult(query: String, time: Int): List<Recipe> {
+    private suspend fun getSearchResult(query: String, time: Int): List<Recipe> {
         return try {
             val sanitizedQuery = if (query.contains(",")) {
                 query.trim().replace(" ", "")
             } else {
                 query.trim()
             }
-            Log.e(TAG, "getSearchResult: sanitizedQuery $sanitizedQuery", )
+            Log.e(TAG, "getSearchResult: sanitizedQuery $sanitizedQuery")
             val results = recipeRepository.searchRecipesByIngredients(sanitizedQuery).map {
                 Log.e(TAG, "getSearchResult: ${it.title} time $time")
                 it.id
@@ -79,7 +92,34 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getRecipeDetailsById(id: Int) {
+    /*
+    * todo searches the meal type and time
+    * */
+    private suspend fun getComplexSearchResult(
+        query: String,
+        time: Int,
+        dishType: String
+    ): List<Recipe> {
+        return try {
+            val sanitizedQuery = if (query.contains(",")) {
+                query.trim().replace(" ", "")
+            } else {
+                query.trim()
+            }
+            val result = recipeRepository.searchDishType(
+                query = sanitizedQuery,
+                type = dishType,
+                maxReadyTime = time,
+                ingredients = sanitizedQuery
+            )
+            result
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList<Recipe>()
+        }
+    }
+
+    private suspend fun getRecipeDetailsById(id: Int) {
         try {
             // save the information datastore
             val recipe = recipeRepository.getRecipeById(id)
@@ -92,7 +132,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getMatchedRecipeInformationFromLocal(
+    private suspend fun getMatchedRecipeInformationFromLocal(
         ingredients: List<String>,
         time: Int
     ): List<Recipe> {

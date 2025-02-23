@@ -9,25 +9,42 @@ import com.example.recipefinder.ui.home.components.BottomNavigationBar
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.COMMUNITY_ROUTE
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.HOME_ROUTE
 import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.PROFILE_ROUTE
+import com.example.recipefinder.ui.navigation.RecipeFinderDestinations.SIGN_IN_ROUTE
 import com.example.recipefinder.ui.navigation.RecipeFinderNavGraph
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
     navController: NavHostController
 ) {
+    var user = Firebase.auth.currentUser
     Scaffold(
         bottomBar = {
             BottomAppBar {
                 BottomNavigationBar {
+                    user = Firebase.auth.currentUser
                     if (it == "Profile") {
-                        navController.navigate(PROFILE_ROUTE) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
+                        if (user == null) {
+                            navController.navigate(SIGN_IN_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            }
+                        } else {
+                            navController.navigate(PROFILE_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     } else if (it == "Home") {
@@ -41,13 +58,25 @@ fun MainScreen(
                             }
                         }
                     } else if (it == "Community") {
-                        navController.navigate(COMMUNITY_ROUTE) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
+                        if (user == null) {
+                            navController.navigate(SIGN_IN_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            }
+                        } else {
+                            navController.navigate(COMMUNITY_ROUTE) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     }

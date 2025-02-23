@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,6 +54,7 @@ import com.example.recipefinder.ui.myiconpack.Wave
 // TODO: fix the bottom nav
 @Composable
 fun ProfileScreen(
+    parentPaddingValues: PaddingValues,
     viewmodel: ProfileScreenViewModel = hiltViewModel(),
     onRecipeClick: (Int) -> Unit,
 ) {
@@ -60,14 +62,16 @@ fun ProfileScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Saved Recipe", "Activity")
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        modifier = Modifier
+    ) { paddingValues ->
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(
                     top = paddingValues.calculateTopPadding(),
                     bottom = paddingValues.calculateBottomPadding(),
                 )
+                .fillMaxSize()
         ) {
 
             Image(
@@ -89,15 +93,15 @@ fun ProfileScreen(
 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = paddingValues.calculateTopPadding() + parentPaddingValues.calculateTopPadding())
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     AsyncImage(
                         placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        model = "",
-                        contentDescription = "",
+                        model = viewmodel.getUserProfilePhoto(),
+                        contentDescription = "User profile image",
                         modifier = Modifier
                             .size(100.dp)
                             .clip(CircleShape)
@@ -106,7 +110,7 @@ fun ProfileScreen(
                     )
 
                     Text(
-                        text = "Niaz",
+                        text = viewmodel.getUserName(),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )

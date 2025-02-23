@@ -29,11 +29,11 @@ fun RecipeInformationVo.toInternalRecipeModel() =
         summary = this.summary,
         servings = this.servings,
         readyInMinutes = this.readyInMinutes,
-        cookingMinutes = this.cookingMinutes,
-        preparationMinutes = this.preparationMinutes,
-        like = 0,
+        cookingMinutes = this.cookingMinutes ?: 0,
+        preparationMinutes = this.preparationMinutes ?: 0,
+        like = this.aggregateLikes,
         dishTypes = this.dishTypes,
-        extendedIngredients = this.extendedIngredients.toInternalIngredientsModel()
+        extendedIngredients = this.extendedIngredients?.toInternalIngredientsModel() ?: emptyList(),
     )
 
 fun List<ExtendedIngredientVo>.toInternalIngredientsModel(): List<Ingredient> {

@@ -32,14 +32,7 @@ import com.example.recipefinder.ui.home.elements.TopContainer
 import com.example.recipefinder.ui.home.elements.TopRecipeCard
 
 @Composable
-fun Home(
-
-) {
-
-}
-
-@Composable
-fun HomeContent(
+fun HomeScreen(
     paddingValues: PaddingValues,
     onRecipeClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -84,8 +77,8 @@ fun HomeContent(
                         item {
                             if (list3.isNotEmpty()) {
                                 TopRecipeCard(
-                                    onRecipeClick,
-                                    list3.last { it.readyInMinutes > 0 })
+                                    onRecipeClick = onRecipeClick,
+                                    recipe = list3.last { it.readyInMinutes > 0 })
                             }
                         }
 
@@ -114,8 +107,8 @@ fun HomeContent(
                                     },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
-                                    "Fancy snacks!",
-                                    list2
+                                    title = "Fancy snacks!",
+                                    recipes = list2
                                 )
                             }
                         }
@@ -124,8 +117,11 @@ fun HomeContent(
                                 HorizontalList(
                                     getLikesForRecipe = {
                                         viewModel.getRecipeLike(it)
-                                    }, onRecipeClick,
-                                    onSave = { viewModel.save(it) }, "Holiday!", list3
+                                    },
+                                    onRecipeClick = onRecipeClick,
+                                    onSave = { viewModel.save(it) },
+                                    title = "Holiday!",
+                                    recipes = list3
                                 )
                             }
                         }
@@ -159,7 +155,13 @@ fun HorizontalList(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(recipes) { index, recipe ->
-                RecipeHorizontalListItem(getLikesForRecipe, recipe, false, onRecipeClick, onSave)
+                RecipeHorizontalListItem(
+                    getLikesForRecipe = getLikesForRecipe,
+                    recipe = recipe,
+                    searchItem = false,
+                    onRecipeClick = onRecipeClick,
+                    onSave = onSave
+                )
             }
         }
     }

@@ -2,12 +2,15 @@ package com.example.recipefinder.data.repository.community
 
 import com.example.recipefinder.data.model.PostComment
 import com.example.recipefinder.data.model.toPostComment
+import com.example.recipefinder.data.repository.user.UserRepository
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class PostCommentsRepositoryImpl @Inject constructor() : PostCommentsRepository {
+class PostCommentsRepositoryImpl @Inject constructor(
+    private val userRepository: UserRepository
+) : PostCommentsRepository {
 
     private val postCommentsDb by lazy { Firebase.firestore }
 
@@ -30,11 +33,10 @@ class PostCommentsRepositoryImpl @Inject constructor() : PostCommentsRepository 
     }
 
     override suspend fun postComment(postId: String, comment: String) {
-        // TODO: get user name and profile image
         val comment = PostComment(
             comment = comment,
-            userName = "Niaz Sagor",
-            userProfileImageUrl = "",
+            userName = userRepository.getName(),
+            userProfileImageUrl = userRepository.getPhoto().toString(),
             postId = postId
         )
         postCommentsDb

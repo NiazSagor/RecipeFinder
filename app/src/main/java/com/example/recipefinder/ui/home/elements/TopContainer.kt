@@ -12,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import com.example.recipefinder.ui.home.components.rememberSearchState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+// TODO: handle when coming back from the search screen to the suggestion screen 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TopContainer(
@@ -39,6 +41,11 @@ fun TopContainer(
     onRecipeClick: (Int) -> Unit
 ) {
     val selectedTimeFilter = remember { mutableIntStateOf(Int.MAX_VALUE) }
+    val selectedMealType = remember { mutableStateOf("main course") }
+    val selectedSearchType = remember { mutableStateOf("Ingredient") }
+    val searchBarHint =
+        if (selectedSearchType.value == "Ingredient") "Search recipes by ingredients" else "Search recipes by meal type"
+
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
@@ -47,7 +54,12 @@ fun TopContainer(
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
                 Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
-                viewModel.getSearchResult(query.text, selectedTimeFilter.intValue)
+                viewModel.search(
+                    searchType = selectedSearchType.value,
+                    query = query.text,
+                    time = selectedTimeFilter.intValue,
+                    mealType = selectedMealType.value
+                )
             }
         }
     Box(
@@ -61,10 +73,9 @@ fun TopContainer(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            //Text(text = "RecipeFinder", fontSize = 22.sp, fontStyle = FontStyle.Normal)
-            //Spacer(modifier = Modifier.height(16.dp))
             SearchBar(
                 query = state.query,
+                hint = searchBarHint,
                 onQueryChange = { state.query = it },
                 onSearchFocusChange = { state.focused = it },
                 onClearQuery = { state.query = TextFieldValue("") },
@@ -82,7 +93,10 @@ fun TopContainer(
                             selectedTimeFilter.intValue = it
                         },
                         onDishTypeSelected = {
-
+                            selectedMealType.value = it
+                        },
+                        onSearchTypeChanged = {
+                            selectedSearchType.value = it
                         }
                     )
                 }

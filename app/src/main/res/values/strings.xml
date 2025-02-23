@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RecipeFinder</string>
+    <string name="default_web_client_id">142000257856-8v8ovum4hvh4okagp38f21fk5p5l29cg.apps.googleusercontent.com</string>
 <!--    <string name="app_name">Dishcovery</string>-->
 </resources>

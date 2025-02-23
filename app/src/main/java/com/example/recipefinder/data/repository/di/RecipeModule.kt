@@ -8,6 +8,8 @@ import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import com.example.recipefinder.data.repository.recipe.RecipeRepositoryImpl
 import com.example.recipefinder.data.repository.tip.RecipeTipsRepository
 import com.example.recipefinder.data.repository.tip.RecipeTipsRepositoryImpl
+import com.example.recipefinder.data.repository.user.UserRepository
+import com.example.recipefinder.data.repository.user.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -42,4 +44,11 @@ abstract class RecipeModule {
     abstract fun bindsPostCommentsRepository(
         postCommentsRepository: PostCommentsRepositoryImpl
     ): PostCommentsRepository
+
+
+    @Binds
+    @Singleton
+    abstract fun bindsUserRepository(
+        userRepository: UserRepositoryImpl
+    ): UserRepository
 }

@@ -9,11 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
 import com.example.recipefinder.ui.community.posts.CommunityScreen
-import com.example.recipefinder.ui.home.HomeContent
+import com.example.recipefinder.ui.home.HomeScreen
 import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.components.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
 import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
+import com.example.recipefinder.ui.signin.SignInScreen
 
 // TODO: fix bottom nav
 @Composable
@@ -32,7 +33,7 @@ fun RecipeFinderNavGraph(
         composable(
             route = RecipeFinderDestinations.HOME_ROUTE
         ) {
-            HomeContent(
+            HomeScreen(
                 paddingValues = paddingValues,
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
             )
@@ -62,6 +63,7 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.PROFILE_ROUTE
         ) {
             ProfileScreen(
+                parentPaddingValues = paddingValues,
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
             )
         }
@@ -93,7 +95,6 @@ fun RecipeFinderNavGraph(
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
             if (recipeId != null) {
                 RecipeTipDetailsScreen(
-                    paddingValues = paddingValues,
                     recipeId = recipeId,
                     onPopCurrent = {
                         navigationActions.popCurrentDestination()
@@ -112,6 +113,17 @@ fun RecipeFinderNavGraph(
                     paddingValues = paddingValues,
                     postId = postId
                 )
+            }
+        }
+
+        composable(
+            route = RecipeFinderDestinations.SIGN_IN_ROUTE
+        ) {
+            SignInScreen(
+                paddingValues = paddingValues
+            ) {
+                navigationActions.popCurrentDestination()
+                navigationActions.navigateToProfileScreen()
             }
         }
     }

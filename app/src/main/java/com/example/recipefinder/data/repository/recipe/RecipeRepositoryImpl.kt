@@ -10,6 +10,7 @@ import com.example.recipefinder.data.model.Tip
 import com.example.recipefinder.data.model.toRecipeAnalyzedInstructionsItemInternalModel
 import com.example.recipefinder.data.model.toRecipeNutrientInternalModel
 import com.example.recipefinder.data.repository.tip.RecipeTipsRepository
+import com.example.recipefinder.data.repository.user.UserRepository
 import com.example.recipefinder.datastore.RecipeDataStore
 import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.model.toInternalRecipeModel
@@ -25,7 +26,8 @@ private const val TAG = "HomeViewModel"
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDataStore: RecipeDataStore,
     private val restApiService: RestApiService,
-    private val recipeTipsRepository: RecipeTipsRepository
+    private val recipeTipsRepository: RecipeTipsRepository,
+    private val userRepository: UserRepository,
 ) : RecipeRepository {
 
     override suspend fun getRandomRecipes(): Flow<List<Recipe>?> {
@@ -75,8 +77,20 @@ class RecipeRepositoryImpl @Inject constructor(
         return restApiService.getNutrients(id).toRecipeNutrientInternalModel()
     }
 
-    override suspend fun searchDishType(type: String): List<Recipe> {
-        return restApiService.searchRecipe(type, true, 10).results.toInternalRecipesModel()
+    override suspend fun searchDishType(
+        query: String,
+        type: String,
+        maxReadyTime: Int,
+        ingredients: String
+    ): List<Recipe> {
+        return restApiService.searchRecipe(
+            query = query,
+            type = type,
+            maxReadyTime = maxReadyTime,
+            addRecipeInformation = true,
+            number = 10,
+            includeIngredients = ingredients
+        ).results.toInternalRecipesModel()
     }
 
     override suspend fun sendTip(id: Int, tip: String, photoUri: Uri?) {
@@ -84,8 +98,8 @@ class RecipeRepositoryImpl @Inject constructor(
             recipeId = id, tip = Tip(
                 timestamp = System.currentTimeMillis(),
                 tip = tip,
-                userName = "Niaz Sagor",
-                userProfileImageUrl = ""
+                userName = userRepository.getName(),
+                userProfileImageUrl = userRepository.getPhoto().toString()
             ),
             photoUri = photoUri
         )

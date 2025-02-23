@@ -3,7 +3,6 @@ package com.example.recipefinder.ui.home.components;
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -11,7 +10,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,7 +30,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -42,6 +39,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SearchBar(
     query: TextFieldValue,
+    hint: String,
     onQueryChange: (TextFieldValue) -> Unit,
     onSearchFocusChange: (Boolean) -> Unit,
     onClearQuery: () -> Unit,
@@ -69,12 +67,17 @@ fun SearchBar(
                     keyboardController?.hide()
                     onBack()
                 }) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = null, tint = androidx.compose.material3.MaterialTheme.colorScheme.primary)
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                )
             }
         }
 
         SearchTextField(
             query,
+            hint,
             onQueryChange,
             onSearchFocusChange,
             onClearQuery,
@@ -93,6 +96,7 @@ fun SearchBar(
 @Composable
 fun SearchTextField(
     query: TextFieldValue,
+    hint: String,
     onQueryChange: (TextFieldValue) -> Unit,
     onSearchFocusChange: (Boolean) -> Unit,
     onClearQuery: () -> Unit,
@@ -127,7 +131,7 @@ fun SearchTextField(
             ) {
 
                 if (query.text.isEmpty()) {
-                    SearchHint(modifier.padding(start = 24.dp, end = 8.dp))
+                    SearchHint(hint, modifier.padding(start = 24.dp, end = 8.dp))
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -162,7 +166,11 @@ fun SearchTextField(
 
                         query.text.isNotEmpty() -> {
                             IconButton(onClick = onClearQuery) {
-                                Icon(imageVector = Icons.Filled.Cancel, contentDescription = null, tint = androidx.compose.material3.MaterialTheme.colorScheme.primary)
+                                Icon(
+                                    imageVector = Icons.Filled.Cancel,
+                                    contentDescription = null,
+                                    tint = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                                )
                             }
                         }
                     }
@@ -173,7 +181,7 @@ fun SearchTextField(
 }
 
 @Composable
-private fun SearchHint(modifier: Modifier = Modifier) {
+private fun SearchHint(hint: String, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -183,7 +191,7 @@ private fun SearchHint(modifier: Modifier = Modifier) {
     ) {
         Text(
             color = MaterialTheme.colors.onSurface,
-            text = "Search Recipe or Ingredients",
+            text = hint,
         )
     }
 }

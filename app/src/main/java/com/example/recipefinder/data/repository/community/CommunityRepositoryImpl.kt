@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.Uri
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.toCommunityPost
+import com.example.recipefinder.data.repository.user.UserRepository
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,7 +19,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val userRepository: UserRepository
 ) : CommunityRepository {
 
     // TODO: move the url and key to secrets
@@ -75,14 +76,13 @@ class CommunityRepositoryImpl @Inject constructor(
     * */
     override suspend fun postRecipe(post: String, recipeTitle: String, recipeImageUri: Uri) {
         try {
-            // TODO: get user name and profile image url
             val recipeImageUrl = uploadRecipePhoto(recipeTitle, recipeImageUri)
             val communityPost = CommunityPost(
                 post = post,
                 recipeTitle = recipeTitle,
                 recipeImageUrl = recipeImageUrl!!,
-                userName = "Ripa Akter",
-                userProfileImageUrl = "",
+                userName = userRepository.getName(),
+                userProfileImageUrl = userRepository.getPhoto().toString(),
                 like = 0
             )
             communityPostsDb
