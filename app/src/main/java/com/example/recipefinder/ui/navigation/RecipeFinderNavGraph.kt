@@ -95,7 +95,6 @@ fun RecipeFinderNavGraph(
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
             if (recipeId != null) {
                 RecipeTipDetailsScreen(
-                    paddingValues = paddingValues,
                     recipeId = recipeId,
                     onPopCurrent = {
                         navigationActions.popCurrentDestination()

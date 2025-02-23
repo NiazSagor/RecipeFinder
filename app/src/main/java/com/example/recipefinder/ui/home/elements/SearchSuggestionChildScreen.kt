@@ -39,6 +39,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -65,6 +66,7 @@ fun SearchSuggestionChildScreen(
     val timeSuggestions = listOf(5, 20, 45, 60)
     var selectedMealType by remember { mutableStateOf<String?>(null) }
     var switchSearchByMealType by remember { mutableStateOf(false) }
+    var selectedTimeFilter by remember { mutableIntStateOf(Int.MAX_VALUE) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -85,12 +87,13 @@ fun SearchSuggestionChildScreen(
                     )
                     Switch(
                         checked = switchSearchByMealType,
-                        onCheckedChange = {
-                            switchSearchByMealType = it
+                        onCheckedChange = { checked ->
+                            switchSearchByMealType = checked
                             onSearchTypeChanged(
-                                if (switchSearchByMealType) "Meal"
+                                if (checked) "Meal"
                                 else "Ingredient"
                             )
+                            if (!checked) selectedMealType = null
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colorScheme.primary,
@@ -152,8 +155,12 @@ fun SearchSuggestionChildScreen(
 
         item {
             TimeFilterGrid(
+                selectedTimeFilter = selectedTimeFilter,
                 timeSuggestions = timeSuggestions,
-                onTimeFilterSelected = onTimeFilterSelected
+                onTimeFilterSelected = {
+                    onTimeFilterSelected(it)
+                    selectedTimeFilter = it
+                }
             )
         }
     }
@@ -240,6 +247,7 @@ fun MealTypeSuggestionGridItem(
 
 @Composable
 fun TimeFilterGrid(
+    selectedTimeFilter: Int,
     timeSuggestions: List<Int>,
     onTimeFilterSelected: (Int) -> Unit
 ) {
@@ -282,8 +290,8 @@ fun TimeFilterGrid(
                             modifier = Modifier.fillMaxWidth()
                         )
                     },
-                    selected = selected,
-                    leadingIcon = if (selected) {
+                    selected = selectedTimeFilter == timeSuggestions[time],
+                    leadingIcon = if (selectedTimeFilter == timeSuggestions[time]) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Done,

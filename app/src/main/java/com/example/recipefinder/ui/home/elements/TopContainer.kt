@@ -43,6 +43,9 @@ fun TopContainer(
     val selectedTimeFilter = remember { mutableIntStateOf(Int.MAX_VALUE) }
     val selectedMealType = remember { mutableStateOf("main course") }
     val selectedSearchType = remember { mutableStateOf("Ingredient") }
+    val searchBarHint =
+        if (selectedSearchType.value == "Ingredient") "Search recipes by ingredients" else "Search recipes by meal type"
+
     val state =
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
@@ -72,7 +75,7 @@ fun TopContainer(
         ) {
             SearchBar(
                 query = state.query,
-                hint = if (selectedSearchType.value == "Ingredient") "Search recipes by ingredients" else "Search recipes by meal type",
+                hint = searchBarHint,
                 onQueryChange = { state.query = it },
                 onSearchFocusChange = { state.focused = it },
                 onClearQuery = { state.query = TextFieldValue("") },
