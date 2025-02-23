@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
 import com.example.recipefinder.ui.community.posts.CommunityScreen
-import com.example.recipefinder.ui.home.HomeContent
+import com.example.recipefinder.ui.home.HomeScreen
 import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.components.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
@@ -33,7 +33,7 @@ fun RecipeFinderNavGraph(
         composable(
             route = RecipeFinderDestinations.HOME_ROUTE
         ) {
-            HomeContent(
+            HomeScreen(
                 paddingValues = paddingValues,
                 onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
             )

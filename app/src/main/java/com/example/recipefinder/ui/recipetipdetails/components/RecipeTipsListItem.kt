@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.example.recipefinder.R
 import com.example.recipefinder.data.model.Tip
 import com.example.recipefinder.util.getRelativeTimeSpanString
 
@@ -40,10 +39,9 @@ fun RecipeTipsListItem(tip: Tip) {
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // TODO: user profile pic url 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(R.drawable.ic_launcher_background)
+                        .data(tip.userProfileImageUrl)
                         .build(),
                     contentDescription = "",
                     modifier = Modifier
@@ -55,7 +53,6 @@ fun RecipeTipsListItem(tip: Tip) {
                 Column(
 
                 ) {
-                    // TODO: username 
                     Text(
                         text = tip.userName,
                         fontWeight = FontWeight.Bold,

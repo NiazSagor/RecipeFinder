@@ -28,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,8 +50,6 @@ import com.example.recipefinder.ui.home.HorizontalList
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 // TODO: fix the bottom nav
 @Composable
@@ -61,7 +58,6 @@ fun ProfileScreen(
     viewmodel: ProfileScreenViewModel = hiltViewModel(),
     onRecipeClick: (Int) -> Unit,
 ) {
-    var user by remember { mutableStateOf(Firebase.auth.currentUser) }
     val bookmarkedRecipes = viewmodel.profileState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Saved Recipe", "Activity")
@@ -104,8 +100,8 @@ fun ProfileScreen(
                 ) {
                     AsyncImage(
                         placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        model = user?.photoUrl,
-                        contentDescription = "",
+                        model = viewmodel.getUserProfilePhoto(),
+                        contentDescription = "User profile image",
                         modifier = Modifier
                             .size(100.dp)
                             .clip(CircleShape)
@@ -114,7 +110,7 @@ fun ProfileScreen(
                     )
 
                     Text(
-                        text = user?.displayName ?: "",
+                        text = viewmodel.getUserName(),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )

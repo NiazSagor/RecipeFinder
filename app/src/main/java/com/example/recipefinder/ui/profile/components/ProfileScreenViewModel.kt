@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.repository.recipe.RecipeRepository
+import com.example.recipefinder.data.repository.user.UserRepository
 import com.example.recipefinder.datastore.RecipeDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ sealed class ProfileState {
 class ProfileScreenViewModel @Inject constructor(
     private val dataStore: RecipeDataStore,
     private val recipeRepository: RecipeRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _profileState = MutableStateFlow<ProfileState>(ProfileState.Idle)
@@ -47,6 +49,10 @@ class ProfileScreenViewModel @Inject constructor(
             0
         }
     }
+
+    fun getUserName(): String = userRepository.getName()
+
+    fun getUserProfilePhoto(): String = userRepository.getPhoto().toString()
 
     fun saveRecipe(recipe: Recipe) {
         viewModelScope.launch {

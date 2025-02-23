@@ -70,10 +70,9 @@ fun CommunityPostItem(
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // TODO: user profile pic url
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(R.drawable.ic_launcher_background)
+                        .data(post.userProfileImageUrl)
                         .build(),
                     contentDescription = "",
                     modifier = Modifier
