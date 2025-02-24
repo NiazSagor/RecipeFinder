@@ -62,6 +62,58 @@ class RecipeDataStore @Inject constructor(
             }
     }
 
+    suspend fun likeRecipe(recipe: Recipe) {
+        val likedRecipes: List<Recipe> = getLikedRecipes().first() ?: emptyList()
+        if (!likedRecipes.contains(recipe)) {
+            context.recipeDataStore
+                .edit { preferences ->
+                    val jsonString = gson.toJson(likedRecipes.plus(recipe))
+                    preferences[stringPreferencesKey("liked_recipes")] = jsonString
+                }
+        }
+    }
+
+    fun getLikedRecipes(): Flow<List<Recipe>?> {
+        return context.recipeDataStore
+            .data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences ->
+                val jsonString = preferences[stringPreferencesKey("liked_recipes")] ?: ""
+                if (jsonString.isNotEmpty()) {
+                    val type = object : TypeToken<List<Recipe>>() {}.type
+                    gson.fromJson(jsonString, type)
+                } else {
+                    emptyList()
+                }
+            }
+    }
+
+    suspend fun tippedRecipe(recipe: Recipe) {
+        val likedRecipes: List<Recipe> = getTippedRecipes().first() ?: emptyList()
+        if (!likedRecipes.contains(recipe)) {
+            context.recipeDataStore
+                .edit { preferences ->
+                    val jsonString = gson.toJson(likedRecipes.plus(recipe))
+                    preferences[stringPreferencesKey("tipped_recipes")] = jsonString
+                }
+        }
+    }
+
+    fun getTippedRecipes(): Flow<List<Recipe>?> {
+        return context.recipeDataStore
+            .data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences ->
+                val jsonString = preferences[stringPreferencesKey("tipped_recipes")] ?: ""
+                if (jsonString.isNotEmpty()) {
+                    val type = object : TypeToken<List<Recipe>>() {}.type
+                    gson.fromJson(jsonString, type)
+                } else {
+                    emptyList()
+                }
+            }
+    }
+
     suspend fun getRecipeById(id: Int): Recipe? {
         val savedRecipes: List<Recipe>? = getRandomRecipes().first()
         return savedRecipes?.let {

@@ -134,7 +134,11 @@ fun ProfileScreen(
                     ProfileState.Loading -> {}
                     is ProfileState.Success -> {
                         val recipes =
-                            (profileState as ProfileState.Success).bookmarkedRecipes
+                            (profileState as ProfileState.Success).data.bookmarkedRecipes
+
+                        val myRatings = (profileState as ProfileState.Success).data.myRatings
+
+                        val myTips = (profileState as ProfileState.Success).data.myTips
 
                         when (selectedTabIndex) {
                             0 -> {
@@ -147,8 +151,9 @@ fun ProfileScreen(
 
                             1 -> {
                                 ActivityScreen(
-                                    myRatings = emptyList(),
-                                    myTips = emptyList(),
+                                    paddingValues = parentPaddingValues,
+                                    myRatings = myRatings,
+                                    myTips = myTips,
                                     getLikesForRecipe = { viewmodel.getRecipeLike(it) },
                                     onRecipeClick = { onRecipeClick(it) },
                                     onSave = { viewmodel.saveRecipe(it) }
@@ -188,6 +193,7 @@ fun SavedRecipeScreen(
 
 @Composable
 fun ActivityScreen(
+    paddingValues: PaddingValues,
     myRatings: List<Recipe>,
     myTips: List<Recipe>,
     getLikesForRecipe: suspend (Int) -> Int,
@@ -195,7 +201,9 @@ fun ActivityScreen(
     onSave: (Recipe) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = paddingValues.calculateBottomPadding()),
     ) {
         item {
             Column(

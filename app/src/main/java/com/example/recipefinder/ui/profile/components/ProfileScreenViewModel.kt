@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,9 +18,15 @@ import javax.inject.Inject
 sealed class ProfileState {
     object Idle : ProfileState()
     object Loading : ProfileState()
-    data class Success(val bookmarkedRecipes: List<Recipe>) : ProfileState()
+    data class Success(val data: ProfileData) : ProfileState()
     data class Error(val message: String) : ProfileState()
 }
+
+data class ProfileData(
+    val bookmarkedRecipes: List<Recipe>,
+    val myRatings: List<Recipe>,
+    val myTips: List<Recipe>,
+)
 
 @HiltViewModel
 class ProfileScreenViewModel @Inject constructor(
@@ -30,11 +36,19 @@ class ProfileScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     val profileState: StateFlow<ProfileState> =
-        dataStore.getRandomRecipes()
-            .map { allRecipes ->
-                val bookMarked = allRecipes?.filter { it.isBookmarked }
-                ProfileState.Success(bookMarked ?: emptyList()) as ProfileState
-            }.catch { emit(ProfileState.Error(it.message ?: "Unknown error")) }
+        combine(
+            dataStore.getLikedRecipes(),
+            dataStore.getTippedRecipes(),
+            dataStore.getRandomRecipes(),
+        ) { myRatings, myTips, allRecipes ->
+            val profileData = ProfileData(
+                bookmarkedRecipes = allRecipes?.filter { it.isBookmarked } ?: emptyList(),
+                myRatings = myRatings ?: emptyList(),
+                myTips = myTips ?: emptyList(),
+            )
+            ProfileState.Success(profileData) as ProfileState
+        }
+            .catch { emit(ProfileState.Error(it.message.toString())) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),

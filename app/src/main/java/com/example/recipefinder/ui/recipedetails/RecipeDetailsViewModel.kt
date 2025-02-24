@@ -7,6 +7,7 @@ import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
 import com.example.recipefinder.data.model.RecipeNutrient
 import com.example.recipefinder.data.repository.recipe.RecipeRepository
+import com.example.recipefinder.datastore.RecipeDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +29,7 @@ sealed class RecipeInstructionsState {
 
 @HiltViewModel
 class RecipeDetailsViewModel @Inject constructor(
+    private val recipeDataStore: RecipeDataStore,
     private val recipeRepository: RecipeRepository,
 ) : ViewModel() {
 
@@ -93,15 +95,17 @@ class RecipeDetailsViewModel @Inject constructor(
         return recipeRepository.getNutrients(id)
     }
 
-    fun sendTip(recipeId: Int, tip: String, photoUri: Uri?) {
+    fun sendTip(recipeId: Int, tip: String, photoUri: Uri?, recipe: Recipe) {
         viewModelScope.launch {
             recipeRepository.sendTip(recipeId, tip, photoUri)
+            recipeDataStore.tippedRecipe(recipe)
         }
     }
 
-    fun like(recipeId: Int) {
+    fun like(recipeId: Int, recipe: Recipe) {
         viewModelScope.launch {
             recipeRepository.like(recipeId)
+            recipeDataStore.likeRecipe(recipe)
         }
     }
 
