@@ -85,8 +85,7 @@ fun ProfileScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
@@ -143,7 +142,8 @@ fun ProfileScreen(
                         when (selectedTabIndex) {
                             0 -> {
                                 SavedRecipeScreen(
-                                    recipes, viewmodel
+                                    paddingValues = parentPaddingValues,
+                                    recipes = recipes, viewmodel = viewmodel
                                 ) {
                                     onRecipeClick(it)
                                 }
@@ -170,25 +170,35 @@ fun ProfileScreen(
 
 @Composable
 fun SavedRecipeScreen(
+    paddingValues: PaddingValues,
     recipes: List<Recipe>,
     viewmodel: ProfileScreenViewModel,
     onRecipeClick: (Int) -> Unit,
 ) {
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        content = {
-            itemsIndexed(recipes) { index, recipe ->
-                RecipeHorizontalListItem(
-                    getLikesForRecipe = { viewmodel.getRecipeLike(it) },
-                    recipe = recipe,
-                    searchItem = true,
-                    onRecipeClick = { onRecipeClick(it) },
-                    onSave = { viewmodel.saveRecipe(it) }
-                )
-            }
-        },
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = paddingValues.calculateBottomPadding())
+    ) {
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalItemSpacing = 16.dp,
+            content = {
+                itemsIndexed(recipes) { index, recipe ->
+                    RecipeHorizontalListItem(
+                        getLikesForRecipe = { viewmodel.getRecipeLike(it) },
+                        recipe = recipe,
+                        searchItem = true,
+                        onRecipeClick = { onRecipeClick(it) },
+                        onSave = { viewmodel.saveRecipe(it) }
+                    )
+                }
+            },
+        )
+    }
 }
 
 @Composable
@@ -203,7 +213,7 @@ fun ActivityScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = paddingValues.calculateBottomPadding()),
+            .padding(bottom = paddingValues.calculateBottomPadding(), start = 16.dp, end = 16.dp),
     ) {
         item {
             Column(
