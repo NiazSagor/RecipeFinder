@@ -119,11 +119,6 @@ fun RecipeHorizontalListItem(
 
                 Box(
                     modifier = Modifier
-                        .padding(6.dp)
-                        .size(35.dp)
-                        .background(color = Color.White, shape = RoundedCornerShape(32.dp))
-                        .align(Alignment.BottomEnd)
-                        .wrapContentSize()
                         .clickable(
                             enabled = true,
                             onClick = {
@@ -131,6 +126,11 @@ fun RecipeHorizontalListItem(
                                 isSaved = !isSaved
                             },
                         )
+                        .padding(6.dp)
+                        .size(35.dp)
+                        .background(color = Color.White, shape = RoundedCornerShape(32.dp))
+                        .align(Alignment.BottomEnd)
+                        .wrapContentSize()
                 ) {
                     Icon(
                         imageVector = if (isSaved) Icons.Filled.Bookmark else Icons.Default.BookmarkBorder,

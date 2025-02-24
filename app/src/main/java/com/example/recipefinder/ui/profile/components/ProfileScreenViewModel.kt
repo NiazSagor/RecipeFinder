@@ -7,6 +7,7 @@ import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import com.example.recipefinder.data.repository.user.UserRepository
 import com.example.recipefinder.datastore.RecipeDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -57,6 +58,8 @@ class ProfileScreenViewModel @Inject constructor(
     fun saveRecipe(recipe: Recipe) {
         viewModelScope.launch {
             dataStore.bookmarkRecipe(recipe)
+            delay(200)
+            _profileState.value = ProfileState.Success(dataStore.getBookmarkedRecipes())
         }
     }
 }
