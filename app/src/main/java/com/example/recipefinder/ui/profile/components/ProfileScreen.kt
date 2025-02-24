@@ -1,7 +1,6 @@
 package com.example.recipefinder.ui.profile.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,14 +50,14 @@ import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
 
-// TODO: fix the bottom nav
+
 @Composable
 fun ProfileScreen(
     parentPaddingValues: PaddingValues,
     viewmodel: ProfileScreenViewModel = hiltViewModel(),
     onRecipeClick: (Int) -> Unit,
 ) {
-    val bookmarkedRecipes = viewmodel.profileState.collectAsStateWithLifecycle()
+    val profileState by viewmodel.profileState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Saved Recipe", "Activity")
 
@@ -104,8 +103,7 @@ fun ProfileScreen(
                         contentDescription = "User profile image",
                         modifier = Modifier
                             .size(100.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, Color.Gray, CircleShape),
+                            .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
 
@@ -130,13 +128,13 @@ fun ProfileScreen(
                     }
                 }
 
-                when (bookmarkedRecipes.value) {
+                when (profileState) {
                     is ProfileState.Error -> {}
                     ProfileState.Idle -> {}
                     ProfileState.Loading -> {}
                     is ProfileState.Success -> {
                         val recipes =
-                            (bookmarkedRecipes.value as ProfileState.Success).bookmarkedRecipes
+                            (profileState as ProfileState.Success).bookmarkedRecipes
 
                         when (selectedTabIndex) {
                             0 -> {

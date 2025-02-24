@@ -47,7 +47,7 @@ class RecipeDataStore @Inject constructor(
             }
     }
 
-    suspend fun getRandomRecipes(): Flow<List<Recipe>?> {
+    fun getRandomRecipes(): Flow<List<Recipe>?> {
         return context.recipeDataStore
             .data
             .catch { emit(emptyPreferences()) }

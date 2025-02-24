@@ -7,9 +7,11 @@ import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import com.example.recipefinder.data.repository.user.UserRepository
 import com.example.recipefinder.datastore.RecipeDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,20 +29,17 @@ class ProfileScreenViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    private val _profileState = MutableStateFlow<ProfileState>(ProfileState.Idle)
-    val profileState = _profileState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            _profileState.value = ProfileState.Loading
-            try {
-                _profileState.value = ProfileState.Success(dataStore.getBookmarkedRecipes())
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _profileState.value = ProfileState.Error(e.message.toString())
-            }
-        }
-    }
+    val profileState: StateFlow<ProfileState> =
+        dataStore.getRandomRecipes()
+            .map { allRecipes ->
+                val bookMarked = allRecipes?.filter { it.isBookmarked }
+                ProfileState.Success(bookMarked ?: emptyList()) as ProfileState
+            }.catch { emit(ProfileState.Error(it.message ?: "Unknown error")) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = ProfileState.Loading
+            )
 
     suspend fun getRecipeLike(id: Int): Int {
         return try {
@@ -58,8 +57,6 @@ class ProfileScreenViewModel @Inject constructor(
     fun saveRecipe(recipe: Recipe) {
         viewModelScope.launch {
             dataStore.bookmarkRecipe(recipe)
-            delay(200)
-            _profileState.value = ProfileState.Success(dataStore.getBookmarkedRecipes())
         }
     }
 }
