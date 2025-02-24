@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,7 +54,6 @@ fun RecipeHorizontalListItem(
     onSave: (Recipe) -> Unit,
 ) {
     var likes by remember { mutableIntStateOf(0) }
-    var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
     LaunchedEffect(recipe) {
         likes = getLikesForRecipe(recipe.id)
     }
@@ -123,7 +121,6 @@ fun RecipeHorizontalListItem(
                             enabled = true,
                             onClick = {
                                 onSave(recipe)
-                                isSaved = !isSaved
                             },
                         )
                         .padding(6.dp)
@@ -133,8 +130,8 @@ fun RecipeHorizontalListItem(
                         .wrapContentSize()
                 ) {
                     Icon(
-                        imageVector = if (isSaved) Icons.Filled.Bookmark else Icons.Default.BookmarkBorder,
-                        contentDescription = "",
+                        imageVector = if (recipe.isBookmarked) Icons.Filled.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = "Recipe Bookmark",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
