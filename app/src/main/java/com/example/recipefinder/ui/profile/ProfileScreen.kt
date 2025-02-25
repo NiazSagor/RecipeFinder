@@ -1,7 +1,6 @@
-package com.example.recipefinder.ui.profile.components
+package com.example.recipefinder.ui.profile
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,19 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,20 +36,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.recipefinder.R
-import com.example.recipefinder.data.model.Recipe
-import com.example.recipefinder.ui.home.HorizontalList
-import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
 import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
+import com.example.recipefinder.ui.profile.activity.ActivityScreen
+import com.example.recipefinder.ui.profile.savedrecipe.SavedRecipeScreen
 
-// TODO: fix the bottom nav
+
 @Composable
 fun ProfileScreen(
     parentPaddingValues: PaddingValues,
     viewmodel: ProfileScreenViewModel = hiltViewModel(),
     onRecipeClick: (Int) -> Unit,
 ) {
-    val bookmarkedRecipes = viewmodel.profileState.collectAsStateWithLifecycle()
+    val profileState by viewmodel.profileState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Saved Recipe", "Activity")
 
@@ -86,8 +76,7 @@ fun ProfileScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
@@ -104,8 +93,7 @@ fun ProfileScreen(
                         contentDescription = "User profile image",
                         modifier = Modifier
                             .size(100.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, Color.Gray, CircleShape),
+                            .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
 
@@ -130,18 +118,23 @@ fun ProfileScreen(
                     }
                 }
 
-                when (bookmarkedRecipes.value) {
+                when (profileState) {
                     is ProfileState.Error -> {}
                     ProfileState.Idle -> {}
                     ProfileState.Loading -> {}
                     is ProfileState.Success -> {
                         val recipes =
-                            (bookmarkedRecipes.value as ProfileState.Success).bookmarkedRecipes
+                            (profileState as ProfileState.Success).data.bookmarkedRecipes
+
+                        val myRatings = (profileState as ProfileState.Success).data.myRatings
+
+                        val myTips = (profileState as ProfileState.Success).data.myTips
 
                         when (selectedTabIndex) {
                             0 -> {
                                 SavedRecipeScreen(
-                                    recipes, viewmodel
+                                    paddingValues = parentPaddingValues,
+                                    recipes = recipes, viewmodel = viewmodel
                                 ) {
                                     onRecipeClick(it)
                                 }
@@ -149,8 +142,9 @@ fun ProfileScreen(
 
                             1 -> {
                                 ActivityScreen(
-                                    myRatings = emptyList(),
-                                    myTips = emptyList(),
+                                    paddingValues = parentPaddingValues,
+                                    myRatings = myRatings,
+                                    myTips = myTips,
                                     getLikesForRecipe = { viewmodel.getRecipeLike(it) },
                                     onRecipeClick = { onRecipeClick(it) },
                                     onSave = { viewmodel.saveRecipe(it) }
@@ -159,105 +153,6 @@ fun ProfileScreen(
                         }
 
                     }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SavedRecipeScreen(
-    recipes: List<Recipe>,
-    viewmodel: ProfileScreenViewModel,
-    onRecipeClick: (Int) -> Unit,
-) {
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        content = {
-            itemsIndexed(recipes) { index, recipe ->
-                RecipeHorizontalListItem(
-                    getLikesForRecipe = { viewmodel.getRecipeLike(it) },
-                    recipe = recipe,
-                    searchItem = true,
-                    onRecipeClick = { onRecipeClick(it) },
-                    onSave = { viewmodel.saveRecipe(it) }
-                )
-            }
-        },
-    )
-}
-
-@Composable
-fun ActivityScreen(
-    myRatings: List<Recipe>,
-    myTips: List<Recipe>,
-    getLikesForRecipe: suspend (Int) -> Int,
-    onRecipeClick: (Int) -> Unit,
-    onSave: (Recipe) -> Unit,
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        item {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                HorizontalList(
-                    getLikesForRecipe = { getLikesForRecipe(it) },
-                    onRecipeClick = { },
-                    onSave = { },
-                    title = "My Ratings (${myRatings.size})",
-                    recipes = myRatings
-                )
-                if (myRatings.isEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .size(100.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Icon(
-                            tint = MaterialTheme.colorScheme.primary,
-                            imageVector = Icons.Default.ThumbUp,
-                            contentDescription = null
-                        )
-
-                        Text(
-                            fontSize = 12.sp,
-                            text = "Rate your first recipe to see it here."
-                        )
-                    }
-                }
-            }
-        }
-        item {
-            HorizontalList(
-                getLikesForRecipe = { getLikesForRecipe(it) },
-                onRecipeClick = { },
-                onSave = { },
-                title = "My Tips (${myTips.size})",
-                recipes = myTips
-            )
-            if (myTips.isEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(100.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Icon(
-                        tint = MaterialTheme.colorScheme.primary,
-                        imageVector = Icons.Default.Book,
-                        contentDescription = null
-                    )
-
-                    Text(
-                        fontSize = 12.sp,
-                        text = "Leave your first tip to see it here."
-                    )
                 }
             }
         }

@@ -11,7 +11,7 @@ import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
 import com.example.recipefinder.ui.community.posts.CommunityScreen
 import com.example.recipefinder.ui.home.HomeScreen
 import com.example.recipefinder.ui.post.PostRecipeScreen
-import com.example.recipefinder.ui.profile.components.ProfileScreen
+import com.example.recipefinder.ui.profile.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
 import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
 import com.example.recipefinder.ui.signin.SignInScreen
@@ -43,7 +43,7 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.COMMUNITY_ROUTE
         ) {
             CommunityScreen(
-                paddingValues,
+                paddingValues = paddingValues,
                 onPostClick = { navigationActions.navigateToPostRecipeScreen() },
                 onComment = { navigationActions.navigateToPostCommentScreen(it) },
             )

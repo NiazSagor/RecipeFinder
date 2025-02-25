@@ -118,7 +118,12 @@ fun RecipeDetailsScreen(
                     TopBar(
                         isRecipeBookMarked = recipeDetails.isBookmarked,
                         title = recipeDetails.title,
-                        onLike = { recipeDetailViewModel.like(recipeId = currentRecipeId) },
+                        onLike = {
+                            recipeDetailViewModel.like(
+                                recipeId = currentRecipeId,
+                                recipeDetails
+                            )
+                        },
                         onSave = { recipeDetailViewModel.save(recipeDetails) },
                         onPopCurrent = onPopCurrent,
                         scrollBehavior = scrollBehavior,
@@ -385,7 +390,12 @@ fun RecipeDetailsScreen(
                     recipeTitle = recipeDetails.title,
                     isVisible = showMakeTipLayout,
                     onSubmit = { tip, uri ->
-                        recipeDetailViewModel.sendTip(recipeId = recipeId, tip = tip, uri)
+                        recipeDetailViewModel.sendTip(
+                            recipeId = recipeId,
+                            tip = tip,
+                            photoUri = uri,
+                            recipe = recipeDetails
+                        )
                         showMakeTipLayout = false
                     },
                     onCancel = { showMakeTipLayout = false },

@@ -38,7 +38,7 @@ fun CommunityScreen(
     onPostClick: () -> Unit,
     onComment: (String) -> Unit,
 ) {
-    val state by viewmodel.communityPosts.collectAsStateWithLifecycle()
+    val state by viewmodel.state.collectAsStateWithLifecycle()
     when (state) {
         is CommunityScreenState.Error -> {}
         CommunityScreenState.Loading -> {}

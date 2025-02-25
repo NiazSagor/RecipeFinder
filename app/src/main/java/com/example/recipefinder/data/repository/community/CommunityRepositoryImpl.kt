@@ -14,6 +14,10 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.resumable.MemoryResumableCache
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -39,9 +43,9 @@ class CommunityRepositoryImpl @Inject constructor(
 
     private val communityPostsDb by lazy { Firebase.firestore }
 
-    /*
-    * like a post in the community screen
-    * */
+    /**
+     * like a post in the community screen
+     * */
     override suspend fun likePost(postId: String) {
         try {
             communityPostsDb
@@ -53,10 +57,10 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
-    /*
-    * get a particular recipe post by id
-    * this is required when a user want to comment on a recipe post
-    * */
+    /**
+     * get a particular recipe post by id
+     * this is required when a user want to comment on a recipe post
+     * */
     override suspend fun getPost(postId: String): CommunityPost? {
         return try {
             val result = communityPostsDb
@@ -71,9 +75,9 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
-    /*
-    * post recipes that will appear on the community screen
-    * */
+    /**
+     * post recipes that will appear on the community screen
+     * */
     override suspend fun postRecipe(post: String, recipeTitle: String, recipeImageUri: Uri) {
         try {
             val recipeImageUrl = uploadRecipePhoto(recipeTitle, recipeImageUri)
@@ -95,20 +99,30 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCommunityPosts(): List<CommunityPost> {
-        return try {
-            val results = communityPostsDb
+    /**
+     * reactively returns the posts
+     * as the post can have likes count that needs to be
+     * updated on the screen as the user likes the post
+     * todo: add pagination
+     * */
+    override fun getCommunityPosts(): Flow<List<CommunityPost>> = callbackFlow {
+        val listener =
+            communityPostsDb
                 .collection("community")
-                .get()
-                .await()
-            results.documents.mapNotNull {
-                it.toCommunityPost()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-    }
+                .addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        close(e)
+                        return@addSnapshotListener
+                    }
+                    val posts = snapshot?.documents?.mapNotNull {
+                        it.toCommunityPost()
+                    } ?: emptyList()
+                    trySend(posts)
+                }
+        awaitClose(
+            listener::remove
+        )
+    }.flowOn(Dispatchers.IO)
 
     private suspend fun uploadRecipePhoto(
         title: String,
