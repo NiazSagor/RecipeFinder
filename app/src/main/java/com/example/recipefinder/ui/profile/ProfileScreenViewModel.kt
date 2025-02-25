@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.profile.components
+package com.example.recipefinder.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

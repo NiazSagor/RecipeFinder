@@ -119,7 +119,7 @@ fun TopContainer(
                             start = 16.dp,
                             end = 16.dp,
                         ),
-                        state.searchResults,
+                        searchRecipeByIngredients = state.searchResults,
                         onRecipeClick = { onRecipeClick(it) },
                         onSave = { viewModel.save(it) }
                     )
