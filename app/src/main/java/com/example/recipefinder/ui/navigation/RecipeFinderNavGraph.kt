@@ -43,7 +43,7 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.COMMUNITY_ROUTE
         ) {
             CommunityScreen(
-                paddingValues,
+                paddingValues = paddingValues,
                 onPostClick = { navigationActions.navigateToPostRecipeScreen() },
                 onComment = { navigationActions.navigateToPostCommentScreen(it) },
             )

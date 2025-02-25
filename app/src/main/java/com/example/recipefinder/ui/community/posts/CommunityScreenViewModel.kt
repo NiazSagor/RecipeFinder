@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.repository.community.CommunityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,22 +24,15 @@ class CommunityScreenViewModel @Inject constructor(
     private val communityRepository: CommunityRepository
 ) : ViewModel() {
 
-    private val _communityPosts =
-        MutableStateFlow<CommunityScreenState>(CommunityScreenState.Loading)
-
-    val communityPosts = _communityPosts.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            try {
-                _communityPosts.value =
-                    CommunityScreenState.Success(communityRepository.getCommunityPosts())
-            } catch (e: Exception) {
-                _communityPosts.value = CommunityScreenState.Error(e.message ?: "Unknown error")
-                e.printStackTrace()
-            }
-        }
-    }
+    val state: StateFlow<CommunityScreenState> =
+        communityRepository.getCommunityPosts()
+            .map { CommunityScreenState.Success(it) as CommunityScreenState }
+            .catch { CommunityScreenState.Error(it.message ?: "Unknown error") }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = CommunityScreenState.Loading
+            )
 
     fun likePost(postId: String) {
         viewModelScope.launch {

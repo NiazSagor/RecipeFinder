@@ -57,7 +57,7 @@ fun CommunityPostItem(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(if (post.recipeImageUrl.isEmpty()) R.drawable.ic_launcher_background else post.recipeImageUrl)
                     .build(),
-                contentDescription = "",
+                contentDescription = "Community post image",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp),
@@ -74,7 +74,7 @@ fun CommunityPostItem(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(post.userProfileImageUrl)
                         .build(),
-                    contentDescription = "",
+                    contentDescription = "User profile image",
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape),
