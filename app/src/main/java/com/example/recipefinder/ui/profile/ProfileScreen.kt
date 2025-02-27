@@ -134,10 +134,10 @@ fun ProfileScreen(
                             0 -> {
                                 SavedRecipeScreen(
                                     paddingValues = parentPaddingValues,
-                                    recipes = recipes, viewmodel = viewmodel
-                                ) {
-                                    onRecipeClick(it)
-                                }
+                                    recipes = recipes,
+                                    viewmodel = viewmodel,
+                                    onRecipeClick = onRecipeClick
+                                )
                             }
 
                             1 -> {
@@ -146,7 +146,7 @@ fun ProfileScreen(
                                     myRatings = myRatings,
                                     myTips = myTips,
                                     getLikesForRecipe = { viewmodel.getRecipeLike(it) },
-                                    onRecipeClick = { onRecipeClick(it) },
+                                    onRecipeClick = onRecipeClick,
                                     onSave = { viewmodel.saveRecipe(it) }
                                 )
                             }

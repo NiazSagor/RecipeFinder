@@ -43,7 +43,7 @@ fun ActivityScreen(
             ) {
                 HorizontalList(
                     getLikesForRecipe = { getLikesForRecipe(it) },
-                    onRecipeClick = { },
+                    onRecipeClick = onRecipeClick,
                     onSave = { },
                     title = "My Ratings (${myRatings.size})",
                     recipes = myRatings
@@ -73,7 +73,7 @@ fun ActivityScreen(
         item {
             HorizontalList(
                 getLikesForRecipe = { getLikesForRecipe(it) },
-                onRecipeClick = { },
+                onRecipeClick = onRecipeClick,
                 onSave = { },
                 title = "My Tips (${myTips.size})",
                 recipes = myTips
