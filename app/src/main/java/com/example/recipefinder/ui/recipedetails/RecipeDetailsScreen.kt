@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -106,9 +107,12 @@ fun RecipeDetailsScreen(
             var servings by remember { mutableStateOf(recipeDetails.servings) }
             var isNutritionInfoExpanded by remember { mutableStateOf(false) }
             var nutrients by remember { mutableStateOf<RecipeNutrient?>(null) }
+            var isNutritionInfoLoading by remember { mutableStateOf(false) }
             if (isNutritionInfoExpanded) {
                 LaunchedEffect(Unit) {
+                    isNutritionInfoLoading = true
                     nutrients = recipeDetailViewModel.getNutrients(id = currentRecipeId)
+                    isNutritionInfoLoading = false
                 }
             }
             Scaffold(
@@ -257,15 +261,21 @@ fun RecipeDetailsScreen(
                                     color = Color.Black,
                                     fontSize = 14.sp
                                 )
-                                Text(
-                                    fontWeight = FontWeight.Bold,
-                                    text = if (isNutritionInfoExpanded) "Hide Info -" else "View Info +",
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.clickable {
-                                        isNutritionInfoExpanded = !isNutritionInfoExpanded
-                                    }
-                                )
+                                if (isNutritionInfoLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                } else {
+                                    Text(
+                                        fontWeight = FontWeight.Bold,
+                                        text = if (isNutritionInfoExpanded) "Hide Info -" else "View Info +",
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.clickable {
+                                            isNutritionInfoExpanded = !isNutritionInfoExpanded
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
