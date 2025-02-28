@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import com.example.recipefinder.R
 import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
@@ -87,10 +87,15 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    AsyncImage(
-                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                    SubcomposeAsyncImage(
                         model = viewmodel.getUserProfilePhoto(),
                         contentDescription = "User profile image",
+                        loading = {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_launcher_background),
+                                contentDescription = "Loading profile image"
+                            )
+                        },
                         modifier = Modifier
                             .size(100.dp)
                             .clip(CircleShape),

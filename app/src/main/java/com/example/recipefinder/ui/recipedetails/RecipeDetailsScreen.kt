@@ -38,7 +38,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -460,11 +459,11 @@ fun MakeTip(
                         modifier = Modifier.clickable { onCancel() }
                     )
 
-                    TextButton(
-                        onClick = { photoPickerLauncher.launch("image/*") }
-                    ) {
-                        Text(text = "Add Photo")
-                    }
+//                    TextButton(
+//                        onClick = { photoPickerLauncher.launch("image/*") }
+//                    ) {
+//                        Text(text = "Add Photo")
+//                    }
 
                     Text(
                         text = "Submit",
