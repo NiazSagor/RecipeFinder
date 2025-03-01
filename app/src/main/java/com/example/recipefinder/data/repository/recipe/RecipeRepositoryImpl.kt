@@ -116,8 +116,4 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun save(recipe: Recipe) {
         recipeDataStore.bookmarkRecipe(recipe)
     }
-
-    override suspend fun getAllTipsForRecipe(recipeId: Int): List<Tip> {
-        return recipeTipsRepository.getAllTipsForRecipe(recipeId)
-    }
 }

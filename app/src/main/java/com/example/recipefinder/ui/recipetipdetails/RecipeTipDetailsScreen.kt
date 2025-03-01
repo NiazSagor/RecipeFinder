@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,13 +38,9 @@ fun RecipeTipDetailsScreen(
     recipeId: Int,
     onPopCurrent: () -> Unit
 ) {
-    val recipeTipsState by viewModel.recipeTips.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(recipeId) {
-        viewModel.getRecipeTips(recipeId)
-    }
-
-    when (recipeTipsState) {
+    when (state) {
         is RecipeTipsState.Error -> {
 
         }
@@ -55,7 +50,7 @@ fun RecipeTipDetailsScreen(
         }
 
         is RecipeTipsState.Success -> {
-            val tips = (recipeTipsState as RecipeTipsState.Success).tips
+            val tips = (state as RecipeTipsState.Success).tips
             Scaffold(
                 topBar = {
                     TopAppBar(

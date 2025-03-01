@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,10 +50,7 @@ fun PostCommentsScreen(
     paddingValues: PaddingValues,
     postId: String
 ) {
-    val state by viewmodel.postComments.collectAsStateWithLifecycle()
-    LaunchedEffect(postId) {
-        viewmodel.getPostComments(postId)
-    }
+    val state by viewmodel.state.collectAsStateWithLifecycle()
     when (state) {
         is PostCommentState.Error -> {}
         PostCommentState.Loading -> {}

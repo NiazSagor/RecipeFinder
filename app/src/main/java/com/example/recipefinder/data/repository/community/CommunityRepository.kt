@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CommunityRepository {
     fun getCommunityPosts(): Flow<List<CommunityPost>>
+    fun getPost(postId: String): Flow<CommunityPost?>
     suspend fun likePost(postId: String)
-    suspend fun getPost(postId: String): CommunityPost?
     suspend fun postRecipe(post: String, recipeTitle: String, recipeImageUri: Uri)
 }

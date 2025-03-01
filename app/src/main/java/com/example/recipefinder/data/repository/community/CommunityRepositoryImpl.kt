@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -61,17 +62,17 @@ class CommunityRepositoryImpl @Inject constructor(
      * get a particular recipe post by id
      * this is required when a user want to comment on a recipe post
      * */
-    override suspend fun getPost(postId: String): CommunityPost? {
-        return try {
+    override fun getPost(postId: String): Flow<CommunityPost?> = flow {
+        try {
             val result = communityPostsDb
                 .collection("community")
                 .document(postId)
                 .get()
                 .await()
-            result?.toCommunityPost()
+            emit(result?.toCommunityPost())
         } catch (e: Exception) {
             e.printStackTrace()
-            null
+            emit(null)
         }
     }
 

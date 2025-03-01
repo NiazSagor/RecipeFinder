@@ -5,6 +5,10 @@ import com.example.recipefinder.data.model.toPostComment
 import com.example.recipefinder.data.repository.user.UserRepository
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -14,23 +18,26 @@ class PostCommentsRepositoryImpl @Inject constructor(
 
     private val postCommentsDb by lazy { Firebase.firestore }
 
-    override suspend fun getPostComments(postId: String): List<PostComment> {
-        return try {
-            val result = postCommentsDb
-                .collection("community_post_comments")
-                .document(postId)
-                .collection("allComments")
-                .get()
-                .await()
-
-            result.documents.mapNotNull { document ->
-                document.toPostComment()
+    override fun getPostComments(postId: String) = callbackFlow {
+        val listener = postCommentsDb
+            .collection("community_post_comments")
+            .document(postId)
+            .collection("allComments")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
+                val comments = snapshot?.documents?.mapNotNull {
+                    it.toPostComment()
+                } ?: emptyList()
+                trySend(comments)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-    }
+
+        awaitClose(
+            listener::remove
+        )
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun postComment(postId: String, comment: String) {
         val comment = PostComment(

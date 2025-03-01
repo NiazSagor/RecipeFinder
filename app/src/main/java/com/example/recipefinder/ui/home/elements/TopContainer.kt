@@ -50,7 +50,7 @@ fun TopContainer(
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
             suggestions = emptyList<SearchRecipeByIngredients>(),
-            timeoutMillis = 3000
+            timeoutMillis = 2000
         ) { query: TextFieldValue ->
             withContext(Dispatchers.IO) {
                 Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
@@ -129,7 +129,7 @@ fun TopContainer(
                     Box(
                         modifier = Modifier
                             .padding(top = 16.dp)
-                            .fillMaxWidth(),
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("❌ No Results!", fontSize = 24.sp, color = Color(0xffDD2C00))
