@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -43,6 +44,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -78,6 +80,7 @@ import com.example.recipefinder.ui.recipedetails.components.RecipeSummary
 import com.example.recipefinder.ui.recipedetails.components.Tip
 import com.example.recipefinder.ui.recipedetails.components.TopBar
 
+private const val TAG = "RecipeDetailsScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,7 +95,7 @@ fun RecipeDetailsScreen(
     var currentRecipeId by remember { mutableIntStateOf(recipeId) }
     val recipeDetails = recipeDetailViewModel.recipeDetail.collectAsStateWithLifecycle()
 
-    LaunchedEffect(currentRecipeId) {
+    LaunchedEffect(Unit) {
         recipeDetailViewModel.getRecipeDetailsById(currentRecipeId)
     }
 
@@ -100,6 +103,10 @@ fun RecipeDetailsScreen(
         is RecipeDetailsState.Error -> {}
         RecipeDetailsState.Loading -> {}
         is RecipeDetailsState.Success -> {
+            val listState = rememberLazyListState() // Track scroll position
+            var similarRecipes by remember { mutableStateOf<List<Recipe>>(emptyList()) }
+            var isSimilarRecipesLoading by remember { mutableStateOf(false) }
+            var hasLoaded by remember { mutableStateOf(false) }
             var showMakeTipLayout by remember { mutableStateOf(false) }
             val recipeDetails = (recipeDetails.value as RecipeDetailsState.Success).recipe
             var openBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -160,6 +167,7 @@ fun RecipeDetailsScreen(
                     )
                 }
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = paddingValues.calculateTopPadding())
@@ -374,22 +382,45 @@ fun RecipeDetailsScreen(
                     }
 
                     item {
-                        var similarRecipes by remember { mutableStateOf<List<Recipe>>(emptyList()) }
-                        LaunchedEffect(Unit) {
-                            similarRecipes =
-                                recipeDetailViewModel.getSimilarRecipes(currentRecipeId)
+                        val isAtBottom by remember {
+                            derivedStateOf {
+                                val lastVisibleItemIndex =
+                                    listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                                lastVisibleItemIndex != null && lastVisibleItemIndex >= listState.layoutInfo.totalItemsCount - 1
+                            }
                         }
-                        HorizontalList(
-                            getLikesForRecipe = {
-                                recipeDetailViewModel.getRecipeLike(it)
-                            },
-                            onRecipeClick = {
-                                currentRecipeId = it
-                            },
-                            onSave = { recipeDetailViewModel.save(it) },
-                            title = "Similar Recipes",
-                            recipes = similarRecipes
-                        )
+
+                        LaunchedEffect(isAtBottom) {
+                            if (isAtBottom && !hasLoaded) {
+                                hasLoaded = true
+                                isSimilarRecipesLoading = true
+                                similarRecipes =
+                                    recipeDetailViewModel.getSimilarRecipes(currentRecipeId)
+                                isSimilarRecipesLoading = false
+                            }
+                        }
+                        if (isSimilarRecipesLoading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(25.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            HorizontalList(
+                                getLikesForRecipe = {
+                                    recipeDetailViewModel.getRecipeLike(it)
+                                },
+                                onRecipeClick = {
+                                    currentRecipeId = it
+                                },
+                                onSave = { recipeDetailViewModel.save(it) },
+                                title = "Similar Recipes",
+                                recipes = similarRecipes
+                            )
+                        }
                     }
                 }
             }
