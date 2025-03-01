@@ -71,14 +71,12 @@ fun HomeScreen(
                         ),
                     ) {
                         val chunkedList = (homeState as HomeState.Success).randomRecipes.chunked(10)
-                        val list1 = chunkedList.getOrNull(0) ?: emptyList()
-                        val list2 = chunkedList.getOrNull(1) ?: emptyList()
-                        val list3 = chunkedList.getOrNull(2) ?: emptyList()
                         item {
-                            if (list3.isNotEmpty()) {
+                            if (chunkedList.size > 2 && chunkedList[2].isNotEmpty()) {
                                 TopRecipeCard(
                                     onRecipeClick = onRecipeClick,
-                                    recipe = list3.last { it.readyInMinutes > 0 })
+                                    recipe = chunkedList[2].last { it.readyInMinutes > 0 }
+                                )
                             }
                         }
 
@@ -86,42 +84,30 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.size(16.dp))
                         }
 
-                        item {
-                            if (list1.isNotEmpty()) {
-                                HorizontalList(
-                                    getLikesForRecipe = {
-                                        viewModel.getRecipeLike(it)
-                                    },
+                        itemsIndexed(chunkedList) { index, recipes ->
+                            when (index) {
+                                0 -> HorizontalList(
+                                    getLikesForRecipe = { viewModel.getRecipeLike(it) },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
                                     title = "Try something new",
-                                    recipes = list1,
+                                    recipes = recipes
                                 )
-                            }
-                        }
-                        item {
-                            if (list2.isNotEmpty()) {
-                                HorizontalList(
-                                    getLikesForRecipe = {
-                                        viewModel.getRecipeLike(it)
-                                    },
+
+                                1 -> HorizontalList(
+                                    getLikesForRecipe = { viewModel.getRecipeLike(it) },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
                                     title = "Fancy snacks!",
-                                    recipes = list2
+                                    recipes = recipes
                                 )
-                            }
-                        }
-                        item {
-                            if (list3.isNotEmpty()) {
-                                HorizontalList(
-                                    getLikesForRecipe = {
-                                        viewModel.getRecipeLike(it)
-                                    },
+
+                                2 -> HorizontalList(
+                                    getLikesForRecipe = { viewModel.getRecipeLike(it) },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
                                     title = "Holiday!",
-                                    recipes = list3
+                                    recipes = recipes
                                 )
                             }
                         }

@@ -8,8 +8,10 @@ import com.example.recipefinder.data.model.PostComment
 import com.example.recipefinder.data.repository.community.CommunityRepository
 import com.example.recipefinder.data.repository.community.PostCommentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,24 +33,27 @@ class PostCommentsViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
 ) : ViewModel() {
 
-    private val _postComments = MutableStateFlow<PostCommentState>(PostCommentState.Loading)
+    val postId = savedStateHandle.getStateFlow<String>("postId", "")
 
-    val postComments = _postComments.asStateFlow()
-
-    fun getPostComments(postId: String) {
-        viewModelScope.launch {
-            _postComments.value = PostCommentState.Loading
-            try {
-                val post = communityRepository.getPost(postId)
-                val comments = postCommentsRepository.getPostComments(postId)
-                val postCommentData = PostCommentData(post!!, comments)
-                _postComments.value = PostCommentState.Success(postCommentData)
-            } catch (e: Exception) {
-                _postComments.value = PostCommentState.Error(e.message ?: "Unknown error")
-                e.printStackTrace()
+    val state: StateFlow<PostCommentState> =
+        combine(
+            communityRepository.getPost(postId.value),
+            postCommentsRepository.getPostComments(postId.value)
+        ) { post, comments ->
+            if (post == null) {
+                PostCommentState.Error("Something went wrong")
+            } else {
+                val data = PostCommentData(
+                    communityPost = post,
+                    comments = comments
+                )
+                PostCommentState.Success(data)
             }
-        }
-    }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = PostCommentState.Loading
+        )
 
     fun postComment(postId: String, comment: String) {
         viewModelScope.launch {

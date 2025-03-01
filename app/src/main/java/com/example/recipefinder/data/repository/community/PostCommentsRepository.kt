@@ -1,8 +1,9 @@
 package com.example.recipefinder.data.repository.community
 
 import com.example.recipefinder.data.model.PostComment
+import kotlinx.coroutines.flow.Flow
 
 interface PostCommentsRepository {
-    suspend fun getPostComments(postId: String): List<PostComment>
+    fun getPostComments(postId: String): Flow<List<PostComment>>
     suspend fun postComment(postId: String, comment: String)
 }
