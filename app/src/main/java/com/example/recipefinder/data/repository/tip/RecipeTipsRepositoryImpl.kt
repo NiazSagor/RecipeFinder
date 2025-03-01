@@ -14,6 +14,9 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.resumable.MemoryResumableCache
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -38,23 +41,27 @@ class RecipeTipsRepositoryImpl @Inject constructor(
 
     private val tipsDb by lazy { Firebase.firestore }
 
-    override suspend fun getAllTipsForRecipe(recipeId: Int): List<Tip> {
-        return try {
-            val result = tipsDb
-                .collection("tips")
-                .document(recipeId.toString())
-                .collection("allTips")
-                .get()
-                .await()
+    override fun getAllTipsForRecipe(recipeId: Int) = callbackFlow {
+        val listener = tipsDb
+            .collection("tips")
+            .document(recipeId.toString())
+            .collection("allTips")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
+                val tips = snapshot?.documents?.mapNotNull {
+                    it.toTip()
+                } ?: emptyList()
 
-            result.documents.mapNotNull { document ->
-                document.toTip()
+                trySend(tips)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
+
+        awaitClose {
+            listener.remove()
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun sendTip(
         recipeId: Int,
