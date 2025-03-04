@@ -36,13 +36,19 @@ fun SavedRecipeScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalItemSpacing = 16.dp,
             content = {
-                itemsIndexed(recipes) { index, recipe ->
+                itemsIndexed(recipes) { _, recipe: Recipe ->
                     RecipeHorizontalListItem(
-                        getLikesForRecipe = { viewmodel.getRecipeLike(it) },
+                        getLikesForRecipe = { recipeId: Int ->
+                            viewmodel.getRecipeLike(recipeId)
+                        },
                         recipe = recipe,
                         searchItem = true,
-                        onRecipeClick = { onRecipeClick(it) },
-                        onSave = { viewmodel.saveRecipe(it) }
+                        onRecipeClick = { recipeId: Int ->
+                            onRecipeClick(recipeId)
+                        },
+                        onSave = { recipe: Recipe ->
+                            viewmodel.saveRecipe(recipe)
+                        }
                     )
                 }
             },

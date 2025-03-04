@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.ui.home.components.LottieLoadingIndicator
 import com.example.recipefinder.ui.home.elements.RecipeHorizontalListItem
-import com.example.recipefinder.ui.home.elements.TopContainer
+import com.example.recipefinder.ui.home.elements.SearchSection
 import com.example.recipefinder.ui.home.elements.TopRecipeCard
 
 @Composable
@@ -47,12 +46,14 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            TopContainer(
+            // home
+            // search,
+            SearchSection(
                 bottomPadding = paddingValues.calculateBottomPadding(),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                onRecipeClick(it)
-            }
+                viewModel = viewModel,
+                modifier = Modifier.fillMaxWidth(),
+                onRecipeClick = onRecipeClick
+            )
             when (homeState) {
                 is HomeState.Error -> {}
                 HomeState.Idle, HomeState.Loading -> {
@@ -63,6 +64,7 @@ fun HomeScreen(
                 }
 
                 is HomeState.Success -> {
+                    //
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(
@@ -73,6 +75,7 @@ fun HomeScreen(
                         val chunkedList = (homeState as HomeState.Success).randomRecipes.chunked(10)
                         item {
                             if (chunkedList.size > 2 && chunkedList[2].isNotEmpty()) {
+                                // top image
                                 TopRecipeCard(
                                     onRecipeClick = onRecipeClick,
                                     recipe = chunkedList[2].last { it.readyInMinutes > 0 }
@@ -84,10 +87,10 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.size(16.dp))
                         }
 
-                        itemsIndexed(chunkedList) { index, recipes ->
+                        itemsIndexed(chunkedList) { index, recipes: List<Recipe> ->
                             when (index) {
                                 0 -> HorizontalList(
-                                    getLikesForRecipe = { viewModel.getRecipeLike(it) },
+                                    getLikesForRecipe = { viewModel.getRecipeLikeCount(it) },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
                                     title = "Try something new",
@@ -95,7 +98,7 @@ fun HomeScreen(
                                 )
 
                                 1 -> HorizontalList(
-                                    getLikesForRecipe = { viewModel.getRecipeLike(it) },
+                                    getLikesForRecipe = { viewModel.getRecipeLikeCount(it) },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
                                     title = "Fancy snacks!",
@@ -103,7 +106,7 @@ fun HomeScreen(
                                 )
 
                                 2 -> HorizontalList(
-                                    getLikesForRecipe = { viewModel.getRecipeLike(it) },
+                                    getLikesForRecipe = { viewModel.getRecipeLikeCount(it) },
                                     onRecipeClick = onRecipeClick,
                                     onSave = { viewModel.save(it) },
                                     title = "Holiday!",
@@ -131,16 +134,16 @@ fun HorizontalList(
             .fillMaxWidth()
             .padding(vertical = 0.dp)
     ) {
+        // list item heading
         Text(
             text = title, fontWeight = FontWeight.Bold, fontSize = 14.sp,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        val listState = rememberLazyListState()
+        // list of recipes row
         LazyRow(
-            state = listState,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(recipes) { index, recipe ->
+            itemsIndexed(recipes) { index, recipe: Recipe ->
                 RecipeHorizontalListItem(
                     getLikesForRecipe = getLikesForRecipe,
                     recipe = recipe,

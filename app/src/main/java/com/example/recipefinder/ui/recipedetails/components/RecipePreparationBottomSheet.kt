@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
+import com.example.recipefinder.data.model.Step
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsViewModel
 import com.example.recipefinder.ui.recipedetails.RecipeInstructionsState
 
@@ -36,7 +37,7 @@ fun RecipePreparationBottomSheet(
         }
 
         is RecipeInstructionsState.Success -> {
-            val recipeInstructions =
+            val recipeInstructions: RecipeAnalyzedInstructions =
                 (recipeInstructions.value as RecipeInstructionsState.Success).recipe
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
             ModalBottomSheet(
@@ -44,10 +45,11 @@ fun RecipePreparationBottomSheet(
                 sheetState = sheetState,
                 onDismissRequest = {
                     onDismissRequest()
+                },
+                content = {
+                    BottomSheetContentLayout(recipeInstructions)
                 }
-            ) {
-                BottomSheetContentLayout(recipeInstructions)
-            }
+            )
         }
     }
 }
@@ -67,33 +69,22 @@ fun BottomSheetContentLayout(recipeInstructions: RecipeAnalyzedInstructions) {
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page: Int ->
-            HorizontalPagerItem(
+            val step: Step = recipeInstructions.steps[page]
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
                     .align(Alignment.Center),
-                recipeInstructions.steps[page].step
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = step.step,
+                    fontSize = 22.sp,
+                )
+            }
         }
     }
 }
-
-@Composable
-fun HorizontalPagerItem(
-    modifier: Modifier,
-    step: String
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = step,
-            fontSize = 22.sp,
-        )
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable

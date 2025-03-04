@@ -1,17 +1,14 @@
-package com.example.recipefinder.data.repository.community
+package com.example.recipefinder.data.repository.community.post
 
 import android.content.Context
 import android.net.Uri
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.toCommunityPost
+import com.example.recipefinder.data.repository.community.like.CommunityPostLikeRepository
 import com.example.recipefinder.data.repository.user.UserRepository
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.resumable.MemoryResumableCache
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -25,43 +22,16 @@ import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository
+    private val communityPostsDb: FirebaseFirestore,
+    private val supabase: SupabaseClient,
+    private val userRepository: UserRepository,
+    private val communityPostLikeRepository: CommunityPostLikeRepository,
 ) : CommunityRepository {
 
-    // TODO: move the url and key to secrets
-    private val supabase by lazy {
-        createSupabaseClient(
-            supabaseUrl = "https://kxspxycwnuemptjvvgbk.supabase.co",
-            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c3B4eWN3bnVlbXB0anZ2Z2JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxNjE3MjYsImV4cCI6MjA1MzczNzcyNn0.f12nkXNmnRtur4vay2MjZhIuffK31KeNc85jg79RRCY"
-        ) {
-            install(Storage) {
-                resumable {
-                    cache = MemoryResumableCache()
-                }
-            }
-        }
-    }
-
-    private val communityPostsDb by lazy { Firebase.firestore }
-
-    /**
-     * like a post in the community screen
-     * */
     override suspend fun likePost(postId: String) {
-        try {
-            communityPostsDb
-                .collection("community")
-                .document(postId)
-                .update("like", FieldValue.increment(1))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        communityPostLikeRepository.likePost(postId)
     }
 
-    /**
-     * get a particular recipe post by id
-     * this is required when a user want to comment on a recipe post
-     * */
     override fun getPost(postId: String): Flow<CommunityPost?> = flow {
         try {
             val result = communityPostsDb
@@ -76,9 +46,10 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * post recipes that will appear on the community screen
-     * */
+    override suspend fun isPostLikedByUser(postId: String): Boolean {
+        return communityPostLikeRepository.isPostLikedByUser(postId)
+    }
+
     override suspend fun postRecipe(post: String, recipeTitle: String, recipeImageUri: Uri) {
         try {
             val recipeImageUrl = uploadRecipePhoto(recipeTitle, recipeImageUri)
@@ -101,9 +72,6 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     /**
-     * reactively returns the posts
-     * as the post can have likes count that needs to be
-     * updated on the screen as the user likes the post
      * todo: add pagination
      * */
     override fun getCommunityPosts(): Flow<List<CommunityPost>> = callbackFlow {

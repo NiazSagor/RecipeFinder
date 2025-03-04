@@ -1,4 +1,4 @@
-package com.example.recipefinder.data.repository.community
+package com.example.recipefinder.data.repository.community.comment
 
 import com.example.recipefinder.data.model.PostComment
 import com.example.recipefinder.data.model.toPostComment

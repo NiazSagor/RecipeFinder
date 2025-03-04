@@ -38,6 +38,7 @@ fun TopBar(
 
     LargeTopAppBar(
         title = {
+            // recipe title
             Text(
                 text = title,
                 maxLines = 5,
@@ -45,6 +46,7 @@ fun TopBar(
                 fontWeight = FontWeight.Bold
             )
         },
+        // back icon
         navigationIcon = {
             IconButton(onClick = { onPopCurrent() }) {
                 Icon(
@@ -55,6 +57,7 @@ fun TopBar(
             }
         },
         actions = {
+            // save recipe
             IconButton(onClick = {
                 onSave()
                 isSaved = !isSaved
@@ -65,6 +68,7 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
+            // like recipe button
             IconButton(onClick = {
                 isLiked = !isLiked
                 onLike()

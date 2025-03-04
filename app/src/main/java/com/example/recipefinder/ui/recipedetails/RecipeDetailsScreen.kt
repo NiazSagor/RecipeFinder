@@ -95,7 +95,7 @@ fun RecipeDetailsScreen(
     var currentRecipeId by remember { mutableIntStateOf(recipeId) }
     val recipeDetails = recipeDetailViewModel.recipeDetail.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(currentRecipeId) {
         recipeDetailViewModel.getRecipeDetailsById(currentRecipeId)
     }
 
@@ -108,10 +108,11 @@ fun RecipeDetailsScreen(
             var isSimilarRecipesLoading by remember { mutableStateOf(false) }
             var hasLoaded by remember { mutableStateOf(false) }
             var showMakeTipLayout by remember { mutableStateOf(false) }
-            val recipeDetails = (recipeDetails.value as RecipeDetailsState.Success).recipe
-            var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+            val currentRecipeDetails: Recipe =
+                (recipeDetails.value as RecipeDetailsState.Success).recipe
+            var openBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
             val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-            var servings by remember { mutableStateOf(recipeDetails.servings) }
+            var servings by remember { mutableStateOf(currentRecipeDetails.servings) }
             var isNutritionInfoExpanded by remember { mutableStateOf(false) }
             var nutrients by remember { mutableStateOf<RecipeNutrient?>(null) }
             var isNutritionInfoLoading by remember { mutableStateOf(false) }
@@ -125,21 +126,23 @@ fun RecipeDetailsScreen(
             Scaffold(
                 modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
                 topBar = {
+                    // recipe title
                     TopBar(
-                        isRecipeBookMarked = recipeDetails.isBookmarked,
-                        title = recipeDetails.title,
+                        isRecipeBookMarked = currentRecipeDetails.isBookmarked,
+                        title = currentRecipeDetails.title,
                         onLike = {
                             recipeDetailViewModel.like(
                                 recipeId = currentRecipeId,
-                                recipeDetails
+                                recipe = currentRecipeDetails
                             )
                         },
-                        onSave = { recipeDetailViewModel.save(recipeDetails) },
-                        onPopCurrent = onPopCurrent,
+                        onSave = { recipeDetailViewModel.save(currentRecipeDetails) },
+                        onPopCurrent = onPopCurrent, // pop current page
                         scrollBehavior = scrollBehavior,
                     )
                 },
                 floatingActionButton = {
+                    // view cooking instruction
                     ExtendedFloatingActionButton(
                         containerColor = MaterialTheme.colorScheme.primary,
                         onClick = { if (!openBottomSheet) openBottomSheet = true },
@@ -156,8 +159,11 @@ fun RecipeDetailsScreen(
                     )
                 }
             ) { paddingValues ->
+                // open recipe instructions (bottom sheet)
                 if (openBottomSheet) {
+                    // get recipe instructions
                     recipeDetailViewModel.getAnalyzedRecipeInstructions(id = currentRecipeId)
+                    // bottom sheet design
                     RecipePreparationBottomSheet(
                         recipeDetailViewModel = recipeDetailViewModel,
                         modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
@@ -180,7 +186,7 @@ fun RecipeDetailsScreen(
                 ) {
                     item {
                         RecipeSummary(
-                            text = recipeDetails.summary.replace(Regex("<.*?>"), ""),
+                            text = currentRecipeDetails.summary.replace(Regex("<.*?>"), ""),
                         )
                     }
 
@@ -197,7 +203,7 @@ fun RecipeDetailsScreen(
                         ) {
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
-                                    .data(recipeDetails.image)
+                                    .data(currentRecipeDetails.image)
                                     .crossfade(true)
                                     .build(),
                                 contentScale = ContentScale.Crop,
@@ -220,7 +226,7 @@ fun RecipeDetailsScreen(
                         Spacer(modifier = Modifier.size(16.dp))
                     }
                     item {
-                        PreparationTimeLine(recipeDetails)
+                        PreparationTimeLine(currentRecipeDetails)
                     }
                     item {
                         Spacer(modifier = Modifier.size(16.dp))
@@ -234,13 +240,13 @@ fun RecipeDetailsScreen(
                         Spacer(modifier = Modifier.size(16.dp))
                     }
 
-                    items(recipeDetails.extendedIngredients.size) { index ->
+                    items(currentRecipeDetails.extendedIngredients.size) { index ->
                         RecipeIngredientsVerticalListItem(
-                            ingredient = recipeDetails.extendedIngredients[index],
+                            ingredient = currentRecipeDetails.extendedIngredients[index],
                             currentServings = servings,
-                            defaultServing = recipeDetails.servings
+                            defaultServing = currentRecipeDetails.servings
                         )
-                        if (index < recipeDetails.extendedIngredients.size - 1) {
+                        if (index < currentRecipeDetails.extendedIngredients.size - 1) {
                             Divider(
                                 color = Color.Gray,
                                 thickness = 1.dp,
@@ -427,14 +433,14 @@ fun RecipeDetailsScreen(
             if (showMakeTipLayout) {
                 MakeTip(
                     paddingValues = paddingValues,
-                    recipeTitle = recipeDetails.title,
+                    recipeTitle = currentRecipeDetails.title,
                     isVisible = showMakeTipLayout,
                     onSubmit = { tip, uri ->
                         recipeDetailViewModel.sendTip(
                             recipeId = recipeId,
                             tip = tip,
                             photoUri = uri,
-                            recipe = recipeDetails
+                            recipe = currentRecipeDetails
                         )
                         showMakeTipLayout = false
                     },

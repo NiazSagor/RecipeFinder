@@ -43,6 +43,7 @@ import com.example.recipefinder.data.model.Tip
 import com.example.recipefinder.ui.community.posts.elements.CommunityPostItem
 import com.example.recipefinder.ui.recipetipdetails.components.RecipeTipsListItem
 
+// shows all comments on a post
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PostCommentsScreen(
@@ -77,6 +78,9 @@ fun PostCommentsScreen(
                     data = data,
                     onPostClick = {
                         viewmodel.postComment(postId = postId, comment = it)
+                    },
+                    isPostLikedByUser = {
+                        viewmodel.isPostLikedByUser(it)
                     }
                 )
             }
@@ -88,6 +92,7 @@ fun PostCommentsScreen(
 fun PostCommentsScreenContent(
     paddingValues: PaddingValues,
     data: PostCommentData,
+    isPostLikedByUser: suspend (String) -> Boolean,
     onPostClick: (String) -> Unit
 ) {
     Column(
@@ -103,16 +108,19 @@ fun PostCommentsScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
+            // image. title. description
             item {
                 CommunityPostItem(
-                    post = data.communityPost,
+                    communityPost = data.communityPost,
                     onLike = {},
                     onComment = {},
-                    onClick = {}
+                    onClick = {},
+                    isPostLikedByUser = isPostLikedByUser
                 )
             }
 
-            itemsIndexed(data.comments) { index, comment ->
+            // post comment section
+            itemsIndexed(data.comments) { index: Int, comment: PostComment ->
                 Box(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                 ) {
@@ -243,6 +251,7 @@ fun PreviewRecipeCommentsScreen() {
             )
         ),
         onPostClick = {},
-        paddingValues = PaddingValues()
+        paddingValues = PaddingValues(),
+        isPostLikedByUser = { false }
     )
 }

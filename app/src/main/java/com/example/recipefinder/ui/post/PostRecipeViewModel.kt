@@ -3,7 +3,7 @@ package com.example.recipefinder.ui.post
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipefinder.data.repository.community.CommunityRepository
+import com.example.recipefinder.data.repository.community.post.CommunityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

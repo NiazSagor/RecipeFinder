@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.recipefinder.data.model.SearchRecipeByIngredients
 import com.example.recipefinder.ui.home.HomeViewModel
 import com.example.recipefinder.ui.home.components.SearchBar
@@ -34,11 +33,11 @@ import kotlinx.coroutines.withContext
 // TODO: handle when coming back from the search screen to the suggestion screen 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun TopContainer(
+fun SearchSection(
     bottomPadding: Dp,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel,
     modifier: Modifier,
-    onRecipeClick: (Int) -> Unit
+    onRecipeClick: (Int) -> Unit // lambda
 ) {
     val selectedTimeFilter = remember { mutableIntStateOf(Int.MAX_VALUE) }
     val selectedMealType = remember { mutableStateOf("main course") }
@@ -73,6 +72,7 @@ fun TopContainer(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // home search
             SearchBar(
                 query = state.query,
                 hint = searchBarHint,
@@ -87,7 +87,11 @@ fun TopContainer(
 
             when (state.searchDisplay) {
                 SearchDisplay.InitialResults -> {}
+                // another search screen
                 SearchDisplay.Suggestions -> {
+                    // switch
+                    // meal type
+                    // time filter
                     SearchRecipeTimeSuggestionsGrid(
                         onTimeFilterSelected = {
                             selectedTimeFilter.intValue = it
@@ -112,7 +116,7 @@ fun TopContainer(
                 SearchDisplay.Results -> {
                     SearchResultStaggeredGrid(
                         getLikesForRecipe = {
-                            viewModel.getRecipeLike(it)
+                            viewModel.getRecipeLikeCount(it)
                         },
                         modifier = Modifier.padding(
                             top = 16.dp,
@@ -120,7 +124,9 @@ fun TopContainer(
                             end = 16.dp,
                         ),
                         searchRecipeByIngredients = state.searchResults,
-                        onRecipeClick = { onRecipeClick(it) },
+                        onRecipeClick = { recipeId ->
+                            onRecipeClick(recipeId)
+                        },
                         onSave = { viewModel.save(it) }
                     )
                 }

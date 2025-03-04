@@ -45,14 +45,18 @@ fun CommunityScreen(
         is CommunityScreenState.Success -> {
             val posts = (state as CommunityScreenState.Success).posts
             CommunityScreenContent(
-                paddingValues = paddingValues, posts = posts,
+                paddingValues = paddingValues,
+                posts = posts,
                 onPostClick = { onPostClick() },
-                onLike = {
-                    viewmodel.likePost(it)
+                onLike = { postId ->
+                    viewmodel.likePost(postId)
                 },
-                onComment = {
-                    onComment(it)
+                onComment = { postId ->
+                    onComment(postId)
                 },
+                isPostLikedByUser = {
+                    viewmodel.isPostLikedByUser(it)
+                }
             )
         }
     }
@@ -62,9 +66,10 @@ fun CommunityScreen(
 private fun CommunityScreenContent(
     paddingValues: PaddingValues,
     posts: List<CommunityPost>,
+    isPostLikedByUser: suspend (String) -> Boolean,
     onPostClick: () -> Unit,
-    onLike: (String) -> Unit = {},
-    onComment: (String) -> Unit = {}
+    onLike: (String) -> Unit,
+    onComment: (String) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.padding(paddingValues),
@@ -81,6 +86,7 @@ private fun CommunityScreenContent(
             )
         },
         floatingActionButton = {
+            // to share a post with community
             ExtendedFloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
                 onClick = { onPostClick() },
@@ -105,12 +111,18 @@ private fun CommunityScreenContent(
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            itemsIndexed(posts) { index, post ->
+            itemsIndexed(posts) { _, post: CommunityPost ->
+                // individual post design
                 CommunityPostItem(
-                    post = post,
-                    onLike = { onLike(it) },
-                    onComment = { onComment(it) },
+                    communityPost = post,
+                    onLike = { postId ->
+                        onLike(postId)
+                    },
+                    onComment = { postId ->
+                        onComment(postId)
+                    },
                     onClick = { },
+                    isPostLikedByUser = isPostLikedByUser
                 )
             }
         }
@@ -172,6 +184,7 @@ fun PreviewCommunityScreen() {
         posts = dummyPosts,
         onPostClick = {},
         onLike = {},
-        onComment = {}
+        onComment = {},
+        isPostLikedByUser = { false }
     )
 }

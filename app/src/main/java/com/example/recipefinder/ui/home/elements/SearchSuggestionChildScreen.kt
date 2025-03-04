@@ -57,11 +57,12 @@ import com.example.recipefinder.ui.home.components.Breakfast_dining
 import com.example.recipefinder.ui.model.MealType
 import com.example.recipefinder.util.mealType
 
+// another search screen
 @Composable
 fun SearchSuggestionChildScreen(
     onTimeFilterSelected: (Int) -> Unit,
     onSearchTypeChanged: (String) -> Unit,
-    onDishTypeSelected: (String) -> Unit,
+    onMealTypeSelected: (String) -> Unit,
 ) {
     val timeSuggestions = listOf(5, 20, 45, 60)
     var selectedMealType by remember { mutableStateOf<String?>(null) }
@@ -72,6 +73,7 @@ fun SearchSuggestionChildScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // switch
         item {
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -81,13 +83,15 @@ fun SearchSuggestionChildScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // switch text
                     Text(
                         text = if (switchSearchByMealType) "Search By Meal Type" else "Search By Ingredients",
                         fontSize = 12.sp,
                     )
+                    // switch
                     Switch(
                         checked = switchSearchByMealType,
-                        onCheckedChange = { checked ->
+                        onCheckedChange = { checked: Boolean ->
                             switchSearchByMealType = checked
                             onSearchTypeChanged(
                                 if (checked) "Meal"
@@ -104,6 +108,7 @@ fun SearchSuggestionChildScreen(
             }
         }
 
+        // meal type
         item {
             AnimatedVisibility(
                 visible = switchSearchByMealType,
@@ -115,28 +120,33 @@ fun SearchSuggestionChildScreen(
                 ),
                 exit = shrinkVertically()
             ) {
+                // layout
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    // meal type heading
                     Text(
                         text = "Meal Type", fontWeight = FontWeight.Bold, fontSize = 14.sp,
                     )
 
+                    // meal types box
                     mealType.chunked(2).forEach { pair: List<MealType> ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            pair.forEach { meal ->
+                            pair.forEach { meal: MealType ->
+                                // individual meal type
                                 MealTypeItem(
                                     mealType = meal,
                                     isSelected = selectedMealType == meal.type,
-                                    onDishTypeSelected = {
-                                        if (selectedMealType == it) {
+                                    onMealTypeSelected = { mealType ->
+                                        // lambda
+                                        if (selectedMealType == mealType) {
                                             selectedMealType = null
                                         } else {
-                                            selectedMealType = it
-                                            onDishTypeSelected(it)
+                                            selectedMealType = mealType
+                                            onMealTypeSelected(mealType)
                                         }
                                     }
                                 )
@@ -147,30 +157,34 @@ fun SearchSuggestionChildScreen(
             }
         }
 
+        // time filter heading
         item {
             Text(
                 text = "Difficulty", fontWeight = FontWeight.Bold, fontSize = 14.sp,
             )
         }
 
+        // time filter
         item {
             TimeFilterGrid(
                 selectedTimeFilter = selectedTimeFilter,
                 timeSuggestions = timeSuggestions,
-                onTimeFilterSelected = {
-                    onTimeFilterSelected(it)
-                    selectedTimeFilter = it
+                onTimeFilterSelected = { selectedTime ->
+                    onTimeFilterSelected(selectedTime)
+                    selectedTimeFilter = selectedTime
                 }
             )
         }
     }
 }
 
+
+// individual meal type
 @Composable
 fun RowScope.MealTypeItem(
     mealType: MealType,
     isSelected: Boolean,
-    onDishTypeSelected: (String) -> Unit
+    onMealTypeSelected: (String) -> Unit // whole box click lambda
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(
@@ -178,7 +192,7 @@ fun RowScope.MealTypeItem(
             .clickable(
                 enabled = true,
                 onClick = {
-                    onDishTypeSelected(mealType.type)
+                    onMealTypeSelected(mealType.type) // returns the clicked meal type
                 },
                 indication = LocalIndication.current,
                 interactionSource = interactionSource
@@ -188,6 +202,8 @@ fun RowScope.MealTypeItem(
             .background(Color.LightGray.copy(alpha = 0.3f)),
         contentAlignment = Alignment.Center
     ) {
+        // meal icon
+        // meal text
         MealTypeSuggestionGridItem(
             imageVector = mealType.imageVector,
             title = mealType.type
@@ -215,6 +231,8 @@ fun RowScope.MealTypeItem(
     }
 }
 
+// meal icon
+// meal text
 @Composable
 fun MealTypeSuggestionGridItem(
     imageVector: ImageVector,
@@ -229,11 +247,13 @@ fun MealTypeSuggestionGridItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // meal type icon
             Icon(
                 modifier = Modifier.padding(start = 32.dp),
                 imageVector = imageVector,
                 contentDescription = ""
             )
+            // meal type text
             Text(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
@@ -245,6 +265,7 @@ fun MealTypeSuggestionGridItem(
     }
 }
 
+// time filter main work
 @Composable
 fun TimeFilterGrid(
     selectedTimeFilter: Int,
@@ -282,6 +303,7 @@ fun TimeFilterGrid(
                         selected = !selected
                         onTimeFilterSelected(timeSuggestions[time])
                     },
+                    // actual time text
                     label = {
                         Text(
                             fontWeight = FontWeight.Bold,

@@ -35,7 +35,9 @@ fun RecipeFinderNavGraph(
         ) {
             HomeScreen(
                 paddingValues = paddingValues,
-                onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
+                onRecipeClick = { recipeId: Int ->
+                    navigationActions.navigateToRecipeDetailsScreen(recipeId)
+                },
             )
         }
 
@@ -45,7 +47,9 @@ fun RecipeFinderNavGraph(
             CommunityScreen(
                 paddingValues = paddingValues,
                 onPostClick = { navigationActions.navigateToPostRecipeScreen() },
-                onComment = { navigationActions.navigateToPostCommentScreen(it) },
+                onComment = { postId ->
+                    navigationActions.navigateToPostCommentScreen(postId)
+                },
             )
         }
 
@@ -53,10 +57,9 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.POST_RECIPE_ROUTE
         ) {
             PostRecipeScreen(
-                paddingValues
-            ) {
-                navigationActions.popCurrentDestination()
-            }
+                paddingValues = paddingValues,
+                onBackClick = { navigationActions.popCurrentDestination() }
+            )
         }
 
         composable(
@@ -78,8 +81,8 @@ fun RecipeFinderNavGraph(
                     paddingValues = paddingValues,
                     recipeId = recipeId,
                     onPopCurrent = { navigationActions.popCurrentDestination() },
-                    onTipClick = { navigationActions.navigateToMakeTipScreen(recipeId) },
-                    onTipDetailsClick = {
+                    onTipClick = { navigationActions.navigateToMakeTipScreen(recipeId) }, // tip share screen
+                    onTipDetailsClick = { // to view all tips
                         navigationActions.navigateToRecipeTipDetailsScreen(
                             recipeId
                         )

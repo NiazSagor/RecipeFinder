@@ -49,6 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 
+// share a new recipe
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostRecipeScreen(
@@ -61,7 +62,7 @@ fun PostRecipeScreen(
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var addPhotoEnabled by remember { mutableStateOf<Boolean>(true) }
+    var addPhotoButtonVisible by remember { mutableStateOf<Boolean>(true) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -122,7 +123,7 @@ fun PostRecipeScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        if (addPhotoEnabled) {
+                        if (addPhotoButtonVisible) {
                             OutlinedButton(
                                 onClick = { photoPickerLauncher.launch("image/*") },
                             ) {
@@ -131,7 +132,7 @@ fun PostRecipeScreen(
                         }
 
                         selectedImageUri?.let {
-                            addPhotoEnabled = false
+                            addPhotoButtonVisible = false
                             Spacer(modifier = Modifier.height(16.dp))
                             Box(
                                 modifier = Modifier.fillMaxSize()
@@ -148,9 +149,10 @@ fun PostRecipeScreen(
                                             shape = RoundedCornerShape(8.dp)
                                         )
                                 )
+                                // cancel photo button
                                 IconButton(
                                     onClick = {
-                                        addPhotoEnabled = true
+                                        addPhotoButtonVisible = true
                                         selectedImageUri = null
                                     },
                                     modifier = Modifier
@@ -160,7 +162,7 @@ fun PostRecipeScreen(
                                     Icon(
                                         tint = MaterialTheme.colorScheme.primary,
                                         imageVector = Icons.Default.Cancel,
-                                        contentDescription = "Back"
+                                        contentDescription = "Cancel current photo"
                                     )
                                 }
                             }
@@ -168,6 +170,7 @@ fun PostRecipeScreen(
                         }
                     }
 
+                    // post recipe button
                     Button(
                         onClick = {
                             if (selectedImageUri != null) {
@@ -197,6 +200,7 @@ fun PostRecipeScreen(
                     }
                 }
 
+                // post image is uploading
                 PostRecipeScreenState.Posting -> {
                     Box(
                         modifier = Modifier
@@ -217,7 +221,7 @@ fun PostRecipeScreen(
                     title.value = ""
                     description.value = ""
                     selectedImageUri = null
-                    addPhotoEnabled = true
+                    addPhotoButtonVisible = true
                 }
             }
         }

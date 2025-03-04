@@ -1,8 +1,6 @@
 package com.example.recipefinder.ui.home.elements
 
 import androidx.compose.foundation.background
-
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -29,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.recipefinder.data.model.Recipe
@@ -54,6 +51,7 @@ fun TopRecipeCard(
                 interactionSource = remember { MutableInteractionSource() }
             )
     ) {
+        // large recipe image
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(recipe.image)
@@ -79,11 +77,13 @@ fun TopRecipeCard(
 //                        Icons.Default.Check, contentDescription = "",
 //                        modifier = Modifier.size(16.dp)
 //                    )
+                    // ready minute
                     Text(
                         text = "${recipe.readyInMinutes} mins",
                         fontSize = 12.sp
                     )
                 }
+                // recipe title
                 Text(
                     color = Color.Black,
                     text = recipe.title,
