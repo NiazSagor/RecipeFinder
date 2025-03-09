@@ -6,11 +6,11 @@ import com.example.recipefinder.model.StepVo
 
 fun List<RecipeAnalyzedInstructionsItemVo>.toRecipeAnalyzedInstructionsInternalModel(): List<RecipeAnalyzedInstructions> {
     return this.map {
-        it.toRecipeAnalyzedInstructionsItemInternalModel()
+        it.toInternalRecipeAnalyzedInstructionsItem()
     }
 }
 
-fun RecipeAnalyzedInstructionsItemVo.toRecipeAnalyzedInstructionsItemInternalModel(): RecipeAnalyzedInstructions {
+fun RecipeAnalyzedInstructionsItemVo.toInternalRecipeAnalyzedInstructionsItem(): RecipeAnalyzedInstructions {
     return RecipeAnalyzedInstructions(
         steps = this.steps.toStepsInternalModel()
     )

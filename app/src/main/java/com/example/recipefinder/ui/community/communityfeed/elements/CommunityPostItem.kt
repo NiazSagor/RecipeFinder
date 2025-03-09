@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.community.posts.elements
+package com.example.recipefinder.ui.community.communityfeed.elements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -176,7 +176,7 @@ fun PreviewCommunityPostItem() {
         communityPost = CommunityPost(
             timestamp = System.currentTimeMillis(),
             post = "I recently tried the Spicy Garlic Butter Shrimp recipe, and it turned out amazing! The instructions were straightforward, making it easy to follow even as a beginner. The garlic and butter flavors perfectly complemented the shrimp, and the spice level was just right—not too mild or overwhelming. I added a splash of lemon juice, which really elevated the taste. The shrimp cooked quickly, so it’s essential not to overcook them, but the end result was juicy and flavorful. It paired beautifully with steamed veggies and rice as suggested, and my family couldn’t stop raving about how restaurant-quality it tasted. Even my picky eater went for seconds, which is rare. Cleanup was a breeze since the recipe only required one pan, and the portion size was generous enough for our family of four. While the recipe was fantastic, I had to adjust the salt to taste, so a bit more detail there would have been helpful. Overall, this dish was a winner, and I’ll definitely be making it again for both family dinners and special occasions.",
-            userName = "Niaz Sagor",
+            userName = "Ripa Akter",
             userProfileImageUrl = "",
             recipeImageUrl = "",
             recipeTitle = "Garlic Butter Shrimp",

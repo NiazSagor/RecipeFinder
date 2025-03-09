@@ -74,13 +74,15 @@ fun ServingsControl(
                 shape = RoundedCornerShape(4.dp)
             )
     ) {
+        // minus
         IconButton(
             modifier = Modifier
                 .size(28.dp)
                 .padding(start = 8.dp),
             onClick = {
                 if (servings > 1) {
-                    servings--; onValueChange(servings)
+                    servings--
+                    onValueChange(servings)
                 }
             }
         ) {
@@ -91,17 +93,22 @@ fun ServingsControl(
             )
         }
 
+        // servings/person
         Text(
             fontSize = 12.sp,
             text = servings.toString(),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
+        // plus icon
         IconButton(
             modifier = Modifier
                 .size(28.dp)
                 .padding(end = 8.dp),
-            onClick = { servings++; onValueChange(servings) }
+            onClick = {
+                servings++
+                onValueChange(servings)
+            }
         ) {
             Icon(
                 imageVector = Icons.Default.Add,

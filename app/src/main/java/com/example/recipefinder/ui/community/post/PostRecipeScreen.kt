@@ -1,4 +1,4 @@
-package com.example.recipefinder.ui.post
+package com.example.recipefinder.ui.community.post
 
 import android.net.Uri
 import android.widget.Toast

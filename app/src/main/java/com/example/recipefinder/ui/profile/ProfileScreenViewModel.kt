@@ -40,7 +40,7 @@ class ProfileScreenViewModel @Inject constructor(
             dataStore.getLikedRecipes(),
             dataStore.getTippedRecipes(),
             dataStore.getRandomRecipes(),
-        ) { myRatings, myTips, allRecipes ->
+        ) { myRatings: List<Recipe>?, myTips: List<Recipe>?, allRecipes: List<Recipe>? ->
             val profileData = ProfileData(
                 bookmarkedRecipes = allRecipes?.filter { it.isBookmarked } ?: emptyList(),
                 myRatings = myRatings ?: emptyList(),
@@ -68,9 +68,9 @@ class ProfileScreenViewModel @Inject constructor(
 
     fun getUserProfilePhoto(): String = userRepository.getPhoto().toString()
 
-    fun saveRecipe(recipe: Recipe) {
+    fun unSaveRecipe(recipe: Recipe) {
         viewModelScope.launch {
-            dataStore.bookmarkRecipe(recipe)
+            recipeRepository.save(recipe)
         }
     }
 }

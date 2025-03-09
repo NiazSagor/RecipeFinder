@@ -7,10 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.recipefinder.ui.community.communityfeed.CommunityScreen
+import com.example.recipefinder.ui.community.post.PostRecipeScreen
 import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
-import com.example.recipefinder.ui.community.posts.CommunityScreen
 import com.example.recipefinder.ui.home.HomeScreen
-import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
 import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
@@ -80,12 +80,9 @@ fun RecipeFinderNavGraph(
                 RecipeDetailsScreen(
                     paddingValues = paddingValues,
                     recipeId = recipeId,
-                    onPopCurrent = { navigationActions.popCurrentDestination() },
-                    onTipClick = { navigationActions.navigateToMakeTipScreen(recipeId) }, // tip share screen
-                    onTipDetailsClick = { // to view all tips
-                        navigationActions.navigateToRecipeTipDetailsScreen(
-                            recipeId
-                        )
+                    onPopCurrent = { navigationActions.popCurrentDestination() }, // to go back to home screen
+                    onShowAllTips = { // to view all tips
+                        navigationActions.navigateToRecipeTipDetailsScreen(recipeId)
                     }
                 )
             }

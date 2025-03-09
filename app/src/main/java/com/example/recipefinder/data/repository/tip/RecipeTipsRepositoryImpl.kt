@@ -1,24 +1,25 @@
 package com.example.recipefinder.data.repository.tip
 
-import android.net.Uri
 import com.example.recipefinder.data.model.Tip
 import com.example.recipefinder.data.model.toTip
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RecipeTipsRepositoryImpl @Inject constructor(
-    private val tipsDb: FirebaseFirestore,
+    private val firebaseFirestore: FirebaseFirestore,
 ) : RecipeTipsRepository {
 
-    override fun getAllTipsForRecipe(recipeId: Int) = callbackFlow {
-        val listener = tipsDb
+    override fun getAllTipsForRecipe(recipeId: Int): Flow<List<Tip>> = callbackFlow {
+        val listener = firebaseFirestore
             .collection("tips")
             .document(recipeId.toString())
             .collection("allTips")
@@ -27,7 +28,7 @@ class RecipeTipsRepositoryImpl @Inject constructor(
                     close(e)
                     return@addSnapshotListener
                 }
-                val tips = snapshot?.documents?.mapNotNull {
+                val tips: List<Tip> = snapshot?.documents?.mapNotNull {
                     it.toTip()
                 } ?: emptyList()
 
@@ -42,23 +43,13 @@ class RecipeTipsRepositoryImpl @Inject constructor(
     override suspend fun sendTip(
         recipeId: Int,
         tip: Tip,
-        photoUri: Uri?
     ) {
         try {
-//            if (photoUri != null) {
-//                val downloadUrl = uploadRecipePhoto(tip.userName, photoUri)
-//                tipsDb.collection("tips")
-//                    .document(recipeId.toString())
-//                    .collection("allTips")
-//                    .add(tip.copy(photoUrl = downloadUrl))
-//                    .await()
-            //} else {
-            tipsDb.collection("tips")
+            firebaseFirestore.collection("tips")
                 .document(recipeId.toString())
                 .collection("allTips")
                 .add(tip)
                 .await()
-            //}
         } catch (e: FirebaseFirestoreException) {
             e.printStackTrace()
         }
@@ -66,7 +57,7 @@ class RecipeTipsRepositoryImpl @Inject constructor(
 
     override suspend fun like(recipeId: Int) {
         try {
-            tipsDb
+            firebaseFirestore
                 .collection("recipes")
                 .document(recipeId.toString())
                 .update("like", FieldValue.increment(1))
@@ -77,16 +68,17 @@ class RecipeTipsRepositoryImpl @Inject constructor(
 
     override suspend fun getLikesForRecipe(recipeId: Int): Int {
         return try {
-            val recipe = tipsDb
-                .collection("recipes")
-                .document(recipeId.toString())
-                .get()
-                .await()
+            val recipe: DocumentSnapshot? =
+                firebaseFirestore
+                    .collection("recipes")
+                    .document(recipeId.toString())
+                    .get()
+                    .await()
 
-            if (recipe.exists()) {
+            if (recipe?.exists() == true) {
                 recipe.getLong("like")?.toInt() ?: 0
             } else {
-                tipsDb
+                firebaseFirestore
                     .collection("recipes")
                     .document(recipeId.toString())
                     .set(mapOf<String, Int>(Pair("like", 0)))

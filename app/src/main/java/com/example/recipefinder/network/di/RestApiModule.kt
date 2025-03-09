@@ -1,7 +1,6 @@
 package com.example.recipefinder.network.di
 
 import com.example.recipefinder.network.RestApiService
-import com.example.recipefinder.network.converter.JsonOrXmlConverter
 import com.example.recipefinder.network.interceptor.ApiKeyInterceptor
 import dagger.Module
 import dagger.Provides

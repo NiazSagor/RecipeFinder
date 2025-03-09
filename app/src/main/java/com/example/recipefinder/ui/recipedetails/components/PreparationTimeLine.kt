@@ -33,12 +33,12 @@ fun PreparationTimeLine(recipeDetails: Recipe) {
                 title = "Total Time",
                 time = totalTime
             )
-            if (recipeDetails.preparationMinutes > 0) {
-                PreparationTitleAndTime(title = "Prep Time", time = recipeDetails.preparationMinutes)
-            }
-            if (recipeDetails.cookingMinutes > 0) {
-                PreparationTitleAndTime(title = "Cook Time", time = recipeDetails.cookingMinutes)
-            }
+//            if (recipeDetails.preparationMinutes > 0) {
+//                PreparationTitleAndTime(title = "Prep Time", time = recipeDetails.preparationMinutes)
+//            }
+//            if (recipeDetails.cookingMinutes > 0) {
+//                PreparationTitleAndTime(title = "Cook Time", time = recipeDetails.cookingMinutes)
+//            }
         }
     }
 }

@@ -106,7 +106,7 @@ class HomeViewModel @Inject constructor(
             } else {
                 query.trim()
             }
-            val result = recipeRepository.searchDishType(
+            val result = recipeRepository.searchMealType(
                 query = sanitizedQuery,
                 type = dishType,
                 maxReadyTime = time,
@@ -122,10 +122,10 @@ class HomeViewModel @Inject constructor(
     private suspend fun getRecipeDetailsById(id: Int) {
         try {
             // save the information datastore
-            val recipe = recipeRepository.getRecipeById(id)
+            val recipe = recipeRepository.getRecipeDetail(id)
             if (recipe != null) {
                 Log.e(TAG, "getRecipeDetailsById: $id ------- saveRecipeInformation $recipe")
-                recipeRepository.saveRecipeInformation(recipe)
+                recipeRepository.addNewRecipe(recipe)
             }
         } catch (e: Exception) {
             e.printStackTrace()

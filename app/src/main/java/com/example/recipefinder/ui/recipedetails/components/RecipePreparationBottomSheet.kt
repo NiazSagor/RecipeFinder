@@ -77,6 +77,7 @@ fun BottomSheetContentLayout(recipeInstructions: RecipeAnalyzedInstructions) {
                     .align(Alignment.Center),
                 contentAlignment = Alignment.Center
             ) {
+                // step description
                 Text(
                     text = step.step,
                     fontSize = 22.sp,

@@ -47,7 +47,7 @@ fun SavedRecipeScreen(
                             onRecipeClick(recipeId)
                         },
                         onSave = { recipe: Recipe ->
-                            viewmodel.saveRecipe(recipe)
+                            viewmodel.unSaveRecipe(recipe)
                         }
                     )
                 }

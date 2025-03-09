@@ -40,7 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.PostComment
 import com.example.recipefinder.data.model.Tip
-import com.example.recipefinder.ui.community.posts.elements.CommunityPostItem
+import com.example.recipefinder.ui.community.communityfeed.elements.CommunityPostItem
 import com.example.recipefinder.ui.recipetipdetails.components.RecipeTipsListItem
 
 // shows all comments on a post
@@ -56,7 +56,7 @@ fun PostCommentsScreen(
         is PostCommentState.Error -> {}
         PostCommentState.Loading -> {}
         is PostCommentState.Success -> {
-            val data = (state as PostCommentState.Success).data
+            val data: PostCommentData = (state as PostCommentState.Success).data
             Scaffold(
                 modifier = Modifier
                     .padding(paddingValues),
@@ -127,7 +127,7 @@ fun PostCommentsScreenContent(
                     RecipeTipsListItem(
                         Tip(
                             timestamp = comment.timestamp,
-                            tip = comment.comment,
+                            description = comment.comment,
                             userName = comment.userName,
                             userProfileImageUrl = comment.userProfileImageUrl
                         )
@@ -208,7 +208,7 @@ fun PreviewRecipeCommentsScreen() {
                 like = 125,
                 timestamp = 1736955113230,
                 post = "Just tried this amazing chocolate cake recipe. It was a hit with my family!",
-                userName = "Niaz Sagor",
+                userName = "Ripa Akter",
                 userProfileImageUrl = "",
                 recipeImageUrl = "",
             ),

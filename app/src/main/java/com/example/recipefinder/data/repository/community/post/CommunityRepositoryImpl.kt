@@ -6,7 +6,10 @@ import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.toCommunityPost
 import com.example.recipefinder.data.repository.community.like.CommunityPostLikeRepository
 import com.example.recipefinder.data.repository.user.UserRepository
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.storage.storage
@@ -22,7 +25,7 @@ import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val communityPostsDb: FirebaseFirestore,
+    private val firebaseFirestore: FirebaseFirestore,
     private val supabase: SupabaseClient,
     private val userRepository: UserRepository,
     private val communityPostLikeRepository: CommunityPostLikeRepository,
@@ -34,14 +37,13 @@ class CommunityRepositoryImpl @Inject constructor(
 
     override fun getPost(postId: String): Flow<CommunityPost?> = flow {
         try {
-            val result = communityPostsDb
+            val result: DocumentSnapshot? = firebaseFirestore
                 .collection("community")
                 .document(postId)
                 .get()
                 .await()
             emit(result?.toCommunityPost())
         } catch (e: Exception) {
-            e.printStackTrace()
             emit(null)
         }
     }
@@ -61,7 +63,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 userProfileImageUrl = userRepository.getPhoto().toString(),
                 like = 0
             )
-            communityPostsDb
+            firebaseFirestore
                 .collection("community")
                 .document(communityPost.postId)
                 .set(communityPost)
@@ -76,14 +78,14 @@ class CommunityRepositoryImpl @Inject constructor(
      * */
     override fun getCommunityPosts(): Flow<List<CommunityPost>> = callbackFlow {
         val listener =
-            communityPostsDb
+            firebaseFirestore
                 .collection("community")
-                .addSnapshotListener { snapshot, e ->
-                    if (e != null) {
-                        close(e)
+                .addSnapshotListener { snapshot: QuerySnapshot?, error: FirebaseFirestoreException? ->
+                    if (error != null) {
+                        close(error)
                         return@addSnapshotListener
                     }
-                    val posts = snapshot?.documents?.mapNotNull {
+                    val posts: List<CommunityPost> = snapshot?.documents?.mapNotNull {
                         it.toCommunityPost()
                     } ?: emptyList()
                     trySend(posts)

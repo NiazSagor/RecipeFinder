@@ -18,7 +18,7 @@ class CommunityPostLikeRepositoryImpl @Inject constructor(
 
     override suspend fun likePost(postId: String) {
         try {
-            val isPostAlreadyLikedByUser = isCommunityPostLikedByUser(postId)
+            val isPostAlreadyLikedByUser: Boolean = isCommunityPostLikedByUser(postId)
             if (isPostAlreadyLikedByUser) {
                 removeCommunityPostIdFromLikedCommunityPostsCollection(postId)
                 decrementCommunityPostLikeCount(postId)
@@ -53,7 +53,8 @@ class CommunityPostLikeRepositoryImpl @Inject constructor(
         postId: String
     ): Boolean {
         val email = userRepository.getEmail()
-        val document: DocumentSnapshot? = firebaseFirestore
+        val document: DocumentSnapshot? =
+            firebaseFirestore
             .collection("users")
             .document(email)
             .collection("likedCommunityPosts")

@@ -1,6 +1,8 @@
 package com.example.recipefinder.network.interceptor
 
+import okhttp3.HttpUrl
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import javax.inject.Inject
 
@@ -11,11 +13,11 @@ class ApiKeyInterceptor @Inject constructor(
         val originalRequest = chain.request()
         val originalUrl = originalRequest.url
 
-        val urlWithApiKey = originalUrl.newBuilder()
+        val urlWithApiKey: HttpUrl = originalUrl.newBuilder()
             .addQueryParameter("apiKey", apiKey)
             .build()
 
-        val requestWithApiKey = originalRequest.newBuilder()
+        val requestWithApiKey: Request = originalRequest.newBuilder()
             .url(urlWithApiKey)
             .build()
 

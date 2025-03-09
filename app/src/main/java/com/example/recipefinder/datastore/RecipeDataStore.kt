@@ -114,7 +114,7 @@ class RecipeDataStore @Inject constructor(
             }
     }
 
-    suspend fun getRecipeById(id: Int): Recipe? {
+    suspend fun getRecipeDetail(id: Int): Recipe? {
         val savedRecipes: List<Recipe>? = getRandomRecipes().first()
         return savedRecipes?.let {
             it.firstOrNull { it.id == id }
@@ -126,12 +126,12 @@ class RecipeDataStore @Inject constructor(
     }
 
     suspend fun bookmarkRecipe(recipe: Recipe) {
-        val allRecipes = getRandomRecipes().first()
+        val allRecipes: List<Recipe>? = getRandomRecipes().first()
 
         if (allRecipes == null || allRecipes.none { it.id == recipe.id }) {
             Log.e(TAG, "bookmarkRecipe: Recipe not found in the list")
         } else {
-            val updatedRecipes = allRecipes.map { currentRecipe ->
+            val updatedRecipes = allRecipes.map { currentRecipe: Recipe ->
                 if (currentRecipe.id == recipe.id) {
                     // Update the `isBookmarked` field for the specific recipe
                     if (currentRecipe.isBookmarked == true) {
@@ -149,10 +149,10 @@ class RecipeDataStore @Inject constructor(
         }
     }
 
-    private suspend fun updateAllRecipes(allRecipes: List<Recipe>) {
+    suspend fun updateAllRecipes(allRecipes: List<Recipe>) {
         context.recipeDataStore.edit { preferences ->
-            val jsonString = gson.toJson(allRecipes)
-            preferences[stringPreferencesKey("random_recipes")] = jsonString
+            val updatedRecipeJson = gson.toJson(allRecipes)
+            preferences[stringPreferencesKey("random_recipes")] = updatedRecipeJson
         }
     }
 }

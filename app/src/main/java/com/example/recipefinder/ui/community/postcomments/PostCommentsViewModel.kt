@@ -33,13 +33,13 @@ class PostCommentsViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
 ) : ViewModel() {
 
-    val postId = savedStateHandle.getStateFlow<String>("postId", "")
+    val postId: String = savedStateHandle.get<String>("postId") ?: ""
 
     val state: StateFlow<PostCommentState> =
         combine(
-            communityRepository.getPost(postId.value),
-            postCommentsRepository.getPostComments(postId.value)
-        ) { post, comments ->
+            communityRepository.getPost(postId),
+            postCommentsRepository.getPostComments(postId)
+        ) { post: CommunityPost?, comments: List<PostComment> ->
             if (post == null) {
                 PostCommentState.Error("Something went wrong")
             } else {
@@ -47,7 +47,7 @@ class PostCommentsViewModel @Inject constructor(
                     communityPost = post,
                     comments = comments
                 )
-                PostCommentState.Success(data)
+                PostCommentState.Success(data = data)
             }
         }.stateIn(
             scope = viewModelScope,

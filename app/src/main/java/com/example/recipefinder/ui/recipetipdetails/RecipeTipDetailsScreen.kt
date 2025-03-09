@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.recipefinder.data.model.Tip
 import com.example.recipefinder.ui.recipetipdetails.components.RecipeTipsListItem
 
 
@@ -50,7 +51,7 @@ fun RecipeTipDetailsScreen(
         }
 
         is RecipeTipsState.Success -> {
-            val tips = (state as RecipeTipsState.Success).tips
+            val tips: List<Tip> = (state as RecipeTipsState.Success).tips
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -97,7 +98,7 @@ fun RecipeTipDetailsScreen(
                         ),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        itemsIndexed(tips) { index, tip ->
+                        itemsIndexed(tips) { _, tip: Tip ->
                             RecipeTipsListItem(tip)
                         }
                     }
