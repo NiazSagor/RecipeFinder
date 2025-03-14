@@ -1,7 +1,6 @@
 package com.example.recipefinder.datastore
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,28 +33,29 @@ class RecipeDataStore @Inject constructor(
         name = "recipe"
     )
 
-    suspend fun saveRandomRecipes(
-        randomRecipes: List<Recipe>
+    suspend fun saveRecipes(
+        recipes: List<Recipe>
     ) {
-        val savedRecipes: List<Recipe> = getRandomRecipes().first() ?: emptyList()
-        val newRecipes = randomRecipes.filter {
-            savedRecipes.contains(it) == false
+        val savedRecipes: List<Recipe> = getSavedRecipes().first()
+        val newRecipes: List<Recipe> = recipes.filter { recipe: Recipe ->
+            savedRecipes.contains(recipe) == false
         }
         context.recipeDataStore
             .edit { preferences ->
-                val jsonString = gson.toJson(savedRecipes.plus(newRecipes))
-                preferences[stringPreferencesKey("random_recipes")] = jsonString
+                val newUpdatedRecipeList: List<Recipe> = savedRecipes.plus(newRecipes)
+                val jsonString = gson.toJson(newUpdatedRecipeList)
+                preferences[stringPreferencesKey("saved_recipes")] = jsonString
             }
     }
 
-    fun getRandomRecipes(): Flow<List<Recipe>?> {
+    fun getSavedRecipes(): Flow<List<Recipe>> {
         return context.recipeDataStore
             .data
             .catch { emit(emptyPreferences()) }
             .map { preferences ->
-                val jsonString = preferences[stringPreferencesKey("random_recipes")] ?: ""
+                val jsonString = preferences[stringPreferencesKey("saved_recipes")] ?: ""
                 if (jsonString.isNotEmpty()) {
-                    val type = object : TypeToken<List<Recipe>>() {}.type
+                    val type: Type? = object : TypeToken<List<Recipe>>() {}.type
                     gson.fromJson(jsonString, type)
                 } else {
                     emptyList()
@@ -115,44 +116,32 @@ class RecipeDataStore @Inject constructor(
     }
 
     suspend fun getRecipeDetail(id: Int): Recipe? {
-        val savedRecipes: List<Recipe>? = getRandomRecipes().first()
-        return savedRecipes?.let {
-            it.firstOrNull { it.id == id }
-        }
-    }
-
-    suspend fun getBookmarkedRecipes(): List<Recipe> {
-        return getRandomRecipes().first()?.filter { it.isBookmarked } ?: emptyList()
+        val savedRecipes: List<Recipe> = getSavedRecipes().first()
+        return savedRecipes.firstOrNull { recipe: Recipe -> recipe.id == id }
     }
 
     suspend fun bookmarkRecipe(recipe: Recipe) {
-        val allRecipes: List<Recipe>? = getRandomRecipes().first()
-
-        if (allRecipes == null || allRecipes.none { it.id == recipe.id }) {
-            Log.e(TAG, "bookmarkRecipe: Recipe not found in the list")
-        } else {
-            val updatedRecipes = allRecipes.map { currentRecipe: Recipe ->
-                if (currentRecipe.id == recipe.id) {
-                    // Update the `isBookmarked` field for the specific recipe
-                    if (currentRecipe.isBookmarked == true) {
-                        // if already true
-                        currentRecipe.copy(isBookmarked = false)
-                    } else {
-                        currentRecipe.copy(isBookmarked = true)
-                    }
+        val savedRecipes: List<Recipe> = getSavedRecipes().first()
+        val updatedRecipes = savedRecipes.map { currentRecipe: Recipe ->
+            if (currentRecipe.id == recipe.id) {
+                // Update the `isBookmarked` field for the specific recipe
+                if (currentRecipe.isBookmarked == true) {
+                    // if already true
+                    currentRecipe.copy(isBookmarked = false)
                 } else {
-                    currentRecipe
+                    currentRecipe.copy(isBookmarked = true)
                 }
+            } else {
+                currentRecipe
             }
-
-            updateAllRecipes(updatedRecipes)
         }
+        updateAllRecipes(updatedRecipes)
     }
 
     suspend fun updateAllRecipes(allRecipes: List<Recipe>) {
         context.recipeDataStore.edit { preferences ->
             val updatedRecipeJson = gson.toJson(allRecipes)
-            preferences[stringPreferencesKey("random_recipes")] = updatedRecipeJson
+            preferences[stringPreferencesKey("saved_recipes")] = updatedRecipeJson
         }
     }
 }

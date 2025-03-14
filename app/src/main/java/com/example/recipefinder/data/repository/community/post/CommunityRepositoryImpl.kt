@@ -58,7 +58,7 @@ class CommunityRepositoryImpl @Inject constructor(
             val communityPost = CommunityPost(
                 post = post,
                 recipeTitle = recipeTitle,
-                recipeImageUrl = recipeImageUrl!!,
+                recipeImageUrl = recipeImageUrl,
                 userName = userRepository.getName(),
                 userProfileImageUrl = userRepository.getPhoto().toString(),
                 like = 0
@@ -85,8 +85,9 @@ class CommunityRepositoryImpl @Inject constructor(
                         close(error)
                         return@addSnapshotListener
                     }
-                    val posts: List<CommunityPost> = snapshot?.documents?.mapNotNull {
-                        it.toCommunityPost()
+                    val posts: List<CommunityPost> =
+                        snapshot?.documents?.mapNotNull { documentSnapshot ->
+                            documentSnapshot.toCommunityPost()
                     } ?: emptyList()
                     trySend(posts)
                 }
@@ -98,7 +99,7 @@ class CommunityRepositoryImpl @Inject constructor(
     private suspend fun uploadRecipePhoto(
         title: String,
         imageUri: Uri
-    ): String? {
+    ): String {
         return withContext(Dispatchers.IO) {
             val inputStream =
                 context.contentResolver.openInputStream(imageUri)

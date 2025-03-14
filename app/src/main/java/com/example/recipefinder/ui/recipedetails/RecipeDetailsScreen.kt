@@ -82,7 +82,7 @@ fun RecipeDetailsScreen(
     onShowAllTips: (Int) -> Unit,
 ) {
     var currentRecipeId by remember { mutableIntStateOf(recipeId) }
-    val recipeDetailsState by recipeDetailViewModel.recipeDetail.collectAsStateWithLifecycle()
+    val recipeDetailsState by recipeDetailViewModel.recipeDetailState.collectAsStateWithLifecycle()
 
     LaunchedEffect(currentRecipeId) {
         recipeDetailViewModel.getRecipeDetailsById(currentRecipeId)
@@ -105,7 +105,7 @@ fun RecipeDetailsScreen(
             if (isNutritionInfoExpanded) {
                 LaunchedEffect(Unit) {
                     isNutritionInfoLoading = true
-                    nutrients = recipeDetailViewModel.getNutrients(id = currentRecipeId)
+                    nutrients = recipeDetailViewModel.getNutrients(recipeId = currentRecipeId)
                     isNutritionInfoLoading = false
                 }
             }
@@ -123,7 +123,7 @@ fun RecipeDetailsScreen(
                             )
                         },
                         onSave = { recipeDetailViewModel.save(currentRecipeDetails) },
-                        onPopCurrent = onPopCurrent, // pop current page
+                        onBack = onPopCurrent, // pop current page
                         scrollBehavior = scrollBehavior,
                     )
                 },
@@ -148,7 +148,7 @@ fun RecipeDetailsScreen(
                 // open recipe instructions (bottom sheet)
                 if (openBottomSheet) {
                     // get recipe instructions
-                    recipeDetailViewModel.getAnalyzedRecipeInstructions(id = currentRecipeId)
+                    recipeDetailViewModel.getAnalyzedRecipeInstructions(recipeId = currentRecipeId)
                     // bottom sheet design
                     RecipePreparationBottomSheet(
                         recipeDetailViewModel = recipeDetailViewModel,

@@ -22,7 +22,8 @@ sealed class RecipeDetailsState {
 
 sealed class RecipeInstructionsState {
     object Loading : RecipeInstructionsState()
-    data class Success(val recipe: RecipeAnalyzedInstructions) : RecipeInstructionsState()
+    data class Success(val recipeInstructions: RecipeAnalyzedInstructions) :
+        RecipeInstructionsState()
     data class Error(val message: String) : RecipeInstructionsState()
 }
 
@@ -32,46 +33,48 @@ class RecipeDetailsViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
 ) : ViewModel() {
 
-    private val _recipeDetail =
+    private val _recipeDetailState =
         MutableStateFlow<RecipeDetailsState>(RecipeDetailsState.Loading)
 
-    private val _recipeInstructions =
+    private val _recipeInstructionsState =
         MutableStateFlow<RecipeInstructionsState>(RecipeInstructionsState.Loading)
 
-    val recipeDetail: StateFlow<RecipeDetailsState> = _recipeDetail.asStateFlow()
+    val recipeDetailState: StateFlow<RecipeDetailsState> = _recipeDetailState.asStateFlow()
 
-    val recipeInstructions: StateFlow<RecipeInstructionsState> = _recipeInstructions.asStateFlow()
+    val recipeInstructionsState: StateFlow<RecipeInstructionsState> =
+        _recipeInstructionsState.asStateFlow()
 
-    fun getRecipeDetailsById(id: Int) {
+    fun getRecipeDetailsById(recipeId: Int) {
         viewModelScope.launch {
             try {
-                _recipeDetail.value = RecipeDetailsState.Loading
-                val recipeDetail = recipeRepository.getRecipeDetail(id)
+                _recipeDetailState.value = RecipeDetailsState.Loading
+                val recipeDetail: Recipe? = recipeRepository.getRecipeDetail(recipeId)
                 if (recipeDetail != null) {
-                    _recipeDetail.value = RecipeDetailsState.Success(recipeDetail)
+                    _recipeDetailState.value = RecipeDetailsState.Success(recipeDetail)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _recipeDetail.value = RecipeDetailsState.Error(e.message.toString())
+                _recipeDetailState.value = RecipeDetailsState.Error(e.message.toString())
             }
         }
     }
 
-    fun getAnalyzedRecipeInstructions(id: Int) {
+    fun getAnalyzedRecipeInstructions(recipeId: Int) {
         viewModelScope.launch {
             try {
-                _recipeInstructions.value = RecipeInstructionsState.Loading
-                val recipeInstructions = recipeRepository.getAnalyzedInstructions(id)
-                _recipeInstructions.value = RecipeInstructionsState.Success(recipeInstructions)
+                _recipeInstructionsState.value = RecipeInstructionsState.Loading
+                val recipeInstructions: RecipeAnalyzedInstructions =
+                    recipeRepository.getAnalyzedInstructions(recipeId)
+                _recipeInstructionsState.value = RecipeInstructionsState.Success(recipeInstructions)
             } catch (e: Exception) {
                 e.printStackTrace()
-                _recipeInstructions.value = RecipeInstructionsState.Error(e.message.toString())
+                _recipeInstructionsState.value = RecipeInstructionsState.Error(e.message.toString())
             }
         }
     }
 
-    suspend fun getNutrients(id: Int): RecipeNutrient {
-        return recipeRepository.getNutrients(id)
+    suspend fun getNutrients(recipeId: Int): RecipeNutrient {
+        return recipeRepository.getNutrients(recipeId)
     }
 
     fun sendTip(recipeId: Int, tip: String, recipe: Recipe) {

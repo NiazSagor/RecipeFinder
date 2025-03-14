@@ -39,7 +39,7 @@ class ProfileScreenViewModel @Inject constructor(
         combine(
             dataStore.getLikedRecipes(),
             dataStore.getTippedRecipes(),
-            dataStore.getRandomRecipes(),
+            dataStore.getSavedRecipes(),
         ) { myRatings: List<Recipe>?, myTips: List<Recipe>?, allRecipes: List<Recipe>? ->
             val profileData = ProfileData(
                 bookmarkedRecipes = allRecipes?.filter { it.isBookmarked } ?: emptyList(),

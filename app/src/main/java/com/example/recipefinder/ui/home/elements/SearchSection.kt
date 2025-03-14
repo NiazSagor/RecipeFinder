@@ -1,6 +1,5 @@
 package com.example.recipefinder.ui.home.elements
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -49,18 +48,19 @@ fun SearchSection(
         rememberSearchState(
             initialResults = emptyList<SearchRecipeByIngredients>(),
             suggestions = emptyList<SearchRecipeByIngredients>(),
-            timeoutMillis = 2000
-        ) { query: TextFieldValue ->
-            withContext(Dispatchers.IO) {
-                Log.e("HomeScreenViewModel", "TopContainer: ${query.text}")
-                viewModel.search(
-                    searchType = selectedSearchType.value,
-                    query = query.text,
-                    time = selectedTimeFilter.intValue,
-                    mealType = selectedMealType.value
-                )
+            timeoutMillis = 2000,
+            onQueryResult = { query: TextFieldValue ->
+                withContext(Dispatchers.IO) {
+                    // search
+                    viewModel.search(
+                        searchType = selectedSearchType.value,
+                        query = query.text,
+                        time = selectedTimeFilter.intValue,
+                        mealType = selectedMealType.value
+                    )
+                }
             }
-        }
+        )
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -92,15 +92,15 @@ fun SearchSection(
                     // switch
                     // meal type
                     // time filter
-                    SearchRecipeTimeSuggestionsGrid(
-                        onTimeFilterSelected = {
-                            selectedTimeFilter.intValue = it
+                    SearchSuggestionsGrid(
+                        onTimeFilterSelected = { time ->
+                            selectedTimeFilter.intValue = time
                         },
-                        onDishTypeSelected = {
-                            selectedMealType.value = it
+                        onMealTypeSelected = { mealType ->
+                            selectedMealType.value = mealType
                         },
-                        onSearchTypeChanged = {
-                            selectedSearchType.value = it
+                        onSearchTypeChanged = { searchType ->
+                            selectedSearchType.value = searchType
                         }
                     )
                 }
@@ -123,7 +123,7 @@ fun SearchSection(
                             start = 16.dp,
                             end = 16.dp,
                         ),
-                        searchRecipeByIngredients = state.searchResults,
+                        searchResult = state.searchResults,
                         onRecipeClick = { recipeId ->
                             onRecipeClick(recipeId)
                         },

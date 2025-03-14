@@ -7,7 +7,7 @@ import com.example.recipefinder.data.model.SearchRecipeByIngredients
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
-    suspend fun getRandomRecipes(): Flow<List<Recipe>?>
+    fun getRandomRecipes(): Flow<List<Recipe>>
     suspend fun getRecipeDetail(recipeId: Int): Recipe?
     suspend fun searchRecipesByIngredients(ingredients: String): List<SearchRecipeByIngredients>
     suspend fun getAnalyzedInstructions(recipeId: Int): RecipeAnalyzedInstructions
@@ -17,7 +17,6 @@ interface RecipeRepository {
         query: String,
         type: String,
         maxReadyTime: Int,
-        ingredients: String
     ): List<Recipe>
 
     suspend fun sendTip(recipeId: Int, tip: String)

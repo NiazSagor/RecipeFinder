@@ -13,9 +13,10 @@ class ApiKeyInterceptor @Inject constructor(
         val originalRequest = chain.request()
         val originalUrl = originalRequest.url
 
-        val urlWithApiKey: HttpUrl = originalUrl.newBuilder()
-            .addQueryParameter("apiKey", apiKey)
-            .build()
+        val urlWithApiKey: HttpUrl =
+            originalUrl.newBuilder()
+                .addQueryParameter("apiKey", apiKey)
+                .build()
 
         val requestWithApiKey: Request = originalRequest.newBuilder()
             .url(urlWithApiKey)

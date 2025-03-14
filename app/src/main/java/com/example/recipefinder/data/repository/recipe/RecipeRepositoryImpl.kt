@@ -29,8 +29,8 @@ class RecipeRepositoryImpl @Inject constructor(
     private val userRepository: UserRepository,
 ) : RecipeRepository {
 
-    override suspend fun getRandomRecipes(): Flow<List<Recipe>?> {
-        return recipeDataStore.getRandomRecipes()
+    override fun getRandomRecipes(): Flow<List<Recipe>> {
+        return recipeDataStore.getSavedRecipes()
     }
 
     override suspend fun getRecipeDetail(recipeId: Int): Recipe? {
@@ -57,8 +57,7 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun addNewRecipe(recipe: Recipe) {
         try {
             val allRecipes: MutableList<Recipe> =
-                recipeDataStore.getRandomRecipes().first()?.toMutableList()
-                    ?: mutableListOf<Recipe>()
+                recipeDataStore.getSavedRecipes().first().toMutableList()
             if (!allRecipes.contains(recipe)) {
                 allRecipes.add(recipe)
                 recipeDataStore.updateAllRecipes(allRecipes.toList())
@@ -77,15 +76,12 @@ class RecipeRepositoryImpl @Inject constructor(
         query: String,
         type: String,
         maxReadyTime: Int,
-        ingredients: String
     ): List<Recipe> {
         val searchRecipesVo: SearchRecipesVo = restApiService.searchRecipe(
             query = query,
             type = type,
             maxReadyTime = maxReadyTime,
-            addRecipeInformation = true,
-            number = 10,
-            includeIngredients = ingredients
+            includeIngredients = query
         )
         return searchRecipesVo.results.toInternalRecipesModel()
     }

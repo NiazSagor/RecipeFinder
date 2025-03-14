@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,7 +40,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,7 +67,6 @@ fun SearchSuggestionChildScreen(
     val timeSuggestions = listOf(5, 20, 45, 60)
     var selectedMealType by remember { mutableStateOf<String?>(null) }
     var switchSearchByMealType by remember { mutableStateOf(false) }
-    var selectedTimeFilter by remember { mutableIntStateOf(Int.MAX_VALUE) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -139,7 +138,6 @@ fun SearchSuggestionChildScreen(
                                 // individual meal type
                                 MealTypeItem(
                                     mealType = meal,
-                                    isSelected = selectedMealType == meal.type,
                                     onMealTypeSelected = { mealType ->
                                         // lambda
                                         if (selectedMealType == mealType) {
@@ -167,11 +165,9 @@ fun SearchSuggestionChildScreen(
         // time filter
         item {
             TimeFilterGrid(
-                selectedTimeFilter = selectedTimeFilter,
                 timeSuggestions = timeSuggestions,
                 onTimeFilterSelected = { selectedTime ->
                     onTimeFilterSelected(selectedTime)
-                    selectedTimeFilter = selectedTime
                 }
             )
         }
@@ -183,9 +179,9 @@ fun SearchSuggestionChildScreen(
 @Composable
 fun RowScope.MealTypeItem(
     mealType: MealType,
-    isSelected: Boolean,
     onMealTypeSelected: (String) -> Unit // whole box click lambda
 ) {
+    var isSelected by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = Modifier
@@ -193,6 +189,7 @@ fun RowScope.MealTypeItem(
                 enabled = true,
                 onClick = {
                     onMealTypeSelected(mealType.type) // returns the clicked meal type
+                    isSelected = !isSelected
                 },
                 indication = LocalIndication.current,
                 interactionSource = interactionSource
@@ -268,7 +265,6 @@ fun MealTypeSuggestionGridItem(
 // time filter main work
 @Composable
 fun TimeFilterGrid(
-    selectedTimeFilter: Int,
     timeSuggestions: List<Int>,
     onTimeFilterSelected: (Int) -> Unit
 ) {
@@ -279,7 +275,7 @@ fun TimeFilterGrid(
         columns = StaggeredGridCells.Adaptive(100.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         content = {
-            items(timeSuggestions.size) { time ->
+            itemsIndexed(timeSuggestions) { _, time ->
                 var selected by remember { mutableStateOf(false) }
                 FilterChip(
                     border = BorderStroke(0.dp, Color.Transparent),
@@ -301,19 +297,19 @@ fun TimeFilterGrid(
                     shape = RoundedCornerShape(16.dp),
                     onClick = {
                         selected = !selected
-                        onTimeFilterSelected(timeSuggestions[time])
+                        onTimeFilterSelected(time)
                     },
                     // actual time text
                     label = {
                         Text(
                             fontWeight = FontWeight.Bold,
-                            text = "${timeSuggestions[time]} min",
+                            text = "$time min",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
                     },
-                    selected = selectedTimeFilter == timeSuggestions[time],
-                    leadingIcon = if (selectedTimeFilter == timeSuggestions[time]) {
+                    selected = selected,
+                    leadingIcon = if (selected) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Done,

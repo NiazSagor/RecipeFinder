@@ -72,15 +72,14 @@ fun HomeScreen(
                             end = 16.dp,
                         ),
                     ) {
-                        val chunkedList = (homeState as HomeState.Success).randomRecipes.chunked(10)
+                        val chunkedList: List<List<Recipe>> =
+                            (homeState as HomeState.Success).recipes.chunked(10)
                         item {
-                            if (chunkedList.size > 2 && chunkedList[2].isNotEmpty()) {
-                                // top image
-                                TopRecipeCard(
-                                    onRecipeClick = onRecipeClick,
-                                    recipe = chunkedList[2].last { it.readyInMinutes > 0 }
-                                )
-                            }
+                            // top image
+                            TopRecipeCard(
+                                onRecipeClick = onRecipeClick,
+                                recipe = chunkedList[2].first { it.readyInMinutes > 0 }
+                            )
                         }
 
                         item {

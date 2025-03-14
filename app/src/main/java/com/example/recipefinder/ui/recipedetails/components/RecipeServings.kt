@@ -49,7 +49,7 @@ fun RecipeServings(
         )
 
         ServingsControl(
-            initialServings = currentServings,
+            currentServings = currentServings,
             onValueChange = onValueChange
         )
     }
@@ -58,10 +58,10 @@ fun RecipeServings(
 
 @Composable
 fun ServingsControl(
-    initialServings: Int,
+    currentServings: Int,
     onValueChange: (Int) -> Unit
 ) {
-    var servings by remember { mutableStateOf(initialServings) }
+    var servings by remember { mutableStateOf(currentServings) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,

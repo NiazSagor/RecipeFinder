@@ -13,7 +13,7 @@ fun DocumentSnapshot.toTip(): Tip? {
     return try {
         Tip(
             timestamp = getLong("timestamp") ?: 0L,
-            description = getString("tip") ?: "",
+            description = getString("description") ?: "",
             userName = getString("userName") ?: "",
             userProfileImageUrl = getString("userProfileImageUrl") ?: "",
         )

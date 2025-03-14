@@ -34,8 +34,7 @@ object RestApiModule {
     fun providesOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        return OkHttpClient
-            .Builder()
+        return OkHttpClient.Builder()
             .connectTimeout(CONNECTION_TIME, TimeUnit.SECONDS)
             .readTimeout(READ_TIME, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIME, TimeUnit.SECONDS)

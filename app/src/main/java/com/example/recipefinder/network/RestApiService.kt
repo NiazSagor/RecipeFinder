@@ -52,8 +52,8 @@ interface RestApiService {
         @Query("query") query: String,
         @Query("type") type: String,
         @Query("maxReadyTime") maxReadyTime: Int,
-        @Query("addRecipeInformation") addRecipeInformation: Boolean,
+        @Query("addRecipeInformation") addRecipeInformation: Boolean = true,
         @Query("includeIngredients") includeIngredients: String,
-        @Query("number") number: Int,
+        @Query("number") number: Int = 10,
     ): SearchRecipesVo
 }

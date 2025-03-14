@@ -10,9 +10,9 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun SearchRecipeTimeSuggestionsGrid(
+fun SearchSuggestionsGrid(
     onTimeFilterSelected: (Int) -> Unit, // time filter select
-    onDishTypeSelected: (String) -> Unit, // meal type select
+    onMealTypeSelected: (String) -> Unit, // meal type select
     onSearchTypeChanged: (String) -> Unit // switch
 ) {
     Column(
@@ -24,7 +24,7 @@ fun SearchRecipeTimeSuggestionsGrid(
         SearchSuggestionChildScreen(
             onTimeFilterSelected = onTimeFilterSelected,
             onSearchTypeChanged = onSearchTypeChanged,
-            onMealTypeSelected = onDishTypeSelected
+            onMealTypeSelected = onMealTypeSelected
         )
     }
 }

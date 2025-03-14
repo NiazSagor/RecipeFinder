@@ -10,6 +10,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -29,8 +30,8 @@ fun RecipePreparationBottomSheet(
     modifier: Modifier,
     onDismissRequest: () -> Unit
 ) {
-    val recipeInstructions = recipeDetailViewModel.recipeInstructions.collectAsStateWithLifecycle()
-    when (recipeInstructions.value) {
+    val recipeInstructionsState by recipeDetailViewModel.recipeInstructionsState.collectAsStateWithLifecycle()
+    when (recipeInstructionsState) {
         is RecipeInstructionsState.Error -> {}
         RecipeInstructionsState.Loading -> {
 
@@ -38,7 +39,7 @@ fun RecipePreparationBottomSheet(
 
         is RecipeInstructionsState.Success -> {
             val recipeInstructions: RecipeAnalyzedInstructions =
-                (recipeInstructions.value as RecipeInstructionsState.Success).recipe
+                (recipeInstructionsState as RecipeInstructionsState.Success).recipeInstructions
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
             ModalBottomSheet(
                 modifier = modifier,
@@ -55,7 +56,9 @@ fun RecipePreparationBottomSheet(
 }
 
 @Composable
-fun BottomSheetContentLayout(recipeInstructions: RecipeAnalyzedInstructions) {
+fun BottomSheetContentLayout(
+    recipeInstructions: RecipeAnalyzedInstructions
+) {
     val pagerState = rememberPagerState(pageCount = { recipeInstructions.steps.size })
     Box(
         modifier = Modifier.fillMaxSize(),

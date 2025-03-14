@@ -1,5 +1,6 @@
 package com.example.recipefinder.model
 
+// external
 data class RecipeAnalyzedInstructionsItemVo(
     val name: String,
     val steps: List<StepVo>

@@ -3,13 +3,6 @@ package com.example.recipefinder.data.model
 import com.example.recipefinder.model.RecipeAnalyzedInstructionsItemVo
 import com.example.recipefinder.model.StepVo
 
-
-fun List<RecipeAnalyzedInstructionsItemVo>.toRecipeAnalyzedInstructionsInternalModel(): List<RecipeAnalyzedInstructions> {
-    return this.map {
-        it.toInternalRecipeAnalyzedInstructionsItem()
-    }
-}
-
 fun RecipeAnalyzedInstructionsItemVo.toInternalRecipeAnalyzedInstructionsItem(): RecipeAnalyzedInstructions {
     return RecipeAnalyzedInstructions(
         steps = this.steps.toStepsInternalModel()
@@ -17,9 +10,10 @@ fun RecipeAnalyzedInstructionsItemVo.toInternalRecipeAnalyzedInstructionsItem():
 }
 
 fun List<StepVo>.toStepsInternalModel(): List<Step> {
-    return this.map {
-        it.toStepInternalModel()
+    val map: List<Step> = this.map { stepVo: StepVo ->
+        stepVo.toStepInternalModel()
     }
+    return map
 }
 
 fun StepVo.toStepInternalModel(): Step {
@@ -29,6 +23,7 @@ fun StepVo.toStepInternalModel(): Step {
     )
 }
 
+// internal
 data class RecipeAnalyzedInstructions(
     val steps: List<Step>
 )

@@ -29,7 +29,7 @@ fun TopBar(
     isRecipeBookMarked: Boolean,
     onLike: () -> Unit,
     onSave: () -> Unit,
-    onPopCurrent: () -> Unit,
+    onBack: () -> Unit,
     title: String,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
@@ -48,7 +48,7 @@ fun TopBar(
         },
         // back icon
         navigationIcon = {
-            IconButton(onClick = { onPopCurrent() }) {
+            IconButton(onClick = { onBack() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "Back to the Home",
@@ -94,7 +94,7 @@ fun PreviewTopBar() {
         onLike = {},
         onSave = {},
         title = "Nacho Lasagna Pasta Chips",
-        onPopCurrent = {},
+        onBack = {},
         scrollBehavior = scrollBehavior
     )
 }

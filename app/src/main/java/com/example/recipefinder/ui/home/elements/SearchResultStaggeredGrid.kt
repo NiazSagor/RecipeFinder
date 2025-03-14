@@ -18,7 +18,7 @@ import com.example.recipefinder.data.model.Recipe
 fun SearchResultStaggeredGrid(
     getLikesForRecipe: suspend (Int) -> Int,
     modifier: Modifier,
-    searchRecipeByIngredients: List<Recipe>,
+    searchResult: List<Recipe>,
     onRecipeClick: (Int) -> Unit,
     onSave: (Recipe) -> Unit,
 ) {
@@ -29,7 +29,7 @@ fun SearchResultStaggeredGrid(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalItemSpacing = 16.dp,
         content = {
-            itemsIndexed(searchRecipeByIngredients) { _, recipe: Recipe ->
+            itemsIndexed(searchResult) { _, recipe: Recipe ->
                 RecipeHorizontalListItem(
                     getLikesForRecipe = getLikesForRecipe,
                     recipe = recipe,
@@ -53,7 +53,7 @@ fun PreviewSearchResultStaggeredGrid() {
     SearchResultStaggeredGrid(
         getLikesForRecipe = { 1 },
         modifier = Modifier,
-        searchRecipeByIngredients = recipeList,
+        searchResult = recipeList,
         onRecipeClick = {},
         onSave = {}
     )

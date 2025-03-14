@@ -1,4 +1,4 @@
-package com.example.recipefinder.data.repository.di;
+package com.example.recipefinder.data.repository.di
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
