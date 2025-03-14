@@ -6,7 +6,6 @@ import com.example.recipefinder.model.RecipeInformationVo
 import com.example.recipefinder.model.RecipeNutrientsVo
 import com.example.recipefinder.model.SearchRecipeByIngredientsResponseVo
 import com.example.recipefinder.model.SearchRecipesVo
-import com.example.recipefinder.model.SimilarRecipeItemVo
 import com.example.recipefinder.network.annotation.Format
 import com.example.recipefinder.network.annotation.ResponseFormat
 import retrofit2.http.GET
@@ -22,7 +21,7 @@ interface RestApiService {
     ): RandomRecipesVo
 
     @GET("recipes/{id}/information")
-    suspend fun getRecipeInformation(
+    suspend fun getRecipeDetail(
         @Path("id") id: Int,
     ): RecipeInformationVo
 
@@ -41,11 +40,6 @@ interface RestApiService {
         @Query("ignorePantry") ignorePantry: Boolean = false
     ): List<SearchRecipeByIngredientsResponseVo>
 
-    @GET("recipes/{id}/similar")
-    suspend fun getSimilarRecipes(
-        @Path("id") id: Int,
-    ): List<SimilarRecipeItemVo>
-
     @ResponseFormat(Format.JSON)
     @GET("recipes/{id}/nutritionWidget.json")
     suspend fun getNutrients(
@@ -58,8 +52,8 @@ interface RestApiService {
         @Query("query") query: String,
         @Query("type") type: String,
         @Query("maxReadyTime") maxReadyTime: Int,
-        @Query("addRecipeInformation") addRecipeInformation: Boolean,
+        @Query("addRecipeInformation") addRecipeInformation: Boolean = true,
         @Query("includeIngredients") includeIngredients: String,
-        @Query("number") number: Int,
+        @Query("number") number: Int = 10,
     ): SearchRecipesVo
 }

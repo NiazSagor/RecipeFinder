@@ -7,10 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.recipefinder.ui.community.communityfeed.CommunityScreen
+import com.example.recipefinder.ui.community.post.PostRecipeScreen
 import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
-import com.example.recipefinder.ui.community.posts.CommunityScreen
 import com.example.recipefinder.ui.home.HomeScreen
-import com.example.recipefinder.ui.post.PostRecipeScreen
 import com.example.recipefinder.ui.profile.ProfileScreen
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsScreen
 import com.example.recipefinder.ui.recipetipdetails.RecipeTipDetailsScreen
@@ -35,7 +35,9 @@ fun RecipeFinderNavGraph(
         ) {
             HomeScreen(
                 paddingValues = paddingValues,
-                onRecipeClick = { navigationActions.navigateToRecipeDetailsScreen(it) },
+                onRecipeClick = { recipeId: Int ->
+                    navigationActions.navigateToRecipeDetailsScreen(recipeId)
+                },
             )
         }
 
@@ -45,7 +47,9 @@ fun RecipeFinderNavGraph(
             CommunityScreen(
                 paddingValues = paddingValues,
                 onPostClick = { navigationActions.navigateToPostRecipeScreen() },
-                onComment = { navigationActions.navigateToPostCommentScreen(it) },
+                onComment = { postId ->
+                    navigationActions.navigateToPostCommentScreen(postId)
+                },
             )
         }
 
@@ -53,10 +57,9 @@ fun RecipeFinderNavGraph(
             route = RecipeFinderDestinations.POST_RECIPE_ROUTE
         ) {
             PostRecipeScreen(
-                paddingValues
-            ) {
-                navigationActions.popCurrentDestination()
-            }
+                paddingValues = paddingValues,
+                onBackClick = { navigationActions.popCurrentDestination() }
+            )
         }
 
         composable(
@@ -77,12 +80,9 @@ fun RecipeFinderNavGraph(
                 RecipeDetailsScreen(
                     paddingValues = paddingValues,
                     recipeId = recipeId,
-                    onPopCurrent = { navigationActions.popCurrentDestination() },
-                    onTipClick = { navigationActions.navigateToMakeTipScreen(recipeId) },
-                    onTipDetailsClick = {
-                        navigationActions.navigateToRecipeTipDetailsScreen(
-                            recipeId
-                        )
+                    onPopCurrent = { navigationActions.popCurrentDestination() }, // to go back to home screen
+                    onShowAllTips = { // to view all tips
+                        navigationActions.navigateToRecipeTipDetailsScreen(recipeId)
                     }
                 )
             }

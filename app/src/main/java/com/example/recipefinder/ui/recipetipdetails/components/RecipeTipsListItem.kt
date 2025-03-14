@@ -43,7 +43,7 @@ fun RecipeTipsListItem(tip: Tip) {
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(tip.userProfileImageUrl)
                         .build(),
-                    contentDescription = "",
+                    contentDescription = "User profile image",
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape),
@@ -64,9 +64,10 @@ fun RecipeTipsListItem(tip: Tip) {
                         fontSize = 12.sp,
                         color = Color.LightGray
                     )
+                    // tip description
                     Text(
                         modifier = Modifier.padding(top = 8.dp),
-                        text = tip.tip,
+                        text = tip.description,
                         color = Color.Black,
                         maxLines = 10,
                     )
@@ -83,7 +84,7 @@ fun PreviewRecipeTipsListItem() {
     RecipeTipsListItem(
         Tip(
             timestamp = 1736955113230,
-            tip = "",
+            description = "",
             userName = "",
             userProfileImageUrl = ""
         )

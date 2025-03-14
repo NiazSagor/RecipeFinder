@@ -4,17 +4,16 @@ import com.google.firebase.firestore.DocumentSnapshot
 
 data class Tip(
     val timestamp: Long,
-    val tip: String,
+    val description: String,
     val userName: String,
     val userProfileImageUrl: String,
-    val photoUrl: String? = null
 )
 
 fun DocumentSnapshot.toTip(): Tip? {
     return try {
         Tip(
             timestamp = getLong("timestamp") ?: 0L,
-            tip = getString("tip") ?: "",
+            description = getString("description") ?: "",
             userName = getString("userName") ?: "",
             userProfileImageUrl = getString("userProfileImageUrl") ?: "",
         )

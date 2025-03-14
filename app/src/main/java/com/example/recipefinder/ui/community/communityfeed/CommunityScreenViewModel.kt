@@ -1,9 +1,9 @@
-package com.example.recipefinder.ui.community.posts
+package com.example.recipefinder.ui.community.communityfeed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.CommunityPost
-import com.example.recipefinder.data.repository.community.CommunityRepository
+import com.example.recipefinder.data.repository.community.post.CommunityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +26,12 @@ class CommunityScreenViewModel @Inject constructor(
 
     val state: StateFlow<CommunityScreenState> =
         communityRepository.getCommunityPosts()
-            .map { CommunityScreenState.Success(it) as CommunityScreenState }
-            .catch { CommunityScreenState.Error(it.message ?: "Unknown error") }
+            .map { communityPosts: List<CommunityPost> ->
+                CommunityScreenState.Success(posts = communityPosts)
+            }
+            .catch { error: Throwable ->
+                CommunityScreenState.Error(message = error.message ?: "Unknown error")
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -37,6 +41,14 @@ class CommunityScreenViewModel @Inject constructor(
     fun likePost(postId: String) {
         viewModelScope.launch {
             communityRepository.likePost(postId)
+        }
+    }
+
+    suspend fun isPostLikedByUser(postId: String): Boolean {
+        return try {
+            communityRepository.isPostLikedByUser(postId)
+        } catch (e: Exception) {
+            false
         }
     }
 }

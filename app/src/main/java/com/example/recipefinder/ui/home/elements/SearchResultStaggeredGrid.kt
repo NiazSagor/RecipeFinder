@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,7 +18,7 @@ import com.example.recipefinder.data.model.Recipe
 fun SearchResultStaggeredGrid(
     getLikesForRecipe: suspend (Int) -> Int,
     modifier: Modifier,
-    searchRecipeByIngredients: List<Recipe>,
+    searchResult: List<Recipe>,
     onRecipeClick: (Int) -> Unit,
     onSave: (Recipe) -> Unit,
 ) {
@@ -28,13 +29,17 @@ fun SearchResultStaggeredGrid(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalItemSpacing = 16.dp,
         content = {
-            items(searchRecipeByIngredients.size) { photo ->
+            itemsIndexed(searchResult) { _, recipe: Recipe ->
                 RecipeHorizontalListItem(
                     getLikesForRecipe = getLikesForRecipe,
-                    recipe = searchRecipeByIngredients[photo],
+                    recipe = recipe,
                     searchItem = true,
-                    onRecipeClick = { onRecipeClick(it) },
-                    onSave = { onSave(it) }
+                    onRecipeClick = { recipeId ->
+                        onRecipeClick(recipeId)
+                    },
+                    onSave = { recipe ->
+                        onSave(recipe)
+                    }
                 )
             }
         }
@@ -48,7 +53,7 @@ fun PreviewSearchResultStaggeredGrid() {
     SearchResultStaggeredGrid(
         getLikesForRecipe = { 1 },
         modifier = Modifier,
-        searchRecipeByIngredients = recipeList,
+        searchResult = recipeList,
         onRecipeClick = {},
         onSave = {}
     )

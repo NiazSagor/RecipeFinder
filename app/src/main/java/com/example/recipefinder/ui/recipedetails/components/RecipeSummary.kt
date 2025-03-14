@@ -49,7 +49,7 @@ fun RecipeSummary(
             ) + fadeOut()
         ) {
             Text(
-                text = text,
+                text = if (isExpanded) text else text.take(200),
                 maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLines,
                 overflow = TextOverflow.Ellipsis
             )
@@ -68,7 +68,9 @@ fun RecipeSummary(
             text = if (isExpanded) "See less" else "See more",
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .clickable { isExpanded = !isExpanded }
+                .clickable(
+                    onClick = { isExpanded = !isExpanded }
+                )
                 .padding(top = 4.dp)
         )
     }
