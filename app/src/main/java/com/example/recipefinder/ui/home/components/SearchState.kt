@@ -2,7 +2,6 @@ package com.example.recipefinder.ui.home.components
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.input.TextFieldValue
-import com.example.recipefinder.ui.home.components.SearchDisplay.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 

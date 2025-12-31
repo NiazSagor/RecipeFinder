@@ -25,10 +25,10 @@ class RecipeTipDetailsViewModel @Inject constructor(
     recipeTipsRepository: RecipeTipsRepository
 ) : ViewModel() {
 
-    val recipeId = savedStateHandle.get<Int>("recipeId")
+    val recipeId = savedStateHandle.get<Int>("recipeId") ?: 0
 
     val state: StateFlow<RecipeTipsState> =
-        recipeTipsRepository.getAllTipsForRecipe(recipeId ?: 0)
+        recipeTipsRepository.getAllTipsForRecipe(recipeId)
             .map { RecipeTipsState.Success(it) }
             .catch { RecipeTipsState.Error(it.message.toString()) }
             .stateIn(

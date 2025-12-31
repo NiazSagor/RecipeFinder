@@ -1,8 +1,10 @@
-package com.example.recipefinder.data.repository.di;
+package com.example.recipefinder.data.repository.di
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +19,11 @@ object FirebaseModule {
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth {
         return Firebase.auth
+    }
+
+    @Singleton
+    @Provides
+    fun providesFirebaseFirestore(): FirebaseFirestore {
+        return Firebase.firestore
     }
 }

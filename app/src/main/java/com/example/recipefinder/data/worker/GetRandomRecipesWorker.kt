@@ -8,11 +8,14 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.datastore.RecipeDataStore
+import com.example.recipefinder.model.RandomRecipesVo
 import com.example.recipefinder.model.toInternalRecipesModel
 import com.example.recipefinder.network.RestApiService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.supervisorScope
 import java.lang.Exception
@@ -29,9 +32,11 @@ class GetRandomRecipesWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return try {
             supervisorScope {
-                val randomRecipesDeferred = async { restApiService.getRandomRecipes(limit = 30) }
-                val randomRecipes = randomRecipesDeferred.await()
-                recipeDataStore.saveRandomRecipes(randomRecipes.recipes.toInternalRecipesModel())
+                val randomRecipesDeferred: Deferred<RandomRecipesVo> =
+                    async { restApiService.getRandomRecipes(limit = 30) }
+                val randomRecipes: RandomRecipesVo = randomRecipesDeferred.await()
+                val recipes: List<Recipe> = randomRecipes.recipes.toInternalRecipesModel()
+                recipeDataStore.saveRecipes(recipes)
                 Result.success()
             }
         } catch (e: Exception) {

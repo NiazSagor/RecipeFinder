@@ -34,12 +34,12 @@ fun BottomNavigationBar(onBottomBarClick: (String) -> Unit) {
     NavigationBar(
         modifier = Modifier.fillMaxWidth()
     ) {
-        items.forEachIndexed { index, item ->
+        items.forEachIndexed { index: Int, item: BottomNavigationItem ->
             NavigationBarItem(
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
-                    onBottomBarClick(items[index].title)
+                    onBottomBarClick(item.title)
                 },
                 label = { Text(text = item.title) },
                 alwaysShowLabel = true,

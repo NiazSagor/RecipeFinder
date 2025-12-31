@@ -1,9 +1,11 @@
 package com.example.recipefinder.data.repository.di
 
-import com.example.recipefinder.data.repository.community.CommunityRepository
-import com.example.recipefinder.data.repository.community.CommunityRepositoryImpl
-import com.example.recipefinder.data.repository.community.PostCommentsRepository
-import com.example.recipefinder.data.repository.community.PostCommentsRepositoryImpl
+import com.example.recipefinder.data.repository.community.comment.PostCommentsRepository
+import com.example.recipefinder.data.repository.community.comment.PostCommentsRepositoryImpl
+import com.example.recipefinder.data.repository.community.like.CommunityPostLikeRepository
+import com.example.recipefinder.data.repository.community.like.CommunityPostLikeRepositoryImpl
+import com.example.recipefinder.data.repository.community.post.CommunityRepository
+import com.example.recipefinder.data.repository.community.post.CommunityRepositoryImpl
 import com.example.recipefinder.data.repository.recipe.RecipeRepository
 import com.example.recipefinder.data.repository.recipe.RecipeRepositoryImpl
 import com.example.recipefinder.data.repository.tip.RecipeTipsRepository
@@ -51,4 +53,10 @@ abstract class RecipeModule {
     abstract fun bindsUserRepository(
         userRepository: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsCommunityPostLikeRepository(
+        communityPostLikeRepository: CommunityPostLikeRepositoryImpl
+    ): CommunityPostLikeRepository
 }

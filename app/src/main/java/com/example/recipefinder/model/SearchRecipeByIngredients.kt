@@ -5,8 +5,7 @@ import com.example.recipefinder.data.model.SearchRecipeByIngredients
 import com.example.recipefinder.data.model.UnusedIngredient
 import com.example.recipefinder.data.model.UsedIngredient
 
-fun List<SearchRecipeByIngredientsResponseVo>.toInternalSearchRecipesByIngredients():
-        List<SearchRecipeByIngredients> {
+fun List<SearchRecipeByIngredientsResponseVo>.toInternalSearchRecipesByIngredients(): List<SearchRecipeByIngredients> {
     return this.map {
         it.toInternalSearchRecipeByIngredients()
     }

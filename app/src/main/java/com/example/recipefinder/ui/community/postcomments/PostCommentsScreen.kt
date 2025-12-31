@@ -40,9 +40,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.PostComment
 import com.example.recipefinder.data.model.Tip
-import com.example.recipefinder.ui.community.posts.elements.CommunityPostItem
+import com.example.recipefinder.ui.community.communityfeed.elements.CommunityPostItem
 import com.example.recipefinder.ui.recipetipdetails.components.RecipeTipsListItem
 
+// shows all comments on a post
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PostCommentsScreen(
@@ -55,7 +56,7 @@ fun PostCommentsScreen(
         is PostCommentState.Error -> {}
         PostCommentState.Loading -> {}
         is PostCommentState.Success -> {
-            val data = (state as PostCommentState.Success).data
+            val data: PostCommentData = (state as PostCommentState.Success).data
             Scaffold(
                 modifier = Modifier
                     .padding(paddingValues),
@@ -77,6 +78,9 @@ fun PostCommentsScreen(
                     data = data,
                     onPostClick = {
                         viewmodel.postComment(postId = postId, comment = it)
+                    },
+                    isPostLikedByUser = {
+                        viewmodel.isPostLikedByUser(it)
                     }
                 )
             }
@@ -88,6 +92,7 @@ fun PostCommentsScreen(
 fun PostCommentsScreenContent(
     paddingValues: PaddingValues,
     data: PostCommentData,
+    isPostLikedByUser: suspend (String) -> Boolean,
     onPostClick: (String) -> Unit
 ) {
     Column(
@@ -103,23 +108,26 @@ fun PostCommentsScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
+            // image. title. description
             item {
                 CommunityPostItem(
-                    post = data.communityPost,
+                    communityPost = data.communityPost,
                     onLike = {},
                     onComment = {},
-                    onClick = {}
+                    onClick = {},
+                    isPostLikedByUser = isPostLikedByUser
                 )
             }
 
-            itemsIndexed(data.comments) { index, comment ->
+            // post comment section
+            itemsIndexed(data.comments) { index: Int, comment: PostComment ->
                 Box(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                 ) {
                     RecipeTipsListItem(
                         Tip(
                             timestamp = comment.timestamp,
-                            tip = comment.comment,
+                            description = comment.comment,
                             userName = comment.userName,
                             userProfileImageUrl = comment.userProfileImageUrl
                         )
@@ -200,7 +208,7 @@ fun PreviewRecipeCommentsScreen() {
                 like = 125,
                 timestamp = 1736955113230,
                 post = "Just tried this amazing chocolate cake recipe. It was a hit with my family!",
-                userName = "Niaz Sagor",
+                userName = "Ripa Akter",
                 userProfileImageUrl = "",
                 recipeImageUrl = "",
             ),
@@ -243,6 +251,7 @@ fun PreviewRecipeCommentsScreen() {
             )
         ),
         onPostClick = {},
-        paddingValues = PaddingValues()
+        paddingValues = PaddingValues(),
+        isPostLikedByUser = { false }
     )
 }

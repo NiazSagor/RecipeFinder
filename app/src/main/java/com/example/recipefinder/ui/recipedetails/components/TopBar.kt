@@ -29,7 +29,7 @@ fun TopBar(
     isRecipeBookMarked: Boolean,
     onLike: () -> Unit,
     onSave: () -> Unit,
-    onPopCurrent: () -> Unit,
+    onBack: () -> Unit,
     title: String,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
@@ -38,6 +38,7 @@ fun TopBar(
 
     LargeTopAppBar(
         title = {
+            // recipe title
             Text(
                 text = title,
                 maxLines = 5,
@@ -45,8 +46,9 @@ fun TopBar(
                 fontWeight = FontWeight.Bold
             )
         },
+        // back icon
         navigationIcon = {
-            IconButton(onClick = { onPopCurrent() }) {
+            IconButton(onClick = { onBack() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "Back to the Home",
@@ -55,6 +57,7 @@ fun TopBar(
             }
         },
         actions = {
+            // save recipe
             IconButton(onClick = {
                 onSave()
                 isSaved = !isSaved
@@ -65,6 +68,7 @@ fun TopBar(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
+            // like recipe button
             IconButton(onClick = {
                 isLiked = !isLiked
                 onLike()
@@ -90,7 +94,7 @@ fun PreviewTopBar() {
         onLike = {},
         onSave = {},
         title = "Nacho Lasagna Pasta Chips",
-        onPopCurrent = {},
+        onBack = {},
         scrollBehavior = scrollBehavior
     )
 }

@@ -16,7 +16,7 @@ import com.example.recipefinder.ui.home.components.Water_bottle
 import com.example.recipefinder.ui.model.MealType
 
 
-val mealType = listOf(
+val mealType: List<MealType> = listOf(
     MealType("main course", Food_bank),
     MealType("side dish", Rice_bowl),
     MealType("dessert", Dessert),

@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipefinder.data.model.CommunityPost
 import com.example.recipefinder.data.model.PostComment
-import com.example.recipefinder.data.repository.community.CommunityRepository
-import com.example.recipefinder.data.repository.community.PostCommentsRepository
+import com.example.recipefinder.data.repository.community.comment.PostCommentsRepository
+import com.example.recipefinder.data.repository.community.post.CommunityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -33,13 +33,13 @@ class PostCommentsViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
 ) : ViewModel() {
 
-    val postId = savedStateHandle.getStateFlow<String>("postId", "")
+    val postId: String = savedStateHandle.get<String>("postId") ?: ""
 
     val state: StateFlow<PostCommentState> =
         combine(
-            communityRepository.getPost(postId.value),
-            postCommentsRepository.getPostComments(postId.value)
-        ) { post, comments ->
+            communityRepository.getPost(postId),
+            postCommentsRepository.getPostComments(postId)
+        ) { post: CommunityPost?, comments: List<PostComment> ->
             if (post == null) {
                 PostCommentState.Error("Something went wrong")
             } else {
@@ -47,7 +47,7 @@ class PostCommentsViewModel @Inject constructor(
                     communityPost = post,
                     comments = comments
                 )
-                PostCommentState.Success(data)
+                PostCommentState.Success(data = data)
             }
         }.stateIn(
             scope = viewModelScope,
@@ -62,6 +62,14 @@ class PostCommentsViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    suspend fun isPostLikedByUser(postId: String): Boolean {
+        return try {
+            communityRepository.isPostLikedByUser(postId)
+        } catch (e: Exception) {
+            false
         }
     }
 }

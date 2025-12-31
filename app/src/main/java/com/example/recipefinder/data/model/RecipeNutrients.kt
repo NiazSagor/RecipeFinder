@@ -11,9 +11,9 @@ data class RecipeNutrient(
 
 fun RecipeNutrientsVo.toRecipeNutrientInternalModel(): RecipeNutrient {
     return RecipeNutrient(
-        calorieCount = this.calorieCount,
-        carbohydrates = this.carbohydrates,
-        fats = this.fats,
-        proteins = this.proteins
+        calorieCount = this.calories ?: "",
+        carbohydrates = this.carbs ?: "",
+        fats = this.fat ?: "",
+        proteins = this.protein ?: ""
     )
 }

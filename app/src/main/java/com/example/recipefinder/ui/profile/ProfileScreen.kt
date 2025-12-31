@@ -1,6 +1,7 @@
 package com.example.recipefinder.ui.profile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,8 @@ import com.example.recipefinder.ui.myiconpack.MyIconPack
 import com.example.recipefinder.ui.myiconpack.Wave
 import com.example.recipefinder.ui.profile.activity.ActivityScreen
 import com.example.recipefinder.ui.profile.savedrecipe.SavedRecipeScreen
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 
 @Composable
@@ -97,6 +100,11 @@ fun ProfileScreen(
                             )
                         },
                         modifier = Modifier
+                            .clickable(
+                                onClick = {
+                                    Firebase.auth.signOut()
+                                }
+                            )
                             .size(100.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
@@ -152,7 +160,7 @@ fun ProfileScreen(
                                     myTips = myTips,
                                     getLikesForRecipe = { viewmodel.getRecipeLike(it) },
                                     onRecipeClick = onRecipeClick,
-                                    onSave = { viewmodel.saveRecipe(it) }
+                                    onSave = { viewmodel.unSaveRecipe(it) }
                                 )
                             }
                         }

@@ -42,9 +42,11 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.recipefinder.data.dummy.recipeList
 import com.example.recipefinder.data.model.Recipe
 import com.example.recipefinder.util.toHourMinuteFormat
 
+// single recipe design
 @Composable
 fun RecipeHorizontalListItem(
     getLikesForRecipe: suspend (Int) -> Int,
@@ -65,6 +67,7 @@ fun RecipeHorizontalListItem(
     } else {
         Modifier.size(width = 170.dp, height = 260.dp)
     }
+    // recipe box
     Box(
         modifier = Modifier
             .then(itemModifier)
@@ -85,6 +88,7 @@ fun RecipeHorizontalListItem(
                     .size(170.dp)
                     .clip(RoundedCornerShape(4.dp))
             ) {
+                // recipe image
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(recipe.image)
@@ -95,6 +99,7 @@ fun RecipeHorizontalListItem(
                     modifier = Modifier
                         .fillMaxSize()
                 )
+                // ingredients count
                 if (recipe.extendedIngredients.isNotEmpty()) {
                     Box(
                         modifier = Modifier
@@ -140,16 +145,19 @@ fun RecipeHorizontalListItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // ready minutes
                 Text(
                     color = Color.Black,
                     text = recipe.readyInMinutes.toHourMinuteFormat(),
                     fontSize = 12.sp
                 )
+                // like icon
                 Icon(
                     Icons.Default.ThumbUp,
                     contentDescription = "",
                     modifier = Modifier.size(16.dp)
                 )
+                // like count
                 Text(
                     text = "$likes",
                     fontSize = 12.sp
@@ -170,5 +178,10 @@ fun RecipeHorizontalListItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecipeHorizontalListItem() {
-
+    RecipeHorizontalListItem(
+        getLikesForRecipe = { 1 },
+        recipe = recipeList.first(),
+        searchItem = true,
+        onRecipeClick = {}
+    ) { }
 }

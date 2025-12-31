@@ -10,6 +10,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipefinder.data.model.RecipeAnalyzedInstructions
+import com.example.recipefinder.data.model.Step
 import com.example.recipefinder.ui.recipedetails.RecipeDetailsViewModel
 import com.example.recipefinder.ui.recipedetails.RecipeInstructionsState
 
@@ -28,32 +30,35 @@ fun RecipePreparationBottomSheet(
     modifier: Modifier,
     onDismissRequest: () -> Unit
 ) {
-    val recipeInstructions = recipeDetailViewModel.recipeInstructions.collectAsStateWithLifecycle()
-    when (recipeInstructions.value) {
+    val recipeInstructionsState by recipeDetailViewModel.recipeInstructionsState.collectAsStateWithLifecycle()
+    when (recipeInstructionsState) {
         is RecipeInstructionsState.Error -> {}
         RecipeInstructionsState.Loading -> {
 
         }
 
         is RecipeInstructionsState.Success -> {
-            val recipeInstructions =
-                (recipeInstructions.value as RecipeInstructionsState.Success).recipe
+            val recipeInstructions: RecipeAnalyzedInstructions =
+                (recipeInstructionsState as RecipeInstructionsState.Success).recipeInstructions
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
             ModalBottomSheet(
                 modifier = modifier,
                 sheetState = sheetState,
                 onDismissRequest = {
                     onDismissRequest()
+                },
+                content = {
+                    BottomSheetContentLayout(recipeInstructions)
                 }
-            ) {
-                BottomSheetContentLayout(recipeInstructions)
-            }
+            )
         }
     }
 }
 
 @Composable
-fun BottomSheetContentLayout(recipeInstructions: RecipeAnalyzedInstructions) {
+fun BottomSheetContentLayout(
+    recipeInstructions: RecipeAnalyzedInstructions
+) {
     val pagerState = rememberPagerState(pageCount = { recipeInstructions.steps.size })
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -67,33 +72,23 @@ fun BottomSheetContentLayout(recipeInstructions: RecipeAnalyzedInstructions) {
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page: Int ->
-            HorizontalPagerItem(
+            val step: Step = recipeInstructions.steps[page]
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
                     .align(Alignment.Center),
-                recipeInstructions.steps[page].step
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                // step description
+                Text(
+                    text = step.step,
+                    fontSize = 22.sp,
+                )
+            }
         }
     }
 }
-
-@Composable
-fun HorizontalPagerItem(
-    modifier: Modifier,
-    step: String
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = step,
-            fontSize = 22.sp,
-        )
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
