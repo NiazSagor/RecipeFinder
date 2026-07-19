@@ -1,1 +1,91 @@
 
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select Environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+      version:
+        description: "App version name (BuildConfig.APP_VERSION)"
+        required: false
+        default: "1.0"
+      build_type:
+        description: "Build type"
+        required: true
+        type: choice
+        default: debug
+        options:
+          - debug
+          - release
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Generate local.properties
+        shell: bash
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+          if [ "${{ github.event.inputs.environment }}" = "dev" ]; then
+            ENV_ID="${{ secrets.DEV_ENV_ID }}"
+          else
+            ENV_ID="${{ secrets.PROD_ENV_ID }}"
+          fi
+
+          if [ -z "$ENV_ID" ]; then
+            echo "::error::ENV_ID secret is empty — check DEV_ENV_ID / PROD_ENV_ID repository secrets"
+            exit 1
+          fi
+
+          API_URL="https://example.com/${ENV_ID}/api/"
+
+          {
+            echo "BANK_MODULE_URL=${API_URL}"
+            echo "TEST_URL=${API_URL}"
+            echo "SPEECH_TO_TEXT_URL=${API_URL}"
+            echo "AUTH_MODULE_URL=${API_URL}"
+            echo "USER_MODULE_URL=${API_URL}"
+            echo "CHAT_BOT_BASE_URL=${API_URL}"
+            echo "VERSION=${{ github.event.inputs.version }}"
+          } >> local.properties
+
+      - name: Build APK
+        run: |
+          if [ "${{ github.event.inputs.build_type }}" = "release" ]; then
+            ./gradlew assembleRelease
+          else
+            ./gradlew assembleDebug
+          fi
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ github.event.inputs.environment }}-${{ github.event.inputs.build_type }}-${{ github.run_number }}
+          path: app/build/outputs/apk/${{ github.event.inputs.build_type }}/*.apk
+          if-no-files-found: error
