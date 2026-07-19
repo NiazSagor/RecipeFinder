@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.recipefinder.ui.community.communityfeed.CommunityScreen
+//import com.example.recipefinder.ui.community.communityfeed.CommunityScreen
 import com.example.recipefinder.ui.community.post.PostRecipeScreen
 import com.example.recipefinder.ui.community.postcomments.PostCommentsScreen
 import com.example.recipefinder.ui.home.HomeScreen
@@ -44,13 +44,13 @@ fun RecipeFinderNavGraph(
         composable(
             route = RecipeFinderDestinations.COMMUNITY_ROUTE
         ) {
-            CommunityScreen(
-                paddingValues = paddingValues,
-                onPostClick = { navigationActions.navigateToPostRecipeScreen() },
-                onComment = { postId ->
-                    navigationActions.navigateToPostCommentScreen(postId)
-                },
-            )
+//            CommunityScreen(
+//                paddingValues = paddingValues,
+//                onPostClick = { navigationActions.navigateToPostRecipeScreen() },
+//                onComment = { postId ->
+//                    navigationActions.navigateToPostCommentScreen(postId)
+//                },
+//            )
         }
 
         composable(
