@@ -14,6 +14,14 @@ on:
         description: "App version name (BuildConfig.APP_VERSION)"
         required: false
         default: "1.0"
+      server_address:
+        description: "Server network prefix (e.g. 192.168.10)"
+        required: true
+        default: "192.168.10"
+      port:
+        description: "Server port (e.g. 8614)"
+        required: true
+        default: "8614"
       build_type:
         description: "Build type"
         required: true
@@ -52,13 +60,20 @@ jobs:
       - name: Generate local.properties
         id: envsetup
         shell: bash
+        env:
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
+          VERSION_INPUT: ${{ github.event.inputs.version }}
+          SERVER_ADDRESS: ${{ github.event.inputs.server_address }}
+          PORT: ${{ github.event.inputs.port }}
+          DEV_ENV_ID: ${{ secrets.DEV_ENV_ID }}
+          PROD_ENV_ID: ${{ secrets.PROD_ENV_ID }}
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-          if [ "${{ github.event.inputs.environment }}" = "dev" ]; then
-            ENV_ID="${{ secrets.DEV_ENV_ID }}"
+          if [ "$ENVIRONMENT" = "dev" ]; then
+            ENV_ID="$DEV_ENV_ID"
           else
-            ENV_ID="${{ secrets.PROD_ENV_ID }}"
+            ENV_ID="$PROD_ENV_ID"
           fi
 
           if [ -z "$ENV_ID" ]; then
@@ -66,7 +81,7 @@ jobs:
             exit 1
           fi
 
-          API_URL="https://example.com/${ENV_ID}/api/"
+          API_URL="http://${SERVER_ADDRESS}.${ENV_ID}:${PORT}/api/"
 
           {
             echo "BANK_MODULE_URL=${API_URL}"
@@ -75,9 +90,9 @@ jobs:
             echo "AUTH_MODULE_URL=${API_URL}"
             echo "USER_MODULE_URL=${API_URL}"
             echo "CHAT_BOT_BASE_URL=${API_URL}"
-            echo "VERSION=${{ github.event.inputs.version }}"
+            echo "VERSION=${VERSION_INPUT}"
           } >> local.properties
-          
+
           echo "env_id=$ENV_ID" >> "$GITHUB_OUTPUT"
 
       - name: Debug env_id output
