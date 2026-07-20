@@ -76,6 +76,9 @@ jobs:
             echo "CHAT_BOT_BASE_URL=${API_URL}"
             echo "VERSION=${{ github.event.inputs.version }}"
           } >> local.properties
+          
+          echo "::add-mask::$ENV_ID"
+          echo "env_id=$ENV_ID" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
         run: |
@@ -92,7 +95,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-${{ github.event.inputs.environment }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}
+          name: app-${{ steps.envsetup.outputs.env_id }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}
           path: app/build/outputs/apk/${{ github.event.inputs.build_type }}/*.apk
           if-no-files-found: error
 
@@ -122,7 +125,7 @@ jobs:
             exit 1
           fi
 
-          FILE_NAME="app-${{ github.event.inputs.environment }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}.apk"
+          FILE_NAME="app-${{ steps.envsetup.outputs.env_id }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}.apk"
 
           METADATA=$(cat <<EOF
           {
