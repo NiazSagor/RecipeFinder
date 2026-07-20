@@ -95,13 +95,6 @@ jobs:
         id: date
         run: echo "date=$(TZ='Asia/Dhaka' date +'%Y-%m-%d_%I-%M%p')" >> "$GITHUB_OUTPUT"
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-${{ steps.envsetup.outputs.env_id }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}
-          path: app/build/outputs/apk/${{ github.event.inputs.build_type }}/*.apk
-          if-no-files-found: error
-
       - name: Get Access Token
         id: gauth
         run: |
