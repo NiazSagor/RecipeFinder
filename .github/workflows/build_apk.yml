@@ -77,7 +77,6 @@ jobs:
             echo "VERSION=${{ github.event.inputs.version }}"
           } >> local.properties
           
-          echo "::add-mask::$ENV_ID"
           echo "env_id=$ENV_ID" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
