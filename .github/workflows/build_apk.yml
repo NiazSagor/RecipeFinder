@@ -95,3 +95,52 @@ jobs:
           name: app-${{ github.event.inputs.environment }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}
           path: app/build/outputs/apk/${{ github.event.inputs.build_type }}/*.apk
           if-no-files-found: error
+
+      - name: Get Access Token
+        id: gauth
+        run: |
+          ACCESS_TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token \
+            -d client_id="${{ secrets.GOOGLE_CLIENT_ID }}" \
+            -d client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            -d refresh_token="${{ secrets.GOOGLE_REFRESH_TOKEN }}" \
+            -d grant_type=refresh_token | jq -r .access_token)
+
+          if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
+            echo "::error::Failed to obtain Google access token"
+            exit 1
+          fi
+
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "access_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK to Google Drive
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/${{ github.event.inputs.build_type }} -name "*.apk" | head -n 1)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "::error::No APK found to upload"
+            exit 1
+          fi
+
+          FILE_NAME="app-${{ github.event.inputs.environment }}-${{ github.event.inputs.build_type }}-${{ steps.date.outputs.date }}.apk"
+
+          METADATA=$(cat <<EOF
+          {
+            "name": "${FILE_NAME}",
+            "parents": ["${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}"]
+          }
+          EOF
+          )
+
+          HTTP_CODE=$(curl -s -o response.json -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ steps.gauth.outputs.access_token }}" \
+            -F "metadata=${METADATA};type=application/json;charset=UTF-8" \
+            -F "file=@${APK_PATH};type=application/vnd.android.package-archive" \
+            "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart")
+
+          cat response.json
+
+          if [ "$HTTP_CODE" -ge 300 ]; then
+            echo "::error::Drive upload failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
