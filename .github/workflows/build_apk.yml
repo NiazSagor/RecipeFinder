@@ -79,6 +79,9 @@ jobs:
           
           echo "env_id=$ENV_ID" >> "$GITHUB_OUTPUT"
 
+      - name: Debug env_id output
+        run: echo "env_id output = '${{ steps.envsetup.outputs.env_id }}'"
+
       - name: Build APK
         run: |
           if [ "${{ github.event.inputs.build_type }}" = "release" ]; then
